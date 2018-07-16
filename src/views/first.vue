@@ -1,0 +1,34 @@
+<style scoped>
+    
+</style>
+<template>
+    <div class="layout">
+        <Content :style="{padding: '0px 16px 16px'}">
+            <Breadcrumb :style="{margin: '16px 0'}">
+                <BreadcrumbItem>Home</BreadcrumbItem>
+                <BreadcrumbItem>Components</BreadcrumbItem>
+                <BreadcrumbItem>Layout111</BreadcrumbItem>
+            </Breadcrumb>
+            <Card>
+                <div style="height: 600px;">Content111
+                    <Button @click="next">next</Button>
+                </div>
+            </Card>
+        </Content>
+    </div>
+</template>
+<script>
+    export default {
+        data () {
+            return {
+                
+            };
+        },
+        methods:{
+            next (val) {
+                debugger
+                this.$router.push("/home/first");
+            },
+        },
+    }
+</script>
