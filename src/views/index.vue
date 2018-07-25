@@ -60,78 +60,42 @@
                     </MenuItem>
                 </div>
                 <div class="layout-nav-right">
-                    <MenuItem name="1">
-                        <Icon type="ios-navigate"></Icon>
-                        Item 1
+                    <MenuItem v-for="headMenue in headMenueList" :key="headMenue.id" :name="headMenue.name">
+                        <span v-if="headMenue.type=='0'">
+                            <Icon type="ios-people"></Icon>
+                            {{headMenue.name}}
+                        </span>
+                        <span v-else-if="headMenue.type=='1'">
+                            <Submenu :name="headMenue.name">
+                                <template slot="title">
+                                    <Icon type="stats-bars"></Icon>
+                                    {{headMenue.name}}
+                                </template>
+                                <MenuGroup v-for="con in headMenue.child" :key="con.id" :title="con.title">
+                                    <MenuItem v-for="c in con.content" :key="c.id" :name="c.name">{{c.name}}</MenuItem>
+                                </MenuGroup>
+                            </Submenu>
+                        </span>
                     </MenuItem>
-                    <MenuItem name="2">
-                        <Icon type="ios-keypad"></Icon>
-                        Item 2
-                    </MenuItem>
-                    <MenuItem name="1">
-                        <Icon type="ios-paper"></Icon>
-                        内容管理
-                    </MenuItem>
-                    <MenuItem name="2">
-                        <Icon type="ios-people"></Icon>
-                        用户管理
-                    </MenuItem>
-                    <Submenu name="3">
-                        <template slot="title">
-                            <Icon type="stats-bars"></Icon>
-                            统计分析
-                        </template>
-                        <MenuGroup title="使用">
-                            <MenuItem name="3-1">新增和启动</MenuItem>
-                            <MenuItem name="3-2">活跃分析</MenuItem>
-                            <MenuItem name="3-3">时段分析</MenuItem>
-                        </MenuGroup>
-                        <MenuGroup title="留存">
-                            <MenuItem name="3-4">用户留存</MenuItem>
-                            <MenuItem name="3-5">流失用户</MenuItem>
-                        </MenuGroup>
-                    </Submenu>
                 </div>
             </Menu>
             <Layout :style="{padding: '60px 0 0 0',minHeight: '100vh'}">
                 <Sider collapsible :collapsed-width="100" v-model="isCollapsed">
-                    <Menu active-name="first" theme="dark" width="auto" :open-names="['1']" :class="menuitemClasses" @on-select="toOtherPage">
-                        <MenuItem name="1-4">
-                            <Icon type="ios-navigate"></Icon>
-                            <span>Option 4</span>
-                        </MenuItem>
-                        <Submenu name="1">
+                    <Menu :active-name="nowPage.name" theme="dark" width="auto" :open-names="openNames" :class="menuitemClasses" @on-select="toOtherPage">
+                        <Submenu v-for="(menue) in menueList" :key="menue.id" :name="menue.name">
                             <template slot="title">
                                 <Icon type="ios-navigate"></Icon>
-                                <span>Item 1</span>
+                                <span>{{menue.name}}</span>
                             </template>
-                            <MenuItem name="first"><span>Option</span>first</MenuItem>
-                            <MenuItem name="second"><span>Option</span>second</MenuItem>
-                            <MenuItem name="1-3"><span>Option</span>3</MenuItem>
-                        </Submenu>
-                        <Submenu name="2">
-                            <template slot="title">
-                                <Icon type="ios-keypad"></Icon>
-                                <span>Item 2</span>
-                            </template>
-                            <MenuItem name="2-1"><span>Option</span>1</MenuItem>
-                            <MenuItem name="2-2"><span>Option</span>2</MenuItem>
-                        </Submenu>
-                        <Submenu name="3">
-                            <template slot="title">
-                                <Icon type="ios-analytics"></Icon>
-                                <span>Item 3</span>
-                            </template>
-                            <MenuItem name="3-1"><span>Option</span>1</MenuItem>
-                            <MenuItem name="3-2"><span>Option</span>2</MenuItem>
+                            <MenuItem v-for='(ch,index) in menue.child' :key='ch.id' :name="ch.name"><span>{{ch.name}}</span>{{index}}</MenuItem>
                         </Submenu>
                     </Menu>
                 </Sider>
                 <Content :style="{height:'100%'}">
                     <Row>
                         <Col span="24" class="demo-tabs-style1" style="background: #e3e8ee;padding:16px;">
-                            <Tabs type="card" closable @on-tab-remove="handleTabRemove" v-model="activeTabName">
-                                <TabPane v-for="tab in tabs" :key="tab" :label="tab" :name="tab">
+                            <Tabs type="card" :closable='tabs.length>1' @on-tab-remove="handleTabRemove" @on-click="toOtherPage" :value="nowPage.name">
+                                <TabPane v-for="tab in tabs" :key="tab.id" :label="tab.name" :name="tab.name">
                                     <router-view></router-view>
                                 </TabPane>
                             </Tabs>
@@ -147,8 +111,41 @@
         data () {
             return {
                 isCollapsed: false,
-                tabs: [],
-                activeTabName: ""
+                tabs:[],
+                openNames:[],
+                nowPage:{},
+                userInfo:{},
+                menueList: [{id:'1a',name:'firstParent',url:'',child:[
+                        {id:'1-1',name:'first',url:'/home/first',parentId:'1'},
+                        {id:'1-2',name:'second',url:'/home/second',parentId:'1'},
+                        {id:'1-3',name:'third',url:'/home/third',parentId:'1'},
+                        {id:'1-4',name:'forth',url:'/home/forth',parentId:'1'},
+                    ]},{id:'2a',name:'secondParent',url:'',child:[
+                        {id:'2-1',name:'fifth',url:'/home/first',parentId:'2'},
+                        {id:'2-2',name:'sixth',url:'/home/first',parentId:'2'},
+                        {id:'2-3',name:'seventh',url:'/home/first',parentId:'2'},
+                        {id:'2-4',name:'eighth',url:'/home/first',parentId:'2'},
+                    ]},{id:'3a',name:'thirdParent',url:'',child:[
+                        {id:'3-1',name:'nineth',url:'/home/first',parentId:'3'},
+                        {id:'3-2',name:'tenth',url:'/home/first',parentId:'3'},
+                        {id:'3-3',name:'eleven',url:'/home/first',parentId:'3'},
+                        {id:'3-4',name:'twlveth',url:'/home/first',parentId:'3'},
+                    ]}
+                ],
+                headMenueList:[{id:'h1',name:'one',url:'url',type:'0'},
+                    {id:'h2',name:'two',url:'url',type:'0'},
+                    {id:'h3',name:'three',url:'url',type:'1',child:[
+                        {id:'h31',parentId:'h31',title:'title1',content:[
+                            {id:'h311',name:'h31'},
+                            {id:'h312',name:'h31'},
+                            {id:'h313',name:'h31'},
+                            {id:'h314',name:'h31'}
+                        ]},
+                        {id:'h313',parentId:'h31',type:'1',title:'title2',content:[
+                            {id:'h3133',name:'h312'},
+                            {id:'h3144',name:'h313'}
+                        ]},
+                    ]}]
             };
         },
         computed: {
@@ -161,32 +158,103 @@
         },
         mounted(){
             let vm = this;
+            vm.verificationToken();
             if(vm.tabs.length == 0){
-                vm.activeTabName = 'first';
-                vm.tabs.push(vm.activeTabName);
+                let tab = {
+                    id:vm.menueList[0].child[0].id,
+                    name:vm.menueList[0].child[0].name,
+                    url:vm.menueList[0].child[0].url,
+                };
+                vm.nowPage = tab;
+                vm.tabs.push(tab);
+                vm.$router.push(tab.url);
             }
-            vm.$router.push("/home/first");
+            vm.openNames.push(vm.menueList[0].name);
         },
         methods: {
+            verificationToken(){
+                let vm = this;
+                let token = window.getCookie("token");
+                let userRole = window.getCookie("user_role");
+                vm.getUserInfo();
+                // if(token){
+                //     vm.$http.post(vm.server_auth+"/oauth/check_token?token="+token).then(function(data){
+                //         console.log(data);
+                //         vm.getUserInfo();
+                //     });
+                // }else{
+                //     vm.$router.push('/login')
+                // }
+            },
+            getUserInfo(){
+                let vm = this;
+                vm.$http.get(vm.server_auth+"/users/current").then(function(data){
+                    console.log(data);
+                    vm.userInfo = data.data.principal;
+                    vm.headMenueList[2].name = vm.userInfo.username;
+                }).catch(function (error) {
+                    vm.$Message.success('Error!');
+                    vm.$router.push('/login')
+                });
+            },
             toOtherPage (val) {
                 let vm = this;
-                //vm.$router.push("/"+val);
-                if(this.tabs.indexOf(val) == -1){
-                    this.tabs.push(val);
+                let isExit = false;
+                for(let tab of vm.tabs){
+                    if(tab.name == val ){
+                        isExit = true;
+                        vm.nowPage = {
+                            id:tab.id,
+                            name:tab.name,
+                            url:tab.url
+                        };
+                        break;
+                    }
                 }
-                this.activeTabName = val;
+                if(!isExit){
+                    for(let menue of vm.menueList){
+                        for(let ch of menue.child){
+                            if(ch.name == val){
+                                vm.nowPage = {
+                                    id:ch.id,
+                                    name:ch.name,
+                                    url:ch.url,
+                                };
+                                vm.tabs.push(vm.nowPage);
+                                break;
+                            }
+                        }
+                    }
+                }
+                vm.$router.push(vm.nowPage.url);
             },
             handleTabRemove (name) {
                 let vm = this;
                 let num = vm.tabs.indexOf(name);
-                if(vm.tabs.length == 1){
-                    return;
-                }else if(num != 0){
-                    vm.activeTabName = vm.tabs[num-1];
-                }else{
-                    vm.activeTabName = vm.tabs[num+1];
+                for(let n = 0; n < vm.tabs.length; n++){
+                    if(vm.tabs[n].name == name){
+                        num = n;
+                    }
+                }
+                if(vm.nowPage.name == name){
+                    if(vm.tabs.length == 1){
+                        return;
+                    }else if(num != 0){
+                        vm.nowPage = {
+                            id:vm.tabs[num-1].id,
+                            name:vm.tabs[num-1].name,
+                            url:vm.tabs[num-1].url
+                        };
+                    }else{
+                        vm.nowPage = {
+                            id:vm.tabs[num+1].id,
+                            name:vm.tabs[num+1].name,
+                            url:vm.tabs[num+1].url
+                        };
+                    }
                 }
                 vm.tabs.splice(num,1);
+                vm.$router.push(vm.nowPage.url);
             }
         }
     }
