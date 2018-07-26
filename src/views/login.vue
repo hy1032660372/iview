@@ -69,7 +69,6 @@
                                     +"&username="+data.username
                                     +"&password="+data.password;
                         vm.$http.post(vm.server_auth+"/oauth/token",paramsStr).then(function(response){
-                                console.log(response);
                                 //save token
                                 setCookie('token', response.data.access_token)
                                 setCookie('refresh_token', response.data.refresh_token)

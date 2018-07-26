@@ -26,8 +26,8 @@
         },
         methods:{
             next (val) {
-                debugger
-                this.$router.push("/home/first");
+                console.log("=======");
+
             },
         },
     }

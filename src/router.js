@@ -37,7 +37,7 @@ const routers = [{
         meta: {
             title: 'third'
         },
-        component: (resolve) => require(['./views/home/third.vue'], resolve)
+        component: (resolve) => require(['./views/home/permission.vue'], resolve)
     },{
         path: '*',
         name: 'error-404',
