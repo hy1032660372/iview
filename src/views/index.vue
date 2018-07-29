@@ -117,9 +117,9 @@
                 nowPage:{},
                 userInfo:{},
                 menuList: [{id:'1a',name:'system',url:'',child:[
-                        {id:'1-1',name:'user',url:'/home/first',parentId:'1'},
+                        {id:'1-1',name:'user',url:'/home/user',parentId:'1'},
                         {id:'1-2',name:'role',url:'/home/second',parentId:'1'},
-                        {id:'1-3',name:'permission',url:'/home/third',parentId:'1'},
+                        {id:'1-3',name:'permission',url:'/home/permission',parentId:'1'},
                         {id:'1-4',name:'forth',url:'/home/forth',parentId:'1'},
                     ]},{id:'2a',name:'secondParent',url:'',child:[
                         {id:'2-1',name:'fifth',url:'/home/first',parentId:'2'},

@@ -1,5 +1,5 @@
 <style scoped>
-    
+
 </style>
 <template>
     <div class="layout">
@@ -7,12 +7,10 @@
             <Breadcrumb :style="{margin: '16px 0'}">
                 <BreadcrumbItem>Home</BreadcrumbItem>
                 <BreadcrumbItem>Components</BreadcrumbItem>
-                <BreadcrumbItem>Layout111</BreadcrumbItem>
+                <BreadcrumbItem>Layout222</BreadcrumbItem>
             </Breadcrumb>
             <Card>
-                <div style="height: 600px;">Content111
-                    <Button @click="next">next</Button>
-                </div>
+                <div style="height: 600px;">Content2222</div>
             </Card>
         </Content>
     </div>
@@ -21,14 +19,8 @@
     export default {
         data () {
             return {
-                
-            };
-        },
-        methods:{
-            next (val) {
-                console.log("=======");
 
-            },
+            };
         },
     }
 </script>

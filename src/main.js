@@ -34,6 +34,7 @@ Vue.locale('en-US', mergeEN);
 
 Vue.prototype.$http = axios
 Vue.prototype.server_auth = "/auth"
+Vue.prototype.server_account = "/account"
 
 // 添加请求拦截器
 axios.interceptors.request.use(function (config) {

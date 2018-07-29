@@ -47,6 +47,13 @@ module.exports = merge(webpackBaseConfig, {
                 pathRewrite: {'^/auth' : '/auth'},
                 changeOrigin: true,
                 secure: false
+            },
+            '/account': {
+                target: 'http://localhost:8084',
+                //路径重写
+                pathRewrite: {'^/account' : '/account'},
+                changeOrigin: true,
+                secure: false
             }
         }
     }
