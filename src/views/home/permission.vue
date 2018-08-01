@@ -25,9 +25,9 @@
                                         {{currentRole.title}}
                                     </Col>
                                     <Col style="float:right">
-                                        <Button type="primary" @click="AddUserModel=true">Config Permission</Button>
-                                        <Button type="primary" @click="AddUserModel=true">Add User</Button>
-                                        <Button type="primary" @click="AddRoleModel=true">Add Role</Button>
+                                        <Button type="primary" @click="configPermissionModel=true">Config Permission</Button>
+                                        <Button type="primary" @click="addUserModel=true">Add User</Button>
+                                        <Button type="primary" @click="addRoleModel=true">Add Role</Button>
                                     </Col>
                                 </Row>
                                 <Table :columns="columnsList" :data="selectDataList"></Table>
@@ -38,7 +38,7 @@
             </div>
         </Content>
         <Modal
-            v-model="AddUserModel"
+            v-model="addUserModel"
             title="Add User"
             @on-ok="saveUser"
             @on-cancel="cancel">
@@ -52,7 +52,7 @@
             </Form>
         </Modal>
         <Modal
-            v-model="AddRoleModel"
+            v-model="addRoleModel"
             title="Add Role"
             @on-ok="saveRole"
             @on-cancel="cancel">
@@ -61,6 +61,13 @@
                     <Input v-model="formRight.title"></Input>
                 </FormItem>
             </Form>
+        </Modal>
+        <Modal
+            v-model="configPermissionModel"
+            title="Config Permission"
+            @on-ok="savePermission"
+            @on-cancel="cancel">
+            <Tree :data="permissionsData" show-checkbox></Tree>
         </Modal>
     </div>
 </template>
@@ -91,6 +98,25 @@
                      }]
                     }
                 ],
+                permissionsData: [{
+                    title: 'parent 1',
+                    expand: true,
+                    children: [{
+                        title: 'parent 1-1',
+                        expand: true,
+                        children: [
+                            {title: 'leaf 1-1-1'},
+                            {title: 'leaf 1-1-2'}]
+                        },{
+                            title: 'parent 1-2',
+                            expand: true,
+                            children: [
+                                {title: 'leaf 1-2-1'},
+                                {title: 'leaf 1-2-1'}
+                            ]
+                        }
+                    ]}
+                 ],
                 columnsList:[
                     {title: 'username',key: 'username'},
                     {title: 'age',key: 'age'},
@@ -103,8 +129,9 @@
                     {username:"ddd",age:"26",role:"122"},
                 ],
                 selectDataList:[],
-                AddUserModel:false,
-                AddRoleModel:false,
+                addUserModel:false,
+                addRoleModel:false,
+                configPermissionModel:false,
                 formLeft: {
                     username: '',
                     age: '',
@@ -127,9 +154,11 @@
         methods:{
             onSelectChange(data){
                 let vm = this;
-                vm.selectDataList = [];
-                vm.currentRole = data[0];
-                vm.getUserList();
+                if(data.length != 0){
+                    vm.selectDataList = [];
+                    vm.currentRole = data[0];
+                    vm.getUserList();
+                }
             },
             getUserList(){
                 let vm = this;
@@ -152,7 +181,10 @@
                 vm.formRight.code = vm.currentRole.code+children.length;
                 vm.formRight.expand = true;
                 children.push(_.cloneDeep(vm.formRight));
-                this.$set(vm.currentRole, 'children', children);
+                vm.$set(vm.currentRole, 'children', children);
+            },
+            savePermission(){
+                let vm = this;
             },
             cancel(){
             }
