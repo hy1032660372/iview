@@ -35,35 +35,37 @@
                 width="750"
                 v-model="addUserModal"
                 title="New User"
-                @on-ok="ok"
+                @on-ok="save('formItem')"
                 @on-cancel="cancel">
-            <Form :model="formItem" :label-width="80">
-                <FormItem label="Username">
+            <Form ref="formItem" :model="formItem" :rules="ruleCustom" :label-width="80" >
+                <FormItem label="Username" prop="username">
                     <Input v-model="formItem.username" placeholder="Enter username..."></Input>
                 </FormItem>
-                <FormItem label="Age">
+                <FormItem label="Password" prop="password">
+                    <Input v-model="formItem.password" placeholder="Enter password..."></Input>
+                </FormItem>
+                <FormItem label="Confirm" prop="passwdCheck">
+                    <Input type="password" v-model="formItem.passwdCheck" placeholder="Confirm password..."></Input>
+                </FormItem>
+                <FormItem label="Age" prop="age">
                     <Input v-model="formItem.age" placeholder="Enter age..."></Input>
                 </FormItem>
-                <FormItem label="Radio">
+                <FormItem label="Sex" prop="sex">
                     <RadioGroup v-model="formItem.radio">
                         <Radio label="male">Male</Radio>
                         <Radio label="female">Female</Radio>
                     </RadioGroup>
                 </FormItem>
-                <FormItem label="Checkbox">
+                <FormItem label="Roles" prop="role">
                     <CheckboxGroup v-model="formItem.checkbox">
                         <Checkbox v-for="role in roleList" :key="role.id" :label="role.id">{{role.roleName}}</Checkbox>
                     </CheckboxGroup>
                 </FormItem>
-                <FormItem label="Switch">
+                <FormItem label="Active" prop="active">
                     <i-switch v-model="formItem.switch" size="large">
                         <span slot="open">On</span>
                         <span slot="close">Off</span>
                     </i-switch>
-                </FormItem>
-                <FormItem>
-                    <Button type="primary">Submit</Button>
-                    <Button style="margin-left: 8px">Cancel</Button>
                 </FormItem>
             </Form>
         </Modal>
@@ -72,17 +74,48 @@
 <script>
     export default {
         data () {
+            const validatePass = (rule, value, callback) => {
+                if (value === '') {
+                    callback(new Error('Please enter your password'));
+                } else {
+                    if (this.formItem.passwdCheck !== '') {
+                        // 对第二个密码框单独验证
+                        this.$refs.formItem.validateField('passwdCheck');
+                    }
+                    callback();
+                }
+            };
+            const validatePassCheck = (rule, value, callback) => {
+                if (value === '') {
+                    callback(new Error('Please enter your password again'));
+                } else if (value !== this.formItem.password) {
+                    callback(new Error('The two input passwords do not match!'));
+                } else {
+                    callback();
+                }
+            };
             return {
+                ruleCustom: {
+                    username:[
+                        { required: true, trigger: 'blur' }
+                    ],
+                    password: [
+                        { required: true, validator: validatePass, trigger: 'blur' }
+                    ],
+                    passwdCheck: [
+                        { required: true, validator: validatePassCheck, trigger: 'blur' }
+                    ],
+                    age: [
+                        { required: true, trigger: 'blur' }
+                    ]
+                },
                 formItem: {
                     username: '',
+                    password:'',
                     age: '',
                     userRole: 'male',
                     checkbox: [],
                     switch: true,
-                    date: '',
-                    time: '',
-                    slider: [20, 50],
-                    textarea: ''
                 },
                 addUserModal: false,
                 columns1: [{
@@ -137,10 +170,10 @@
         },
         mounted(){
             let vm = this;
-            vm.GetUser();
+            vm.getUser();
         },
         methods:{
-            GetUser(){
+            getUser(){
                 let vm = this;
                 vm.$http.get(vm.server_account+"/accounts",{params:vm.pageQuery}).then(function(data){
                     vm.userList = data.data.data.aaData;
@@ -157,8 +190,18 @@
                 vm.addUserModal = true;
                 vm.getUserRole();
             },
-            ok () {
-                this.$Message.info('Clicked ok');
+            save (formItem) {
+                let vm = this;
+                vm.$refs[formItem].validate((valid) => {
+                    if (valid) {
+                        vm.$http.post(vm.server_account+"/accounts/insertAccount",vm.formItem).then(function(data){
+                            vm.userList = data.data.data.aaData;
+                        });
+                        vm.$Message.success('Success!');
+                    } else {
+                        vm.$Message.error('Fail!');
+                    }
+                });
             },
             cancel () {
                 this.$Message.info('Clicked cancel');
