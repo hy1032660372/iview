@@ -1,66 +1,73 @@
 <style scoped>
-    .layout{
-        border: 1px solid #d7dde4;
-        background: #f5f7f9;
-        position: relative;
-        border-radius: 4px;
-        overflow: hidden;
-    }
-    .layout-header-bar{
-        background: #fff;
-        box-shadow: 0 1px 1px rgba(0,0,0,.1);
-    }
+
 </style>
 <template>
     <div class="layout">
         <Content :style="{padding: '0px 16px 16px'}">
             <Breadcrumb :style="{margin: '16px 0'}">
-                <BreadcrumbItem>SYSTEM</BreadcrumbItem>
-                <BreadcrumbItem>ROLES</BreadcrumbItem>
+                <BreadcrumbItem>Home</BreadcrumbItem>
+                <BreadcrumbItem>Components</BreadcrumbItem>
             </Breadcrumb>
-            <div>
-                <Card>
-                    <div style="height: 600px;">
-                        <Col span="6">
-                            <div style="background:#eee;padding: 20px">
-                                <Card :bordered="false">
-                                    <Tree :data="data1"></Tree>
-                                </Card>
-                            </div>
-                        </Col>
-                        <Col span="18">
-                            <Row style="margin-bottom: 10px;">
-                                <Col span="6">
-                                    <Button type="primary" @click="addRole">New Role</Button>
-                                </Col>
-                                <Col span="6" offset="12">
-                                    <Input v-model="pageQuery.filter">
-                                    <Button slot="append" icon="ios-search"></Button>
-                                    </Input>
-                                </Col>
-                            </Row>
-                            <Table border :columns="RoleTableColumns" :data="userList"></Table>
-                            <Row style="margin-top: 10px;">
-                                <Col span="12" offset="8">
-                                    <Page :total="40" size="small" show-elevator show-sizer />
-                                </Col>
-                            </Row>
-                        </Col>
-                    </div>
-                </Card>
+            <div style="height: 600px;">
+                <Row>
+                    <Col span="6">
+                        <div style="background:#eee;padding: 20px 10px 20px 20px">
+                            <Card :bordered="false">
+                                <Tree :data="roleData" @on-select-change="onSelectChange"></Tree>
+                            </Card>
+                        </div>
+                    </Col>
+                    <Col span="18">
+                        <div style="background:#eee;padding: 20px 20px 20px 10px">
+                            <Card :bordered="false">
+                                <Row style="padding-bottom: 20px">
+                                    <Col span="8">
+                                        {{currentRole.title}}
+                                    </Col>
+                                    <Col style="float:right">
+                                        <Button type="primary" @click="configPermissionModel=true">Config Permission</Button>
+                                        <Button type="primary" @click="addUserModel=true">Add User</Button>
+                                        <Button type="primary" @click="addRoleModel=true">Add Role</Button>
+                                    </Col>
+                                </Row>
+                                <Table :columns="columnsList" :data="selectDataList"></Table>
+                            </Card>
+                        </div>
+                    </Col>
+                </Row>
             </div>
         </Content>
         <Modal
-                width="750"
-                v-model="addRoleModal"
-                title="New Role"
-                @on-ok="ok"
+                v-model="addUserModel"
+                title="Add User"
+                @on-ok="saveUser"
                 @on-cancel="cancel">
-            <Form :model="formItem" :label-width="80">
-                <FormItem label="RoleName" >
-                    <Input v-model="formItem.roleName" placeholder="Enter roleName..."></Input>
+            <Form :model="formLeft" label-position="left" :label-width="100">
+                <FormItem label="username">
+                    <Input v-model="formLeft.username"></Input>
+                </FormItem>
+                <FormItem label="age">
+                    <Input v-model="formLeft.age"></Input>
                 </FormItem>
             </Form>
+        </Modal>
+        <Modal
+                v-model="addRoleModel"
+                title="Add Role"
+                @on-ok="saveRole"
+                @on-cancel="cancel">
+            <Form :model="formRight" label-position="right" :label-width="100">
+                <FormItem label="Title">
+                    <Input v-model="formRight.title"></Input>
+                </FormItem>
+            </Form>
+        </Modal>
+        <Modal
+                v-model="configPermissionModel"
+                title="Config Permission"
+                @on-ok="savePermission"
+                @on-cancel="cancel">
+            <Tree :data="permissionsData" show-checkbox></Tree>
         </Modal>
     </div>
 </template>
@@ -68,115 +75,127 @@
     export default {
         data () {
             return {
-                formItem: {
-                    roleName: '',
-                },
-                addRoleModal: false,
-                RoleTableColumns: [{
-                    title: 'roleName',
-                },{
-                    title: 'Action',
-                    key: 'action',
-                    width: 150,
-                    align: 'center',
-                    render: (h, params) => {
-                        return h('div', [
-                            h('Button', {
-                                props: {
-                                    type: 'primary',
-                                    size: 'small'
-                                },
-                                style: {
-                                    marginRight: '5px'
-                                },
-                                on: {
-                                    click: () => {
-                                        this.show(params.index)
-                                    }
-                                }
-                            }, 'View'),
-                            h('Button', {
-                                props: {
-                                    type: 'error',
-                                    size: 'small'
-                                },
-                                on: {
-                                    click: () => {
-                                        this.remove(params.index)
-                                    }
-                                }
-                            }, 'Delete')
-                        ]);
-                    }
-                }],
-                userList: [],
-                roleList:[],
-                pageQuery:{
-                    page: 0,
-                    size: 0,
-                    filter: ""
-                },
-                data1: [
-                    {
-                        title: 'parent 1',
+                roleData: [{
+                    title: 'parent 1',
+                    code:'1',
+                    expand: true,
+                    children: [{
+                        title: 'parent 1-1',
+                        code:'11',
                         expand: true,
                         children: [
-                            {
-                                title: 'parent 1-1',
-                                expand: true,
-                                children: [
-                                    {
-                                        title: 'leaf 1-1-1'
-                                    },
-                                    {
-                                        title: 'leaf 1-1-2'
-                                    }
-                                ]
-                            },
-                            {
-                                title: 'parent 1-2',
-                                expand: true,
-                                children: [
-                                    {
-                                        title: 'leaf 1-2-1'
-                                    },
-                                    {
-                                        title: 'leaf 1-2-1'
-                                    }
-                                ]
-                            }
+                            {title: 'leaf 1-1-1',code:'111',},
+                            {title: 'leaf 1-1-2',code:'112'}
+                        ]
+                    },{
+                        title: 'parent 1-2',
+                        code:'12',
+                        expand: true,
+                        children: [
+                            {title: 'leaf 1-2-1',code:'121'},
+                            {title: 'leaf 1-2-2',code:'122'}
+                        ]
+                    }]
+                }
+                ],
+                permissionsData: [{
+                    title: 'parent 1',
+                    expand: true,
+                    children: [{
+                        title: 'parent 1-1',
+                        expand: true,
+                        children: [
+                            {title: 'leaf 1-1-1'},
+                            {title: 'leaf 1-1-2'}]
+                    },{
+                        title: 'parent 1-2',
+                        expand: true,
+                        children: [
+                            {title: 'leaf 1-2-1'},
+                            {title: 'leaf 1-2-1'}
                         ]
                     }
-                ]
-            }
+                    ]}
+                ],
+                columnsList:[
+                    {title: 'username',key: 'username'},
+                    {title: 'age',key: 'age'},
+                    {title: 'role',key: 'role'}
+                ],
+                dataList:[
+                    {username:"aaa",age:"21",role:"1"},
+                    {username:"bbb",age:"22",role:"11"},
+                    {username:"ccc",age:"24",role:"11"},
+                    {username:"ddd",age:"26",role:"122"},
+                ],
+                selectDataList:[],
+                addUserModel:false,
+                addRoleModel:false,
+                configPermissionModel:false,
+                formLeft: {
+                    username: '',
+                    age: '',
+                    role: ''
+                },
+                formRight: {
+                    code: '',
+                    title: '',
+                    expand: true,
+                    children:[]
+                },
+                currentRole:{}
+            };
         },
         mounted(){
             let vm = this;
-            vm.getRoleList();
+            vm.getPermission();
+            vm.currentRole = vm.roleData[0];
+            vm.getUserList();
         },
         methods:{
-            getRoleList(){
+            onSelectChange(data){
                 let vm = this;
-                vm.$http.get(vm.server_account+"/accounts",{params:vm.pageQuery}).then(function(data){
-                    vm.userList = data.data.data.aaData;
+                if(data.length != 0){
+                    vm.selectDataList = [];
+                    vm.currentRole = data[0];
+                    vm.getUserList();
+                }
+            },
+            getPermission(){
+                let vm = this;
+                vm.$http.get(vm.server_account+"/accounts/getUserRoleList").then(function(data){
+                    vm.roleData = data.data.data;
+                    console.log(vm.roleData);
                 });
             },
-            show (index) {
-                this.$Modal.info({
-                    title: 'User Info',
-                    content: `Name：${this.userList[index].username}<br>Age：${this.userList[index].age}`
-                })
-            },
-            addRole(){
+            getUserList(){
                 let vm = this;
-                vm.addRoleModal = true;
+                vm.selectDataList = [];
+                _.each(vm.dataList,function(user){
+                    if(vm.currentRole.code == user.role){
+                        vm.selectDataList.push(user);
+                    }
+                });
             },
-            ok () {
-                this.$Message.info('Clicked ok');
+            saveUser(){
+                let vm = this;
+                vm.formLeft.role = vm.currentRole.code;
+                vm.dataList.push(vm.formLeft);
+                vm.getUserList();
             },
-            cancel () {
-                this.$Message.info('Clicked cancel');
+            saveRole(){
+                let vm = this;
+                let children = vm.currentRole.children || [];
+                vm.formRight.code = vm.currentRole.code+children.length;
+                vm.formRight.expand = true;
+                children.push(_.cloneDeep(vm.formRight));
+                vm.$set(vm.currentRole, 'children', children);
             },
-        }
+            savePermission(){
+                let vm = this;
+            },
+            cancel(){
+            }
+        },
     }
 </script>
