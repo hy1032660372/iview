@@ -1,17 +1,3 @@
-.idea
-.idea/
-.DS_Store
-node_modules/
-.project
-dist
-dist/*
-src/config/*.tmp
-src/config/env.js
-npm-debug.log
-.babelrc
-.editorconfig
-.eslintignore
-.eslintrc.json
 *.class
 
 # Mobile Tools for Java (J2ME)
@@ -139,8 +125,4 @@ npm-debug.log
 
 /.idea
 /logs
-as-hy-iview/node_modules/
-spring-cloud-account/target/
-spring-cloud-auth/target/
-spring-cloud-eureka-server-ha/target/
-spring-cloud-wish/target/
+

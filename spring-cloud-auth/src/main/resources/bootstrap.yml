@@ -1,0 +1,58 @@
+spring:
+  application:
+    name: spring-cloud-auth
+#    instance-id: ${random.int[10000,19999]}
+  datasource:
+    url: jdbc:mysql://localhost:3306/spring_boot_test?useSSL=false
+    username: root
+    password: ashy1992
+    driver-class-name: com.mysql.jdbc.Driver
+info:
+  app:
+    name: ${spring.application.name}
+
+server:
+  context-path: /auth
+  port: 8083
+
+
+eureka:
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${spring.cloud.client.ipAddress}:${spring.application.instance-id:${server.port:8083}}
+    lease-renewal-interval-in-seconds: 15
+    lease-expiration-duration-in-seconds: 30
+    health-check-url-path: ${server.context-path}/health
+    status-page-url-path: ${server.context-path}/info
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+security:
+  oauth2:
+    resource:
+      filter-order: 3
+
+mybatis:
+  mapper-locations: classpath*:mapper/*Mapper.xml
+
+
+#security:
+#  oauth2:
+#    resource:
+#      filter-order: 3
+#    client:
+#      client-id: myauth
+#      client-secret: myauth123
+#security:
+##  user:
+##    password: 2333
+#  basic:
+#    enabled: false
+#  ignored: /**
+
+#security:
+#  basic:
+#    enabled: false
+#  ignored: /**
+
+

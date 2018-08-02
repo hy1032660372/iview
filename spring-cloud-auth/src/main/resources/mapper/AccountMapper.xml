@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hy.spring.cloud.auth.mapper.UserMapper">
+
+    <!--UserInfo-->
+    <resultMap id="configDivideClassMap" type="com.hy.spring.cloud.auth.domain.User">
+        <id property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="password" column="password"/>
+        <collection property="userRole" ofType="java.lang.String" javaType="java.util.ArrayList">
+            <id property="userRole" column="userRole" />
+        </collection>
+    </resultMap>
+
+    <select id="checkUserLogin" parameterType="java.lang.String" resultMap="configDivideClassMap">
+        SELECT
+          t.id as id,
+          t.username as username,
+          t.password as "password",
+          t.age as age,
+          r.id as userRole
+        FROM sys_account t
+        LEFT JOIN account_role ar ON t.id = ar.account_id
+        LEFT JOIN sys_role r on ar.role_id = r.id
+        WHERE t.username = #{username}
+    </select>
+
+    <select id="getPermissions" parameterType="java.util.List" resultType="java.lang.String">
+        SELECT
+          m.permission_code
+        FROM role_permission t
+        LEFT JOIN sys_permission m ON m.id = t.permission_id
+        WHERE t.role_id in
+        <foreach collection="userRoleList" open="(" close=")" separator="," index="index" item="item">
+            #{item}
+        </foreach>
+    </select>
+</mapper>

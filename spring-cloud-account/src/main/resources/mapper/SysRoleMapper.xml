@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hy.spring.cloud.account.mapper.SysRoleMapper">
+    <select id="getUserRoleList" resultType="com.hy.spring.cloud.account.domain.SysRoleImpl">
+        SELECT
+          t.id as id,
+          t.title as title,
+          t.code as code,
+          t.expand as expand,
+          t.parent_code as parentCode
+        FROM sys_role t
+    </select>
+
+    <insert id="insertUserRole" parameterType="com.hy.spring.cloud.account.domain.SysRole">
+        insert into  sys_role
+        (
+            id,
+            title,
+            code,
+            expand,
+            parent_code
+        )
+        VALUES
+        (
+            #{id},
+            #{title},
+            #{code},
+            #{expand},
+            #{parentCode}
+        )
+    </insert>
+</mapper>

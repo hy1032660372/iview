@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hy.spring.cloud.wish.mapper.WishMapper">
+
+    <select id="queryList" parameterType="java.util.Map" resultType="com.hy.spring.cloud.wish.domain.Wish">
+        SELECT
+          w.id as id,
+          w.name as name,
+          w.uid as uid,
+          w.status as status,
+          w.color as color,
+          w.add_time as addTime,
+          w.content as content,
+          w.position_left as positionLeft,
+          w.position_top as positionTop
+        FROM wish w
+        ORDER BY w.add_time
+        limit 0,20
+    </select>
+
+    <!--生成新许愿-->
+    <insert id="saveWish" parameterType="com.hy.spring.cloud.wish.domain.Wish">
+        INSERT INTO wish
+        (
+            id,
+            name,
+            uid,
+            status,
+            color,
+            add_time,
+            content,
+            position_top,
+            position_left
+        )
+        VALUES
+        (
+            #{id},
+            #{name},
+            #{uid},
+            #{status},
+            #{color},
+            #{addTime},
+            #{content},
+            #{positionTop},
+            #{positionLeft}
+        )
+    </insert>
+
+    <!--删除-->
+    <delete id="removeWish" parameterType="java.util.Map">
+        DELETE FROM wish
+        <where>
+            <if test="id != null and id != ''">
+                id = #{id}
+            </if>
+            <if test="ids != null and ids.size()>0 ">
+                OR id IN
+                <foreach collection="ids" open="(" close=")" separator="," index="index" item="item">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+    </delete>
+
+</mapper>
