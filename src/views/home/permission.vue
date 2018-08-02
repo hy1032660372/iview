@@ -30,7 +30,7 @@
                                         <Button type="primary" @click="addRoleModel=true">Add Role</Button>
                                     </Col>
                                 </Row>
-                                <Table :columns="columnsList" :data="selectDataList"></Table>
+                                <Table :columns="columnsList" :data="userList"></Table>
                             </Card>
                         </div>
                     </Col>
@@ -75,29 +75,8 @@
     export default {
         data () {
             return {
-                roleData: [{
-                    title: 'parent 1',
-                    code:'1',
-                    expand: true,
-                    children: [{
-                        title: 'parent 1-1',
-                        code:'11',
-                        expand: true,
-                        children: [
-                            {title: 'leaf 1-1-1',code:'111',},
-                            {title: 'leaf 1-1-2',code:'112'}
-                        ]
-                    },{
-                        title: 'parent 1-2',
-                        code:'12',
-                        expand: true,
-                        children: [
-                            {title: 'leaf 1-2-1',code:'121'},
-                            {title: 'leaf 1-2-2',code:'122'}
-                        ]
-                    }]
-                }
-                ],
+                roleData: [],
+                userList:[],
                 permissionsData: [{
                     title: 'parent 1',
                     expand: true,
@@ -122,13 +101,6 @@
                     {title: 'age',key: 'age'},
                     {title: 'role',key: 'role'}
                 ],
-                dataList:[
-                    {username:"aaa",age:"21",role:"1"},
-                    {username:"bbb",age:"22",role:"11"},
-                    {username:"ccc",age:"24",role:"11"},
-                    {username:"ddd",age:"26",role:"122"},
-                ],
-                selectDataList:[],
                 addUserModel:false,
                 addRoleModel:false,
                 configPermissionModel:false,
@@ -143,44 +115,46 @@
                     expand: true,
                     children:[]
                 },
-                currentRole:{}
+                currentRole:{},
+                pageQuery:{
+                    page: 0,
+                    size: 0,
+                    filter: ""
+                }
             };
         },
         mounted(){
             let vm = this;
-            vm.getPermission();
-            vm.currentRole = vm.roleData[0];
-            vm.getUserList();
+            vm.getRoleList();
         },
         methods:{
             onSelectChange(data){
                 let vm = this;
                 if(data.length != 0){
-                    vm.selectDataList = [];
                     vm.currentRole = data[0];
                     vm.getUserList();
                 }
             },
-            getPermission(){
+            getRoleList(){
                 let vm = this;
-                vm.$http.get(vm.server_account+"/accounts/getUserRoleList").then(function(data){
-                    vm.roleData = data.data.data;
-                    console.log(vm.roleData);
+                vm.$http.get(vm.server_account+"/accounts/getUserRoleList").then(function(response){
+                    vm.roleData = [];
+                    vm.roleData.push(response.data.data);
+                    vm.currentRole = vm.roleData[0];
+                    vm.getUserList();
                 });
             },
             getUserList(){
                 let vm = this;
-                vm.selectDataList = [];
-                _.each(vm.dataList,function(user){
-                    if(vm.currentRole.code == user.role){
-                        vm.selectDataList.push(user);
-                    }
+                vm.pageQuery.filter = vm.currentRole.id
+                vm.$http.get(vm.server_account+"/accounts",{params:vm.pageQuery}).then(function(data){
+                    vm.userList = data.data.data.aaData;
+                    console.log(vm.userList);
                 });
             },
             saveUser(){
                 let vm = this;
                 vm.formLeft.role = vm.currentRole.code;
-                vm.dataList.push(vm.formLeft);
                 vm.getUserList();
             },
             saveRole(){
