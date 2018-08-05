@@ -60,6 +60,15 @@
                 },
             }
         },
+        mounted(){
+            let vm = this;
+            vm.$Message.info("success");
+            if(this.$cookies.isKey("iView-token")){
+                vm.$http.post(vm.server_auth+"/oauth/check_token?token="+vm.$cookies.get("iView-token")).then(function(data){
+                    vm.$router.push("/home");
+                });
+            }
+        },
         methods: {
             handleSubmit(name) {
                 let vm = this;
@@ -79,8 +88,8 @@
                                     +"&password="+data.password;
                         vm.$http.post(vm.server_auth+"/oauth/token",paramsStr).then(function(response) {
                             //save token
-                            window.setCookie('iView-token', response.data.access_token)
-                            window.setCookie('refresh_token', response.data.refresh_token)
+                            vm.$cookies.set("iView-token",response.data.access_token,"1d");
+                            vm.$cookies.set("refresh_iView-token",response.data.refresh_token,"1d");
                             sessionStorage.setItem("token_key", response.data.access_token);
                             vm.$router.push("/home");
                         }).catch(function (error) {

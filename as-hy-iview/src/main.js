@@ -7,6 +7,7 @@ import Util from './libs/util';
 import App from './app.vue';
 import axios from 'axios';
 import 'iview/dist/styles/iview.css';
+import VueCookies from 'vue-cookies'
 
 import VueI18n from 'vue-i18n';
 import Locales from './locale';
@@ -17,6 +18,7 @@ Vue.use(VueRouter);
 Vue.use(Vuex);
 Vue.use(VueI18n);
 Vue.use(iView);
+Vue.use(VueCookies);
 
 // 自动设置语言
 const navLang = navigator.language;
@@ -41,8 +43,8 @@ Vue.prototype.server_account = "/account"
 axios.interceptors.request.use(function (config) {
     // 在发送请求之前做些什么
     if("/auth/oauth/token" != config.url){
-        let token = window.getCookie("iView-token");
-        let userRole = window.getCookie("user_role");
+        let token = $cookies.get("iView-token");
+        let userRole = $cookies.get("user_role");
         if(token){
             config.headers['Authorization'] = 'bearer '+ token;
         }
@@ -79,21 +81,6 @@ router.afterEach(() => {
     iView.LoadingBar.finish();
     window.scrollTo(0, 0);
 });
-
-window.setCookie = function (name, value) {
-    let Days = 30
-    let exp = new Date()
-    exp.setTime(exp.getTime() + Days * 24 * 60 * 60 * 1000)
-    document.cookie = name + "=" + escape(value) + ";expires=" + exp.toGMTString()
-}
-window.getCookie = function (name) {
-    var arr = [],
-        reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)")
-    if (arr = document.cookie.match(reg))
-        return unescape(arr[2])
-    else
-        return null
-}
 
 const store = new Vuex.Store({
     state: {

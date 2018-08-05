@@ -52,7 +52,7 @@
 <template>
     <div class="layout">
         <Layout>
-            <Menu mode="horizontal" theme="dark" active-name="1" :style="{position:'fixed', width: '100%',zIndex:'9999'}">
+            <Menu mode="horizontal" theme="dark" active-name="1" :style="{position:'fixed', width: '100%',zIndex:'9999'}" @on-select="headMenuClick">
                 <div class="layout-logo"></div>
                 <div class="layout-nav">
                     <MenuItem name="1">
@@ -60,19 +60,19 @@
                     </MenuItem>
                 </div>
                 <div class="layout-nav-right">
-                    <MenuItem v-for="headMenu in headMenuList" :key="headMenu.id" :name="headMenu.name">
+                    <MenuItem v-for="headMenu in headMenuList" :key="headMenu.id" :name="headMenu.id">
                         <span v-if="headMenu.type=='0'">
                             <Icon type="ios-people"></Icon>
                             {{headMenu.name}}
                         </span>
                         <span v-else-if="headMenu.type=='1'">
-                            <Submenu :name="headMenu.name">
+                            <Submenu :name="headMenu.id">
                                 <template slot="title">
                                     <Icon type="stats-bars"></Icon>
                                     {{headMenu.name}}
                                 </template>
                                 <MenuGroup v-for="con in headMenu.child" :key="con.id" :title="con.title">
-                                    <MenuItem v-for="c in con.content" :key="c.id" :name="c.name">{{c.name}}</MenuItem>
+                                    <MenuItem v-for="c in con.content" :key="c.id" :name="c.id">{{c.name}}</MenuItem>
                                 </MenuGroup>
                             </Submenu>
                         </span>
@@ -81,27 +81,18 @@
             </Menu>
             <Layout :style="{padding: '60px 0 0 0',minHeight: '100vh'}">
                 <Sider collapsible :collapsed-width="100" v-model="isCollapsed">
-                    <Menu :active-name="nowPage.name" theme="dark" width="auto" :open-names="openNames" :class="menuItemClasses" @on-select="toOtherPage">
-                        <Submenu v-for="(menu) in menuList" :key="menu.id" :name="menu.name">
+                    <Menu :active-name="nowPage.name" theme="dark" width="auto" :class="menuItemClasses" active-name="activeName" @on-select="toOtherPage">
+                        <Submenu v-for="menu in menuList" :key="menu.id" :name="menu.id">
                             <template slot="title">
                                 <Icon type="ios-navigate"></Icon>
                                 <span>{{menu.name}}</span>
                             </template>
-                            <MenuItem v-for='(ch,index) in menu.child' :key='ch.id' :name="ch.name"><span>{{ch.name}}</span>{{index}}</MenuItem>
+                            <MenuItem v-for='(ch,index) in menu.child' :key='ch.id' :name="ch.id"><span>{{ch.name}}</span>{{index}}</MenuItem>
                         </Submenu>
                     </Menu>
                 </Sider>
                 <Content style="height:100%">
                     <router-view></router-view>
-                    <!--<Row>
-                        <Col span="24" class="demo-tabs-style1" style="background: #e3e8ee;padding:16px;">
-                            <Tabs type="card" :closable='tabs.length>1' @on-tab-remove="handleTabRemove" @on-click="toOtherPage" :value="nowPage.name">
-                                <TabPane v-for="tab in tabs" :key="tab.id" :label="tab.name" :name="tab.name">
-
-                                </TabPane>
-                            </Tabs>
-                        </Col>
-                    </Row>-->
                 </Content>
             </Layout>
         </Layout>
@@ -112,8 +103,6 @@
         data () {
             return {
                 isCollapsed: false,
-                tabs:[],
-                openNames:[],
                 nowPage:{},
                 userInfo:{},
                 menuList: [{id:'1a',name:'system',url:'',child:[
@@ -142,9 +131,9 @@
                             {id:'h313',name:'h31'},
                             {id:'h314',name:'h31'}
                         ]},
-                        {id:'h313',parentId:'h31',type:'1',title:'title2',content:[
+                        {id:'h313',parentId:'h31',type:'1',title:'System',content:[
                             {id:'h3133',name:'h312'},
-                            {id:'h3144',name:'h313'}
+                            {id:'h3144',name:'Logout'}
                         ]},
                     ]}]
             };
@@ -159,24 +148,13 @@
         },
         mounted(){
             let vm = this;
-            vm.verificationToken();
-            if(vm.tabs.length == 0){
-                let tab = {
-                    id:vm.menuList[0].child[0].id,
-                    name:vm.menuList[0].child[0].name,
-                    url:vm.menuList[0].child[0].url,
-                };
-                vm.nowPage = tab;
-                vm.tabs.push(tab);
-                vm.$router.push(tab.url);
-            }
-            vm.openNames.push(vm.menuList[0].name);
+            vm.$Message.info("success");
         },
         methods: {
             verificationToken(){
                 let vm = this;
-                let token = window.getCookie("iView-token");
-                let userRole = window.getCookie("user_role");
+                let token = vm.$cookies.get("iView-token");
+                let userRole = vm.$cookies.get("user_role");
                 if(token){
                     vm.$http.post(vm.server_auth+"/oauth/check_token?token="+token).then(function(data){
                         vm.getUserInfo();
@@ -199,9 +177,10 @@
             toOtherPage(val){
                 let vm = this;
                 let isGet = false;
+                //vm.activeName = val;
                 for(let menu of vm.menuList){
                     for(let ch of menu.child){
-                        if(ch.name == val){
+                        if(ch.id == val){
                             vm.nowPage = {
                                 id:ch.id,
                                 name:ch.name,
@@ -217,65 +196,14 @@
                 }
                 vm.$router.push(vm.nowPage.url);
             },
-            /*toOtherPage (val) {
-                let vm = this;
-                let isExit = false;
-                for(let tab of vm.tabs){
-                    if(tab.name == val ){
-                        isExit = true;
-                        vm.nowPage = {
-                            id:tab.id,
-                            name:tab.name,
-                            url:tab.url
-                        };
-                        break;
-                    }
-                }
-                if(!isExit){
-                    for(let menue of vm.menueList){
-                        for(let ch of menue.child){
-                            if(ch.name == val){
-                                vm.nowPage = {
-                                    id:ch.id,
-                                    name:ch.name,
-                                    url:ch.url,
-                                };
-                                vm.tabs.push(vm.nowPage);
-                                break;
-                            }
-                        }
-                    }
-                }
-                vm.$router.push(vm.nowPage.url);
-            },*/
-            /*handleTabRemove (name) {
-                let vm = this;
-                let num = vm.tabs.indexOf(name);
-                for(let n = 0; n < vm.tabs.length; n++){
-                    if(vm.tabs[n].name == name){
-                        num = n;
-                    }
-                }
-                if(vm.nowPage.name == name){
-                    if(vm.tabs.length == 1){
-                        return;
-                    }else if(num != 0){
-                        vm.nowPage = {
-                            id:vm.tabs[num-1].id,
-                            name:vm.tabs[num-1].name,
-                            url:vm.tabs[num-1].url
-                        };
-                    }else{
-                        vm.nowPage = {
-                            id:vm.tabs[num+1].id,
-                            name:vm.tabs[num+1].name,
-                            url:vm.tabs[num+1].url
-                        };
-                    }
-                }
-                vm.tabs.splice(num,1);
-                vm.$router.push(vm.nowPage.url);
-            }*/
+            headMenuClick(data){
+                console.log(data);
+            }
+        },
+        beforeRouteEnter(to, from, next) {
+            next(function (vm) {
+                vm.verificationToken();
+            })
         }
     }
 </script>

@@ -147,7 +147,6 @@
         },
         mounted(){
             let vm = this;
-            vm.getRoleList();
         },
         methods:{
             onSelectChange(data){
@@ -243,7 +242,9 @@
             }
         },
         beforeRouteEnter(to, from, next) {
-            next()
+            next(function (vm) {
+                vm.getRoleList();
+            })
         }
     }
 </script>
