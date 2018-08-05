@@ -2,22 +2,25 @@ package com.hy.spring.cloud.account.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.hy.spring.cloud.account.domain.Account;
+import com.hy.spring.cloud.account.domain.Entity.Account;
+import com.hy.spring.cloud.account.domain.Entity.AccountRole;
 import com.hy.spring.cloud.account.domain.Message;
 import com.hy.spring.cloud.account.domain.PageQuery;
 import com.hy.spring.cloud.account.domain.SimplePage;
 import com.hy.spring.cloud.account.mapper.AccountMapper;
 import com.hy.spring.cloud.account.service.AccountService;
+import com.hy.spring.cloud.account.util.UUIDUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 /**
- * @author NiBo
+ * @author as_hy
  */
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -37,14 +40,17 @@ public class AccountServiceImpl implements AccountService {
         if (pageQuery.getPage() > 0 && pageQuery.getSize() > 0) {
             PageHelper.startPage(pageQuery.getPage(), pageQuery.getSize());
         }
-        List<Account> accounts = accountMapper.findAccountByRoleId(pageQuery.getFilter());
+        List<Account> accounts = accountMapper.findAccountByRoleCode(pageQuery.getFilter());
         return new SimplePage<Account>().convert(new PageInfo<>(accounts));
     }
 
     @Transactional
     @Override
-    public int saveAccount(Account account) {
-        return accountMapper.insertSelective(account);
+    public Message saveAccount(Account account,String roleCode) {
+        account.setId(UUIDUtil.createUUID());
+        account.setPassword(new BCryptPasswordEncoder().encode("123456"));
+        accountMapper.insertSelective(account);
+        return Message.info("Success");
     }
 
     @Transactional

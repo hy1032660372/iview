@@ -1,9 +1,10 @@
 package com.hy.spring.cloud.account.web;
 
-import com.hy.spring.cloud.account.domain.Account;
+import com.hy.spring.cloud.account.domain.Entity.Account;
 import com.hy.spring.cloud.account.domain.Message;
 import com.hy.spring.cloud.account.domain.PageQuery;
-import com.hy.spring.cloud.account.domain.SysRole;
+import com.hy.spring.cloud.account.domain.Entity.SysRole;
+import com.hy.spring.cloud.account.service.AccountRoleService;
 import com.hy.spring.cloud.account.service.AccountService;
 import com.hy.spring.cloud.account.service.SysRoleService;
 import org.slf4j.Logger;
@@ -18,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -34,6 +34,9 @@ public class AccountController {
 
     @Autowired
     private SysRoleService sysRoleService;
+
+    @Autowired
+    private AccountRoleService accountRoleService;
 
     @RequestMapping(method = RequestMethod.GET)
     public Message pageQueryAccount(PageQuery query) {
@@ -104,17 +107,18 @@ public class AccountController {
     /**
      * add new account
      * @param account
-     * @return
+     * @return Message
      */
-    @RequestMapping(value = "insertAccount", method = RequestMethod.POST)
-    public Message insertUser(@RequestBody Account account) {
-        accountService.saveAccount(account);
-        return Message.info("ok");
+    @RequestMapping(value = "insertAccount/{roleCode}", method = RequestMethod.POST)
+    public Message insertUser(@PathVariable String roleCode, @RequestBody Account account) {
+        accountService.saveAccount(account,roleCode);
+        accountRoleService.insertAccountRole(account.getId(),roleCode);
+        return Message.info("Success");
     }
 
     /**
      * get user role list
-     * @return
+     * @return Message
      */
     @RequestMapping(value = "getUserRoleList", method = RequestMethod.GET)
     public Message getUserRole() {
@@ -129,6 +133,16 @@ public class AccountController {
     @RequestMapping(value = "insertUserRole", method = RequestMethod.POST)
     public Message insertUserRole(@RequestBody SysRole sysRole) {
         return sysRoleService.insertUserRole(sysRole);
+    }
+
+    /**
+     * remove role
+     * @param roleCode
+     * @return
+     */
+    @RequestMapping(value = "removeRole/{roleCode}", method = RequestMethod.GET)
+    public Message removeRole(@PathVariable String roleCode) {
+        return sysRoleService.removeRole(roleCode);
     }
 
     private Map<String, Object> getUserDetails() {

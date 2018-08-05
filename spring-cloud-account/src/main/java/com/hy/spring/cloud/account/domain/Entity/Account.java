@@ -1,4 +1,4 @@
-package com.hy.spring.cloud.account.domain;
+package com.hy.spring.cloud.account.domain.Entity;
 
 import javax.persistence.Id;
 import javax.persistence.Table;

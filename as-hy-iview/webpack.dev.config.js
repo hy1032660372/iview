@@ -30,7 +30,8 @@ module.exports = merge(webpackBaseConfig, {
             filename: '../index.html',
             template: './src/template/index.ejs',
             inject: false
-        })
+        }),
+
     ],
     //设置跨域代理
     devServer: {

@@ -4,6 +4,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author as_hy
@@ -13,6 +15,8 @@ public class CustomUserDetails implements UserDetails {
     private String userId;
     private String username;
     private String password;
+    private Map currentRole;
+    private List<Map> roleCode;
     private Collection<? extends GrantedAuthority> authorities;
     private boolean enabled = true;
 
@@ -75,6 +79,22 @@ public class CustomUserDetails implements UserDetails {
         this.enabled = enabled;
     }
 
+    public Map getCurrentRole() {
+        return currentRole;
+    }
+
+    public void setCurrentRole(Map currentRole) {
+        this.currentRole = currentRole;
+    }
+
+    public List<Map> getRoleCode() {
+        return roleCode;
+    }
+
+    public void setRoleCode(List<Map> roleCode) {
+        this.roleCode = roleCode;
+    }
+
     public static class CustomUserDetailsBuilder {
         private CustomUserDetails userDetails = new CustomUserDetails();
 
@@ -93,6 +113,11 @@ public class CustomUserDetails implements UserDetails {
             return this;
         }
 
+        public CustomUserDetailsBuilder withCurrentRole(Map currentRole) {
+            userDetails.setCurrentRole(currentRole);
+            return this;
+        }
+
         public CustomUserDetailsBuilder withAuthorities(
                 Collection<? extends GrantedAuthority> authorities) {
             userDetails.setAuthorities(authorities);
@@ -101,6 +126,11 @@ public class CustomUserDetails implements UserDetails {
 
         public CustomUserDetailsBuilder withEnabled(boolean enabled) {
             userDetails.setEnabled(enabled);
+            return this;
+        }
+
+        public CustomUserDetailsBuilder withRoleCode(List<Map> roleCode){
+            userDetails.setRoleCode(roleCode);
             return this;
         }
 

@@ -8,8 +8,9 @@
         <id property="id" column="id"/>
         <result property="username" column="username"/>
         <result property="password" column="password"/>
-        <collection property="userRole" ofType="java.lang.String" javaType="java.util.ArrayList">
-            <id property="userRole" column="userRole" />
+        <collection property="userRole" ofType="java.util.Map" javaType="java.util.ArrayList">
+            <id property="roleCode" column="roleCode" />
+            <result property="title" column="title" />
         </collection>
     </resultMap>
 
@@ -19,10 +20,11 @@
           t.username as username,
           t.password as "password",
           t.age as age,
-          r.id as userRole
+          r.code as roleCode,
+          r.title as title
         FROM sys_account t
         LEFT JOIN account_role ar ON t.id = ar.account_id
-        LEFT JOIN sys_role r on ar.role_id = r.id
+        LEFT JOIN sys_role r on ar.role_code = r.id
         WHERE t.username = #{username}
     </select>
 

@@ -6,7 +6,7 @@
         <Content :style="{padding: '0px 16px 16px'}">
             <Breadcrumb :style="{margin: '16px 0'}">
                 <BreadcrumbItem>Home</BreadcrumbItem>
-                <BreadcrumbItem>Components</BreadcrumbItem>
+                <BreadcrumbItem>Role</BreadcrumbItem>
             </Breadcrumb>
             <div style="height: 600px;">
                 <Row>
@@ -28,6 +28,7 @@
                                         <Button type="primary" @click="configPermissionModel=true">Config Permission</Button>
                                         <Button type="primary" @click="addUserModel=true">Add User</Button>
                                         <Button type="primary" @click="addRoleModel=true">Add Role</Button>
+                                        <Button type="primary" @click="removeRole">Remove Role</Button>
                                     </Col>
                                 </Row>
                                 <Table :columns="columnsList" :data="userList"></Table>
@@ -42,12 +43,12 @@
                 title="Add User"
                 @on-ok="saveUser"
                 @on-cancel="cancel">
-            <Form :model="formLeft" label-position="left" :label-width="100">
+            <Form :model="userForm" label-position="left" :label-width="100">
                 <FormItem label="username">
-                    <Input v-model="formLeft.username"></Input>
+                    <Input :maxlength="20" v-model="userForm.username"></Input>
                 </FormItem>
                 <FormItem label="age">
-                    <Input v-model="formLeft.age"></Input>
+                    <Input number :maxlength="3" v-model="userForm.age"></Input>
                 </FormItem>
             </Form>
         </Modal>
@@ -56,9 +57,9 @@
                 title="Add Role"
                 @on-ok="saveRole"
                 @on-cancel="cancel">
-            <Form :model="formRight" label-position="right" :label-width="100">
+            <Form :model="roleForm" label-position="right" :label-width="100">
                 <FormItem label="Title">
-                    <Input v-model="formRight.title"></Input>
+                    <Input v-model="roleForm.title"></Input>
                 </FormItem>
             </Form>
         </Modal>
@@ -99,21 +100,42 @@
                 columnsList:[
                     {title: 'username',key: 'username'},
                     {title: 'age',key: 'age'},
-                    {title: 'role',key: 'role'}
+                    {title: 'Action',key: 'action',
+                        width: 150,
+                        align: 'center',
+                        render: (h, params) => {
+                            return h('div', [
+                                h('Button', {
+                                    props: {type: 'primary',size: 'small'},
+                                    style: {marginRight: '5px'},
+                                    on: {click: () => {
+                                            this.show(params.index)
+                                        }
+                                    }
+                                }, 'View'),
+                                h('Button', {
+                                    props: {type: 'error', size: 'small'},
+                                    on: {click: () => {
+                                            this.deleteUser(params.index);
+                                        }
+                                    }
+                                }, 'Delete')
+                            ]);
+                        }
+                    }
                 ],
                 addUserModel:false,
                 addRoleModel:false,
                 configPermissionModel:false,
-                formLeft: {
+                userForm: {
                     username: '',
                     age: '',
-                    role: ''
                 },
-                formRight: {
+                roleForm: {
                     code: '',
                     title: '',
-                    expand: true,
-                    children:[]
+                    parentCode:'',
+                    expand: true
                 },
                 currentRole:{},
                 pageQuery:{
@@ -146,30 +168,82 @@
             },
             getUserList(){
                 let vm = this;
-                vm.pageQuery.filter = vm.currentRole.id
+                vm.pageQuery.filter = vm.currentRole.code;
                 vm.$http.get(vm.server_account+"/accounts",{params:vm.pageQuery}).then(function(data){
                     vm.userList = data.data.data.aaData;
-                    console.log(vm.userList);
                 });
             },
             saveUser(){
                 let vm = this;
-                vm.formLeft.role = vm.currentRole.code;
-                vm.getUserList();
+                if(vm.currentRole.code != currentUser.currentRole.roleCode){
+                    vm.$http.post(vm.server_account+"/accounts/insertAccount/"+vm.currentRole.code,vm.userForm).then(function(data){
+                        vm.getUserList();
+                    });
+                }else{
+                    vm.$Message.warning('Can not do this!');
+                }
+
+            },
+            removeRole(){
+                let vm = this;
+                vm.$http.post(vm.server_account+"/accounts/removeRole",{params:vm.currentRole.code}).then(function(data){
+                    console.log(data);
+                });
             },
             saveRole(){
                 let vm = this;
                 let children = vm.currentRole.children || [];
-                vm.formRight.code = vm.currentRole.code+children.length;
-                vm.formRight.expand = true;
-                children.push(_.cloneDeep(vm.formRight));
+                vm.roleForm.code = vm.currentRole.code+children.length;
+                vm.roleForm.expand = true;
+                vm.roleForm.parentCode = vm.currentRole.code;
+                children.push(_.cloneDeep(vm.roleForm));
                 vm.$set(vm.currentRole, 'children', children);
+                vm.$http.post(vm.server_account+"/accounts/insertUserRole",vm.roleForm).then(function(data){
+                    console.log(data);
+                });
+                vm.roleForm = {
+                    code: '',
+                    title: '',
+                    parentCode:'',
+                    expand: true
+                }
             },
             savePermission(){
                 let vm = this;
             },
             cancel(){
+            },
+            show (index) {
+                this.$Modal.info({
+                    title: 'User Info',
+                    content: `Name：${this.userList[index].username}<br>Age：${this.userList[index].age}`
+                })
+            },
+            deleteUser(index){
+                let vm = this;
+                let user = vm.userList[index];
+                if(user.id != currentUser.userId){
+                    vm.$Modal.confirm({
+                        title: 'Confirm',
+                        content: '<p>If you want to delete this user?</p>',
+                        onOk: () => {
+                            vm.$http.delete(vm.server_account+"/accounts/"+user.id).then(function(data){
+                                vm.userList.splice(index,1);
+                                vm.$Message.info('Clicked ok');
+                            });
+                        },
+                        onCancel: () => {
+                            vm.$Message.info('You canceled');
+                        }
+                    });
+                }else{
+                    vm.$Message.warning('Don not allow do this');
+                    vm.$Message.warning('Don not allow do this');
+                }
             }
         },
+        beforeRouteEnter(to, from, next) {
+            next()
+        }
     }
 </script>

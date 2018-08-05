@@ -1,4 +1,4 @@
-package com.hy.spring.cloud.account.domain;
+package com.hy.spring.cloud.account.domain.Entity;
 
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -21,7 +21,7 @@ public class SysRole {
 
     private String parentCode;
 
-    private String expand;
+    private Boolean expand;
 
     public String getId() {
         return id;
@@ -39,11 +39,11 @@ public class SysRole {
         this.title = title;
     }
 
-    public String getExpand() {
+    public Boolean getExpand() {
         return expand;
     }
 
-    public void setExpand(String expand) {
+    public void setExpand(Boolean expand) {
         this.expand = expand;
     }
 

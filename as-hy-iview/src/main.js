@@ -32,6 +32,7 @@ const mergeEN = Object.assign(enLocale, locales['en-US']);
 Vue.locale('zh-CN', mergeZH);
 Vue.locale('en-US', mergeEN);
 
+window.currentUser = {};
 Vue.prototype.$http = axios
 Vue.prototype.server_auth = "/auth"
 Vue.prototype.server_account = "/account"
@@ -39,10 +40,12 @@ Vue.prototype.server_account = "/account"
 // 添加请求拦截器
 axios.interceptors.request.use(function (config) {
     // 在发送请求之前做些什么
-    let token = window.getCookie("token");
-    let userRole = window.getCookie("user_role");
-    if(token){
-        config.headers['Authorization'] = 'bearer '+ token;
+    if("/auth/oauth/token" != config.url){
+        let token = window.getCookie("iView-token");
+        let userRole = window.getCookie("user_role");
+        if(token){
+            config.headers['Authorization'] = 'bearer '+ token;
+        }
     }
     return config;
 }, function (error) {

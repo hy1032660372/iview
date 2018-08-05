@@ -1,4 +1,4 @@
-package com.hy.spring.cloud.auth.domain;
+package com.hy.spring.cloud.account.util;
 
 import java.util.List;
 

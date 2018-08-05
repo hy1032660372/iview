@@ -91,7 +91,7 @@
                         </Submenu>
                     </Menu>
                 </Sider>
-                <Content :style="{height:'100%'}">
+                <Content style="height:100%">
                     <router-view></router-view>
                     <!--<Row>
                         <Col span="24" class="demo-tabs-style1" style="background: #e3e8ee;padding:16px;">
@@ -175,22 +175,21 @@
         methods: {
             verificationToken(){
                 let vm = this;
-                let token = window.getCookie("token");
+                let token = window.getCookie("iView-token");
                 let userRole = window.getCookie("user_role");
-                vm.getUserInfo();
-                // if(token){
-                //     vm.$http.post(vm.server_auth+"/oauth/check_token?token="+token).then(function(data){
-                //         console.log(data);
-                //         vm.getUserInfo();
-                //     });
-                // }else{
-                //     vm.$router.push('/login')
-                // }
+                if(token){
+                    vm.$http.post(vm.server_auth+"/oauth/check_token?token="+token).then(function(data){
+                        vm.getUserInfo();
+                    });
+                }else{
+                    vm.$router.push('/login')
+                }
             },
             getUserInfo(){
                 let vm = this;
                 vm.$http.get(vm.server_auth+"/users/current").then(function(data){
                     vm.userInfo = data.data.principal;
+                    window.currentUser = data.data.principal;
                     vm.headMenuList[2].name = vm.userInfo.username;
                 }).catch(function (error) {
                     vm.$Message.success('Error!');

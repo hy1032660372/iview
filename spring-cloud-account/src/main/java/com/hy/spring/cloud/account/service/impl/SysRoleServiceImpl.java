@@ -1,16 +1,18 @@
 package com.hy.spring.cloud.account.service.impl;
 
 import com.hy.spring.cloud.account.domain.Message;
-import com.hy.spring.cloud.account.domain.SysRole;
+import com.hy.spring.cloud.account.domain.Entity.SysRole;
 import com.hy.spring.cloud.account.domain.SysRoleImpl;
+import com.hy.spring.cloud.account.mapper.AccountMapper;
 import com.hy.spring.cloud.account.mapper.SysRoleMapper;
 import com.hy.spring.cloud.account.service.SysRoleService;
+import com.hy.spring.cloud.account.util.TreeUtil;
+import com.hy.spring.cloud.account.util.UUIDUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -21,8 +23,11 @@ public class SysRoleServiceImpl implements SysRoleService {
     @Autowired
     private SysRoleMapper sysRoleMapper;
 
+    @Autowired
+    private AccountMapper accountMapper;
+
     @Override
-    public SysRole getUserRoleList() {
+    public SysRoleImpl getUserRoleList() {
         logger.info("load user role");
         List<SysRoleImpl> roleList = sysRoleMapper.getUserRoleList();
 
@@ -34,33 +39,28 @@ public class SysRoleServiceImpl implements SysRoleService {
                 break;
             }
         }
-        converseToTree(roleList,sysRole);
+        TreeUtil.converseToTree(roleList,sysRole);
         return sysRole;
     }
 
     @Override
     public Message insertUserRole(SysRole sysRole) {
         logger.info("insert user role");
-        sysRoleMapper.insertUserRole(sysRole);
+        sysRole.setId(UUIDUtil.createUUID());
+        sysRoleMapper.insertRole(sysRole);
         return Message.info("Success");
     }
 
-    /**
-     * 生成树
-     * @param roleList
-     * @param sysRole
-     */
-    void converseToTree(List<SysRoleImpl> roleList, SysRoleImpl sysRole){
-        List<SysRoleImpl> childrenNodeList = new ArrayList<>();
-        SysRoleImpl currentNode;
-        for(int i = 0; i < roleList.size(); i++){
-            currentNode = roleList.get(i);
-            if(sysRole.getCode().equals(currentNode.getParentCode())){
-                childrenNodeList.add(currentNode);
-                converseToTree(roleList,currentNode);
-            }
+    @Override
+    public Message removeRole(String roleCode) {
+        logger.info("remove user role");
+        if(sysRoleMapper.getRoleChildren(roleCode).size() == 0
+                && accountMapper.findAccountByRoleCode(roleCode).size() == 0){
+            sysRoleMapper.removeRole(roleCode);
+            return Message.info("Success");
+        }else{
+            return Message.info("False");
         }
-        sysRole.setChildren(childrenNodeList);
     }
 
     /**

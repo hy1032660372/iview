@@ -1,7 +1,4 @@
-package com.hy.spring.cloud.auth.util;
-
-import com.hy.spring.cloud.auth.domain.RoleData;
-import com.hy.spring.cloud.auth.domain.TreeData;
+package com.hy.spring.cloud.account.util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,14 +11,14 @@ import java.util.List;
  **/
 public class TreeUtil {
 
-    public static<T extends TreeData<T>> void recursive(List<T> nodeList, T node){
+    public static<T extends TreeData<T>> void converseToTree(List<T> nodeList, T node){
         List<TreeData<T>> children = new ArrayList<>();
         T t;
         for(int i = 0; i < nodeList.size(); i++){
             t = nodeList.get(i);
             if(node.getCode().equals(t.getParentCode())){
                 children.add(t);
-                recursive(nodeList,t);
+                converseToTree(nodeList,t);
             }
         }
         node.setChildren(children);

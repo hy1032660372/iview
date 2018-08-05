@@ -9,7 +9,7 @@
                 <BreadcrumbItem>USER</BreadcrumbItem>
             </Breadcrumb>
             <div>
-                <Card>
+                <Card style="height: 100%">
                     <Row style="margin-bottom: 10px;">
                         <Col span="6">
                             <Button type="primary" @click="addUser">New User</Button>
@@ -20,7 +20,7 @@
                             </Input>
                         </Col>
                     </Row>
-                    <div style="height: 600px;">
+                    <div style="height: 100%;">
                         <Table border :columns="columns1" :data="userList"></Table>
                         <Row style="margin-top: 10px;">
                             <Col span="12" offset="8">

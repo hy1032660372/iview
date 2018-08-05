@@ -12,7 +12,18 @@
         FROM sys_role t
     </select>
 
-    <insert id="insertUserRole" parameterType="com.hy.spring.cloud.account.domain.SysRole">
+    <select id="getRoleChildren" resultType="com.hy.spring.cloud.account.domain.SysRoleImpl">
+        SELECT
+          t.id as id,
+          t.title as title,
+          t.code as code,
+          t.expand as expand,
+          t.parent_code as parentCode
+        FROM sys_role t
+        WHERE t.parent_code = #{roleCode}
+    </select>
+
+    <insert id="insertRole" parameterType="com.hy.spring.cloud.account.domain.Entity.SysRole">
         insert into  sys_role
         (
             id,
@@ -30,4 +41,9 @@
             #{parentCode}
         )
     </insert>
+
+    <delete id="removeRole" parameterType="java.lang.String">
+        delete from sys_role
+        WHERE code = #{roleCode}
+    </delete>
 </mapper>

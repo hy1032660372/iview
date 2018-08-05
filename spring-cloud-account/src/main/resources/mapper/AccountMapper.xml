@@ -2,24 +2,22 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.hy.spring.cloud.account.mapper.AccountMapper">
-    <select id="findAccountById" parameterType="java.lang.String" resultType="com.hy.spring.cloud.account.domain.Account">
+    <select id="findAccountById" parameterType="java.lang.String" resultType="com.hy.spring.cloud.account.domain.Entity.Account">
         SELECT
           t.id as id,
           t.username as username,
-          t.password as "password",
           t.age as age
         FROM sys_account t WHERE t.id = #{id}
     </select>
 
-    <select id="findAccountByRoleId" parameterType="java.lang.String" resultType="com.hy.spring.cloud.account.domain.Account">
+    <select id="findAccountByRoleCode" parameterType="java.lang.String" resultType="com.hy.spring.cloud.account.domain.Entity.Account">
         SELECT
           t.id as id,
           t.username as username,
-          t.password as "password",
           t.age as age
         FROM sys_account t
         JOIN account_role ar ON ar.account_id = t.id
-        WHERE ar.role_id = #{roleId}
+        WHERE ar.role_code = #{roleCode}
     </select>
 
     <insert id="insertAccountList">

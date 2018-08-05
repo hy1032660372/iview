@@ -1,6 +1,6 @@
 package com.hy.spring.cloud.account.web.api;
 
-import com.hy.spring.cloud.account.domain.Account;
+import com.hy.spring.cloud.account.domain.Entity.Account;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;

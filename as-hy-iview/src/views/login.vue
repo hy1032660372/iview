@@ -1,13 +1,22 @@
 <style scoped>
-    
+    .content-content{
+        position: absolute;
+        top: 30%;
+        width: 100%;
+    }
+    .foot-content{
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+    }
 </style>
 <template>
     <div class="layout">
         <Header>&nbsp;</Header>
-        <Content>
+        <Content class="content-content">
             <Row>
                 <Col span="8">&nbsp;</Col>
-                <Col span="8">
+                <Col span="8" >
                     <div>
                         <Form ref="formInline" :model="formInline" :rules="ruleInline">
                             <FormItem prop="user">
@@ -26,10 +35,10 @@
                         </Form>
                     </div>
                 </Col>
-                <Col span="8">&nbsp;</Col>
+                <Col span="8" >&nbsp;</Col>
             </Row>
         </Content>
-        <Footer>&nbsp;</Footer>
+        <Footer class="foot-content">&nbsp;</Footer>
     </div>
 </template>
 <script>
@@ -68,14 +77,13 @@
                                     +"&scope="+data.scope
                                     +"&username="+data.username
                                     +"&password="+data.password;
-                        vm.$http.post(vm.server_auth+"/oauth/token",paramsStr).then(function(response){
-                                //save token
-                                setCookie('token', response.data.access_token)
-                                setCookie('refresh_token', response.data.refresh_token)
-                                sessionStorage.setItem("token_key", response.data.access_token);
-                                vm.$router.push("/home/index");
-                            }
-                        ).catch(function (error) {
+                        vm.$http.post(vm.server_auth+"/oauth/token",paramsStr).then(function(response) {
+                            //save token
+                            window.setCookie('iView-token', response.data.access_token)
+                            window.setCookie('refresh_token', response.data.refresh_token)
+                            sessionStorage.setItem("token_key", response.data.access_token);
+                            vm.$router.push("/home");
+                        }).catch(function (error) {
                             console.log(error);
                         });
                         vm.$Message.success('Success!');

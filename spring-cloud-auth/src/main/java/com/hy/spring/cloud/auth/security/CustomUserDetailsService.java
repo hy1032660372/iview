@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author as_hy
@@ -34,7 +35,8 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException(username);
         }
 
-        List<String> permissions = initPermission(currentUser.getUserRole());
+        List<String> userRoleString = currentUser.getUserRole().stream().map(e->e.get("roleCode").toString()).collect(Collectors.toList());
+        List<String> permissions = initPermission(userRoleString);
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
         SimpleGrantedAuthority grantedAuthority;
         for (String code : permissions) {
@@ -46,6 +48,8 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .withUserId(currentUser.getUserId())
                 .withUsername(currentUser.getUsername())
                 .withPassword(currentUser.getPassword())
+                .withCurrentRole(currentUser.getUserRole().get(0))
+                .withRoleCode(currentUser.getUserRole())
                 .withAuthorities(authorities)
                 .build();
     }

@@ -5,6 +5,7 @@ import org.springframework.security.core.GrantedAuthority;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author as_hy
@@ -15,7 +16,7 @@ public class User implements Serializable {
     private String id;
     private String username;
     private String password;
-    private List<String> userRole;
+    private List<Map> userRole;
     private Collection<? extends GrantedAuthority> authorities;
     private boolean enabled = true;
 
@@ -54,11 +55,11 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    public List<String> getUserRole() {
+    public List<Map> getUserRole() {
         return userRole;
     }
 
-    public void setUserRole(List<String> userRole) {
+    public void setUserRole(List<Map> userRole) {
         this.userRole = userRole;
     }
 
