@@ -1,5 +1,6 @@
 package com.hy.spring.cloud.auth.security;
 
+import com.hy.spring.cloud.auth.domain.Message;
 import com.hy.spring.cloud.auth.domain.User;
 import com.hy.spring.cloud.auth.mapper.UserMapper;
 import org.slf4j.Logger;
@@ -9,8 +10,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -52,6 +55,11 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .withRoleCode(currentUser.getUserRole())
                 .withAuthorities(authorities)
                 .build();
+    }
+
+    public Message logout(HttpServletRequest request) {
+        new SecurityContextLogoutHandler().logout(request, null, null);
+        return Message.info("Logout Success");
     }
 
     private List<String> initPermission(List<String> userRoleList) {

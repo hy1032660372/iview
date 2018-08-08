@@ -61,6 +61,24 @@ axios.interceptors.response.use(function (response) {
     return response;
 }, function (error) {
     // 对响应错误做点什么
+    if (error.response) {
+        switch (error.response.status) {
+            case 401:
+                // 这里写清除token的代码
+                router.replace({
+                    path: 'login',
+                    query: {redirect: router.currentRoute.fullPath}//登录成功后跳入浏览的当前页面
+                });
+                break;
+            case 504:
+                Vue.prototype.$Message.error("Server Error");
+                Vue.prototype.$Message.error("Server Error");
+                break;
+            default:
+                console.log(error.response.data);
+        }
+    }
+    //return Promise.reject(error.response.data)
     return Promise.reject(error);
 });
 

@@ -26,9 +26,9 @@
                                     </Col>
                                     <Col style="float:right">
                                         <Button type="primary" @click="configPermissionModel=true">Config Permission</Button>
-                                        <Button type="primary" @click="addUserModel=true">Add User</Button>
-                                        <Button type="primary" @click="addRoleModel=true">Add Role</Button>
-                                        <Button type="primary" @click="removeRole">Remove Role</Button>
+                                        <Button type="primary" v-if="sccess" @click="addUserModel=true">Add User</Button>
+                                        <Button type="primary" v-if="sccess" @click="addRoleModel=true">Add Role</Button>
+                                        <Button type="primary" v-if="sccess && userList.length == 0" @click="removeRole">Remove Role</Button>
                                     </Col>
                                 </Row>
                                 <Table :columns="columnsList" :data="userList"></Table>
@@ -142,11 +142,17 @@
                     page: 0,
                     size: 0,
                     filter: ""
-                }
+                },
             };
         },
         mounted(){
             let vm = this;
+        },
+        computed:{
+            sccess:function(){
+                let vm = this;
+                return vm.currentRole.code != currentUser.currentRole.roleCode;
+            }
         },
         methods:{
             onSelectChange(data){
@@ -181,12 +187,20 @@
                 }else{
                     vm.$Message.warning('Can not do this!');
                 }
-
             },
             removeRole(){
                 let vm = this;
-                vm.$http.post(vm.server_account+"/accounts/removeRole",{params:vm.currentRole.code}).then(function(data){
-                    console.log(data);
+                vm.$Modal.confirm({
+                    title: 'Confirm',
+                    content: '<p>Do you want to delete this role?</p>',
+                    onOk: () => {
+                        vm.$http.get(vm.server_account+"/accounts/removeRole/"+vm.currentRole.code).then(function(data){
+                            vm.getRoleList();
+                        });
+                    },
+                    onCancel: () => {
+                        vm.$Message.info('You canceled');
+                    }
                 });
             },
             saveRole(){
@@ -224,7 +238,7 @@
                 if(user.id != currentUser.userId){
                     vm.$Modal.confirm({
                         title: 'Confirm',
-                        content: '<p>If you want to delete this user?</p>',
+                        content: '<p>Do you want to delete this user?</p>',
                         onOk: () => {
                             vm.$http.delete(vm.server_account+"/accounts/"+user.id).then(function(data){
                                 vm.userList.splice(index,1);

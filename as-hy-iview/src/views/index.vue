@@ -148,7 +148,7 @@
         },
         mounted(){
             let vm = this;
-            vm.$Message.info("success");
+            vm.toOtherPage(vm.menuList[0].child[0].id);
         },
         methods: {
             verificationToken(){
@@ -197,7 +197,26 @@
                 vm.$router.push(vm.nowPage.url);
             },
             headMenuClick(data){
+                let vm = this;
+                switch (data) {
+                    case "h3144":
+                        vm.logout();
+                        break;
+                    default:
+                        console.log("other");
+                }
                 console.log(data);
+            },
+            logout(){
+                let vm = this;
+                vm.$http.get(vm.server_auth+"/users/logout").then(function(data){
+                    vm.$cookies.set("iView-token",'');
+                    vm.$cookies.set("refresh-iView-token",'');
+                    sessionStorage.setItem("token_key", '');
+                    vm.$router.push('/login')
+                }).catch(function (error) {
+                    vm.$Message.Error("Error!");
+                });
             }
         },
         beforeRouteEnter(to, from, next) {
