@@ -96,10 +96,16 @@ public class AccountController {
         return ResponseEntity.ok("say: " + message);
     }
 
-
     @PreAuthorize("hasAuthority('USER_QUERY')")
     @RequestMapping(value = "message/{message}", method = RequestMethod.POST)
     public ResponseEntity sayHello2(@PathVariable String message) {
+//        logger.info("{}", getUserDetails());
+        return ResponseEntity.ok("POST say: " + message);
+    }
+
+    @PreAuthorize("hasAuthority('USER_QUERY')")
+    @RequestMapping(value = "message/{message}", method = RequestMethod.POST)
+    public ResponseEntity sayHello3(@PathVariable String message) {
 //        logger.info("{}", getUserDetails());
         return ResponseEntity.ok("POST say: " + message);
     }

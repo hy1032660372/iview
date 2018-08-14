@@ -151,7 +151,10 @@
         computed:{
             sccess:function(){
                 let vm = this;
-                return vm.currentRole.code != currentUser.currentRole.roleCode;
+                if(currentUser){
+                    return vm.currentRole.code != currentUser.currentRole.roleCode;
+                }
+                return null;
             }
         },
         methods:{

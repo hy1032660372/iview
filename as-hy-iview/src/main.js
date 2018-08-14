@@ -42,6 +42,7 @@ Vue.prototype.server_account = "/account"
 // 添加请求拦截器
 axios.interceptors.request.use(function (config) {
     // 在发送请求之前做些什么
+    //Vue.prototype.$Spin.show();
     if("/auth/oauth/token" != config.url){
         let token = $cookies.get("iView-token");
         let userRole = $cookies.get("user_role");
@@ -58,9 +59,11 @@ axios.interceptors.request.use(function (config) {
 // 添加响应拦截器
 axios.interceptors.response.use(function (response) {
     // 对响应数据做点什么
+    //Vue.prototype.$Spin.hide();
     return response;
 }, function (error) {
     // 对响应错误做点什么
+    Vue.prototype.$Spin.hide();
     if (error.response) {
         switch (error.response.status) {
             case 401:
@@ -71,7 +74,6 @@ axios.interceptors.response.use(function (response) {
                 });
                 break;
             case 504:
-                Vue.prototype.$Message.error("Server Error");
                 Vue.prototype.$Message.error("Server Error");
                 break;
             default:

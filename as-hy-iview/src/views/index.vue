@@ -125,9 +125,9 @@
                 headMenuList:[{id:'h1',name:'one',url:'url',type:'0'},
                     {id:'h2',name:'two',url:'url',type:'0'},
                     {id:'h3',name:'three',url:'url',type:'1',child:[
-                        {id:'h31',parentId:'h31',title:'title1',content:[
-                            {id:'h311',name:'h31'},
-                            {id:'h312',name:'h31'},
+                        {id:'userRole',parentId:'h31',title:'UserRole',content:[
+                            {id:'admin',name:'Admin'},
+                            {id:'user',name:'User'},
                             {id:'h313',name:'h31'},
                             {id:'h314',name:'h31'}
                         ]},
@@ -196,11 +196,23 @@
                 }
                 vm.$router.push(vm.nowPage.url);
             },
+            changeUserRole(str){
+                let vm = this;
+                vm.$http.get(vm.server_account+"/accounts/changeUserRole/"+str).then(function(data){
+                    console.log(data);
+                }).catch(function (error) {
+                    vm.$Message.success('Error!');
+                    vm.$Message.success('Error!');
+                });
+            },
             headMenuClick(data){
                 let vm = this;
                 switch (data) {
                     case "h3144":
                         vm.logout();
+                        break;
+                    case "admin":
+                        vm.changeUserRole(data);
                         break;
                     default:
                         console.log("other");
