@@ -24,4 +24,5 @@ public interface AccountService {
     int updateAccount(Account account);
 
     Message insertAccountList(List<Account> accountList);
+
 }

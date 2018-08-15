@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hy.spring.cloud.account.mapper.CustomMenuMapper">
+
+    <select id="getCustomMenuList" resultType="com.hy.spring.cloud.account.domain.CustomMenuImpl">
+        SELECT
+          t.id as id,
+          t.title as title,
+          t.menu_code as code,
+          t.expand as expand,
+          t.user_role as userRole,
+          t.menu_url as menuUrl,
+          t.parent_code as parentCode
+        FROM sys_custommenu t
+    </select>
+
+    <delete id="removeMenu" parameterType="java.lang.String">
+        delete from sys_custommenu
+        WHERE menu_code = #{menuCode}
+    </delete>
+
+    <insert id="insertMenu" parameterType="com.hy.spring.cloud.account.domain.Entity.CustomMenu">
+        insert into  sys_custommenu
+        (
+            id,
+            title,
+            menu_code,
+            user_role,
+            menu_url,
+            expand,
+            parent_code
+        )
+        VALUES
+        (
+            #{id},
+            #{title},
+            #{code},
+            #{userRole},
+            #{menuUrl},
+            #{expand},
+            #{parentCode}
+        )
+    </insert>
+
+</mapper>

@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50717
 File Encoding         : 65001
 
-Date: 2018-08-05 22:44:40
+Date: 2018-08-15 23:39:15
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -81,6 +81,27 @@ INSERT INTO `sys_account` VALUES ('72316fdf058f412fa73f9ff2e6e3cbc1', 'lll', '$2
 INSERT INTO `sys_account` VALUES ('c39ecacf3f474e498fb187c5bfe789b1', '223', '$2a$10$WU6/5voJWTEwHERyj4SBVO.P3N0adFERUi56tzwVJuWI.CKK5QXo.', '22');
 
 -- ----------------------------
+-- Table structure for `sys_custommenu`
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_custommenu`;
+CREATE TABLE `sys_custommenu` (
+  `id` varchar(32) NOT NULL,
+  `title` varchar(50) NOT NULL,
+  `menu_code` varchar(20) NOT NULL,
+  `user_role` varchar(20) DEFAULT NULL,
+  `menu_url` varchar(50) DEFAULT NULL,
+  `expand` tinyint(4) DEFAULT NULL,
+  `parent_code` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sys_custommenu
+-- ----------------------------
+INSERT INTO `sys_custommenu` VALUES ('9f18b876569d4476af77e0f45c63562b', 'fghjj', '1230', null, null, '1', '123');
+INSERT INTO `sys_custommenu` VALUES ('aa', 'sss', '123', '123', '/user', '0', null);
+
+-- ----------------------------
 -- Table structure for `sys_permission`
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_permission`;
@@ -116,9 +137,9 @@ CREATE TABLE `sys_role` (
 -- Records of sys_role
 -- ----------------------------
 INSERT INTO `sys_role` VALUES ('123456', 'adminA', '123456', '1', '199277');
-INSERT INTO `sys_role` VALUES ('123457', 'user', '123457', '1', '123456');
 INSERT INTO `sys_role` VALUES ('199277', 'superadmin', '199277', '1', '');
 INSERT INTO `sys_role` VALUES ('223456', 'adminB', '223456', '1', '199277');
+INSERT INTO `sys_role` VALUES ('24fc0d22a0f04ae19d6390dea86ac957', 'dddd', '2234560', '1', '223456');
 INSERT INTO `sys_role` VALUES ('2b4b41da8a0546e3bfab579a1a2e2eb2', 'user2', '1234561', '1', '123456');
 
 -- ----------------------------

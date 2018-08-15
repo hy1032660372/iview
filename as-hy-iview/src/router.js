@@ -38,6 +38,13 @@ const routers = [{
                 title: 'third'
             },
             component: (resolve) => require(['./views/home/permission.vue'], resolve)
+        },{
+            path: 'menuConfig',
+            name: 'menuConfig',
+            meta: {
+                title: 'menuConfig'
+            },
+            component: (resolve) => require(['./views/home/menuConfig.vue'], resolve)
         }, {
             path: '*',
             name: 'error-404',

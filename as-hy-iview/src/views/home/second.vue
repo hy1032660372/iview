@@ -10,7 +10,7 @@
                 <BreadcrumbItem>Layout222</BreadcrumbItem>
             </Breadcrumb>
             <Card>
-                <div style="height: 600px;">Content2222</div>
+                <div>Content2222</div>
             </Card>
         </Content>
     </div>

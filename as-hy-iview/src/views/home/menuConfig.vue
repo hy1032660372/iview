@@ -6,14 +6,14 @@
         <Content :style="{padding: '0px 16px 16px'}">
             <Breadcrumb :style="{margin: '16px 0'}">
                 <BreadcrumbItem>Home</BreadcrumbItem>
-                <BreadcrumbItem>Role</BreadcrumbItem>
+                <BreadcrumbItem>Menu</BreadcrumbItem>
             </Breadcrumb>
             <div>
                 <Row>
                     <Col span="6">
                         <div style="background:#eee;padding: 20px 10px 20px 20px">
                             <Card :bordered="false">
-                                <Tree :data="roleData" @on-select-change="onSelectChange"></Tree>
+                                <Tree :data="menuData" @on-select-change="onSelectChange"></Tree>
                             </Card>
                         </div>
                     </Col>
@@ -22,13 +22,13 @@
                             <Card :bordered="false">
                                 <Row style="padding-bottom: 20px">
                                     <Col span="8">
-                                        {{currentRole.title}}
+                                        {{currentMenu.title}}
                                     </Col>
                                     <Col style="float:right">
                                         <Button type="primary" @click="configPermission">Config Permission</Button>
                                         <Button type="primary" v-if="sccess" @click="addUserModel=true">Add User</Button>
-                                        <Button type="primary" v-if="sccess" @click="addRoleModel=true">Add Role</Button>
-                                        <Button type="primary" v-if="sccess && userList.length == 0" @click="removeRole">Remove Role</Button>
+                                        <Button type="primary" v-if="sccess" @click="addMenuModel=true">Add Menu</Button>
+                                        <Button type="primary" v-if="sccess && userList.length == 0" @click="removeMenu">Remove Role</Button>
                                     </Col>
                                 </Row>
                                 <Table :columns="columnsList" :data="userList"></Table>
@@ -53,9 +53,9 @@
             </Form>
         </Modal>
         <Modal
-                v-model="addRoleModel"
-                title="Add Role"
-                @on-ok="saveRole"
+                v-model="addMenuModel"
+                title="Add Menu"
+                @on-ok="saveMenu"
                 @on-cancel="cancel">
             <Form :model="roleForm" label-position="right" :label-width="100">
                 <FormItem label="Title">
@@ -76,7 +76,7 @@
     export default {
         data () {
             return {
-                roleData: [],
+                menuData: [],
                 userList:[],
                 permissionsData: [{
                     title: 'parent 1',
@@ -125,7 +125,7 @@
                     }
                 ],
                 addUserModel:false,
-                addRoleModel:false,
+                addMenuModel:false,
                 configPermissionModel:false,
                 userForm: {
                     username: '',
@@ -137,7 +137,7 @@
                     parentCode:'',
                     expand: true
                 },
-                currentRole:{},
+                currentMenu:{},
                 pageQuery:{
                     page: 0,
                     size: 0,
@@ -152,7 +152,7 @@
             sccess:function(){
                 let vm = this;
                 if(currentUser){
-                    return vm.currentRole.code != currentUser.currentRole.roleCode;
+                    return true;
                 }
                 return null;
             }
@@ -161,43 +161,38 @@
             onSelectChange(data){
                 let vm = this;
                 if(data.length != 0){
-                    vm.currentRole = data[0];
+                    vm.currentMenu = data[0];
                     vm.getUserList();
                 }
             },
-            getRoleList(){
+            getMenuList(){
                 let vm = this;
-                vm.$http.get(vm.server_account+"/role/getUserRoleList").then(function(response){
-                    vm.roleData = [];
-                    vm.roleData.push(response.data.data);
-                    vm.currentRole = vm.roleData[0];
+                vm.$http.get(vm.server_account+"/menu/getMenuList").then(function(response){
+                    vm.menuData = [];
+                    vm.menuData.push(response.data.data);
+                    vm.currentMenu = vm.menuData[0];
                     vm.getUserList();
                 });
             },
             getUserList(){
                 let vm = this;
-                vm.pageQuery.filter = vm.currentRole.code;
-                vm.$http.get(vm.server_account+"/accounts",{params:vm.pageQuery}).then(function(data){
-                    vm.userList = data.data.data.aaData;
-                });
+                console.log("aaaaaaaaaa");
             },
             saveUser(){
                 let vm = this;
-                if(vm.currentRole.code != currentUser.currentRole.roleCode){
-                    vm.$http.post(vm.server_account+"/accounts/insertAccount/"+vm.currentRole.code,vm.userForm).then(function(data){
-                        vm.getUserList();
-                    });
+                if(vm.currentMenu.code != currentMenu.currentMenu.roleCode){
+                    console.log("save menu permission");
                 }else{
                     vm.$Message.warning('Can not do this!');
                 }
             },
-            removeRole(){
+            removeMenu(){
                 let vm = this;
                 vm.$Modal.confirm({
                     title: 'Confirm',
                     content: '<p>Do you want to delete this role?</p>',
                     onOk: () => {
-                        vm.$http.get(vm.server_account+"/role/removeRole/"+vm.currentRole.code).then(function(data){
+                        vm.$http.get(vm.server_account+"/menu/removeMenu/"+vm.currentMenu.code).then(function(data){
                             vm.getRoleList();
                         });
                     },
@@ -206,15 +201,15 @@
                     }
                 });
             },
-            saveRole(){
+            saveMenu(){
                 let vm = this;
-                let children = vm.currentRole.children || [];
-                vm.roleForm.code = vm.currentRole.code+children.length;
+                let children = vm.currentMenu.children || [];
+                vm.roleForm.code = vm.currentMenu.code+children.length;
                 vm.roleForm.expand = true;
-                vm.roleForm.parentCode = vm.currentRole.code;
+                vm.roleForm.parentCode = vm.currentMenu.code;
                 children.push(_.cloneDeep(vm.roleForm));
-                vm.$set(vm.currentRole, 'children', children);
-                vm.$http.post(vm.server_account+"/accounts/insertUserRole",vm.roleForm).then(function(data){
+                vm.$set(vm.currentMenu, 'children', children);
+                vm.$http.post(vm.server_account+"/menu/insertMenu",vm.roleForm).then(function(data){
                     console.log(data);
                 });
                 vm.roleForm = {
@@ -267,7 +262,7 @@
         },
         beforeRouteEnter(to, from, next) {
             next(function (vm) {
-                vm.getRoleList();
+                vm.getMenuList();
             })
         }
     }
