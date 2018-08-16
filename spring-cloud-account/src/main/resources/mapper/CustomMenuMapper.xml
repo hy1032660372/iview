@@ -9,7 +9,6 @@
           t.title as title,
           t.menu_code as code,
           t.expand as expand,
-          t.user_role as userRole,
           t.menu_url as menuUrl,
           t.parent_code as parentCode
         FROM sys_custommenu t
@@ -26,7 +25,6 @@
             id,
             title,
             menu_code,
-            user_role,
             menu_url,
             expand,
             parent_code
@@ -36,7 +34,6 @@
             #{id},
             #{title},
             #{code},
-            #{userRole},
             #{menuUrl},
             #{expand},
             #{parentCode}

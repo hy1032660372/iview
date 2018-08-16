@@ -20,8 +20,6 @@ public class CustomMenu {
 
     private String code;
 
-    private String userRole;
-
     private String menuUrl;
 
     private Boolean expand;
@@ -50,14 +48,6 @@ public class CustomMenu {
 
     public void setCode(String code) {
         this.code = code;
-    }
-
-    public String getUserRole() {
-        return userRole;
-    }
-
-    public void setUserRole(String userRole) {
-        this.userRole = userRole;
     }
 
     public String getMenuUrl() {

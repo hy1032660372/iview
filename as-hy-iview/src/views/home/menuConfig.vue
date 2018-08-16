@@ -28,7 +28,7 @@
                                         <Button type="primary" @click="configPermission">Config Permission</Button>
                                         <Button type="primary" v-if="sccess" @click="addUserModel=true">Add User</Button>
                                         <Button type="primary" v-if="sccess" @click="addMenuModel=true">Add Menu</Button>
-                                        <Button type="primary" v-if="sccess && userList.length == 0" @click="removeMenu">Remove Role</Button>
+                                        <Button type="primary" v-if="sccess && userList.length == 0" @click="removeMenu">Remove Menu</Button>
                                     </Col>
                                 </Row>
                                 <Table :columns="columnsList" :data="userList"></Table>
@@ -57,9 +57,15 @@
                 title="Add Menu"
                 @on-ok="saveMenu"
                 @on-cancel="cancel">
-            <Form :model="roleForm" label-position="right" :label-width="100">
+            <Form :model="menuForm" label-position="right" :label-width="100">
                 <FormItem label="Title">
-                    <Input v-model="roleForm.title"></Input>
+                    <Input v-model="menuForm.title"></Input>
+                </FormItem>
+                <FormItem label="code">
+                    <Input v-model="menuForm.code"></Input>
+                </FormItem>
+                <FormItem label="menuUrl">
+                    <Input v-model="menuForm.menuUrl"></Input>
                 </FormItem>
             </Form>
         </Modal>
@@ -131,9 +137,10 @@
                     username: '',
                     age: '',
                 },
-                roleForm: {
+                menuForm: {
                     code: '',
                     title: '',
+                    menuUrl:'',
                     parentCode:'',
                     expand: true
                 },
@@ -204,15 +211,14 @@
             saveMenu(){
                 let vm = this;
                 let children = vm.currentMenu.children || [];
-                vm.roleForm.code = vm.currentMenu.code+children.length;
-                vm.roleForm.expand = true;
-                vm.roleForm.parentCode = vm.currentMenu.code;
-                children.push(_.cloneDeep(vm.roleForm));
+                vm.menuForm.expand = true;
+                vm.menuForm.parentCode = vm.currentMenu.code;
+                children.push(_.cloneDeep(vm.menuForm));
                 vm.$set(vm.currentMenu, 'children', children);
-                vm.$http.post(vm.server_account+"/menu/insertMenu",vm.roleForm).then(function(data){
+                vm.$http.post(vm.server_account+"/menu/insertMenu",vm.menuForm).then(function(data){
                     console.log(data);
                 });
-                vm.roleForm = {
+                vm.menuForm = {
                     code: '',
                     title: '',
                     parentCode:'',

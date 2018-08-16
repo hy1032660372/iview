@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50717
 File Encoding         : 65001
 
-Date: 2018-08-15 23:39:15
+Date: 2018-08-16 23:05:45
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -39,6 +39,21 @@ INSERT INTO `account_role` VALUES ('e05a57a8cc2f4414ba3f1f4f9e7078de', 'b61b6695
 INSERT INTO `account_role` VALUES ('f679822556834234aeeb538b04c132b8', '72316fdf058f412fa73f9ff2e6e3cbc1', '1234561');
 INSERT INTO `account_role` VALUES ('f6f1f987e14f46bcbfb64bef101e1c33', '553674c2379c448b99479043651cdd99', '199277');
 INSERT INTO `account_role` VALUES ('f9a38d00154842fb8f07fe72bf911d1d', '6be2fdc799754381853dd58353ab45cd', '1234561');
+
+-- ----------------------------
+-- Table structure for `role_menu`
+-- ----------------------------
+DROP TABLE IF EXISTS `role_menu`;
+CREATE TABLE `role_menu` (
+  `id` varchar(32) NOT NULL,
+  `role_code` varchar(20) NOT NULL,
+  `menu_code` varchar(20) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of role_menu
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for `role_permission`
@@ -88,7 +103,6 @@ CREATE TABLE `sys_custommenu` (
   `id` varchar(32) NOT NULL,
   `title` varchar(50) NOT NULL,
   `menu_code` varchar(20) NOT NULL,
-  `user_role` varchar(20) DEFAULT NULL,
   `menu_url` varchar(50) DEFAULT NULL,
   `expand` tinyint(4) DEFAULT NULL,
   `parent_code` varchar(20) DEFAULT NULL,
@@ -98,8 +112,10 @@ CREATE TABLE `sys_custommenu` (
 -- ----------------------------
 -- Records of sys_custommenu
 -- ----------------------------
-INSERT INTO `sys_custommenu` VALUES ('9f18b876569d4476af77e0f45c63562b', 'fghjj', '1230', null, null, '1', '123');
-INSERT INTO `sys_custommenu` VALUES ('aa', 'sss', '123', '123', '/user', '0', null);
+INSERT INTO `sys_custommenu` VALUES ('1c7f5ce128c8413189e7e8c39d6c0e38', 'RoleConfig', 'role-config', '/home/permission', '1', 'system');
+INSERT INTO `sys_custommenu` VALUES ('6ecf1ef9f68c47a08d26c85cb333200b', 'MenuConfig', 'menu-config', '/home/menuConfig', '1', 'system');
+INSERT INTO `sys_custommenu` VALUES ('7a28a894192c4b7fae125583a8f31056', 'System', 'system', '', '1', '123');
+INSERT INTO `sys_custommenu` VALUES ('aa', 'Menu', '123', '/user', '0', null);
 
 -- ----------------------------
 -- Table structure for `sys_permission`
