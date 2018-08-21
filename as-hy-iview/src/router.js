@@ -11,6 +11,37 @@ const routers = [{
     },
     component: (resolve) => require(['./views/login.vue'], resolve)
 }, {
+    path: '/system',
+    meta: {
+        title: 'system'
+    },
+    component: (resolve) => require(['./views/index.vue'], resolve),
+    children: [
+        {
+            path: 'roleConfig',
+            name: 'role-config',
+            meta: {
+                parent:'system',
+                title: 'roleConfig'
+            },
+            component: (resolve) => require(['./views/system/roleConfig.vue'], resolve)
+        },{
+            path: 'menuConfig',
+            name: 'menu-config',
+            meta: {
+                parent:'system',
+                title: 'menuConfig'
+            },
+            component: (resolve) => require(['./views/system/menuConfig.vue'], resolve)
+        }, {
+            path: '*',
+            name: 'error-404',
+            meta: {
+                title: '404-页面不存在'
+            },
+            component: (resolve) => require(['./views/404.vue'], resolve)
+        }]
+},{
     path: '/home',
     meta: {
         title: ''
@@ -31,27 +62,6 @@ const routers = [{
                 title: 'second'
             },
             component: (resolve) => require(['./views/home/second.vue'], resolve)
-        }, {
-            path: 'permission',
-            name: 'permission',
-            meta: {
-                title: 'third'
-            },
-            component: (resolve) => require(['./views/home/permission.vue'], resolve)
-        },{
-            path: 'menuConfig',
-            name: 'menuConfig',
-            meta: {
-                title: 'menuConfig'
-            },
-            component: (resolve) => require(['./views/home/menuConfig.vue'], resolve)
-        }, {
-            path: '*',
-            name: 'error-404',
-            meta: {
-                title: '404-页面不存在'
-            },
-            component: (resolve) => require(['./views/404.vue'], resolve)
         }]
 }, {
     path: '/*',

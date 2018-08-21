@@ -26,9 +26,9 @@
                                     </Col>
                                     <Col style="float:right">
                                         <Button type="primary" @click="configPermission">Config Permission</Button>
-                                        <Button type="primary" v-if="sccess" @click="addUserModel=true">Add User</Button>
-                                        <Button type="primary" v-if="sccess" @click="addRoleModel=true">Add Role</Button>
-                                        <Button type="primary" v-if="sccess && userList.length == 0" @click="removeRole">Remove Role</Button>
+                                        <Button type="primary" v-if="access" @click="addUserModel=true">Add User</Button>
+                                        <Button type="primary" v-if="access" @click="addRoleModel=true">Add Role</Button>
+                                        <Button type="primary" v-if="access && userList.length == 0" @click="removeRole">Remove Role</Button>
                                     </Col>
                                 </Row>
                                 <Table :columns="columnsList" :data="userList"></Table>
@@ -149,12 +149,12 @@
             let vm = this;
         },
         computed:{
-            sccess:function(){
+            access:function(){
                 let vm = this;
-                if(currentUser){
-                    return vm.currentRole.code != currentUser.currentRole.roleCode;
+                if(window.currentUser.roleCode != null){
+                    return vm.currentRole.code != window.currentUser.currentRole.roleCode;
                 }
-                return null;
+                return false;
             }
         },
         methods:{
@@ -183,7 +183,7 @@
             },
             saveUser(){
                 let vm = this;
-                if(vm.currentRole.code != currentUser.currentRole.roleCode){
+                if(vm.currentRole.code != window.currentUser.currentRole.roleCode){
                     vm.$http.post(vm.server_account+"/accounts/insertAccount/"+vm.currentRole.code,vm.userForm).then(function(data){
                         vm.getUserList();
                     });
@@ -215,7 +215,7 @@
                 children.push(_.cloneDeep(vm.roleForm));
                 vm.$set(vm.currentRole, 'children', children);
                 vm.$http.post(vm.server_account+"/accounts/insertUserRole",vm.roleForm).then(function(data){
-                    console.log(data);
+
                 });
                 vm.roleForm = {
                     code: '',
@@ -228,7 +228,6 @@
                 let vm = this;
                 vm.configPermission = true;
                 vm.$http.get(vm.server_account+"/accounts/getCustomPermissions").then(function(data){
-                    console.log(data);
                 });
             },
             savePermission(){
@@ -245,7 +244,7 @@
             deleteUser(index){
                 let vm = this;
                 let user = vm.userList[index];
-                if(user.id != currentUser.userId){
+                if(user.id != window.currentUser.userId){
                     vm.$Modal.confirm({
                         title: 'Confirm',
                         content: '<p>Do you want to delete this user?</p>',

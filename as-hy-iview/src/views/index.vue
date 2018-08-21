@@ -52,7 +52,7 @@
 <template>
     <div class="layout">
         <Layout>
-            <Menu mode="horizontal" theme="dark" active-name="1" :style="{position:'fixed', width: '100%',zIndex:'9999'}" @on-select="headMenuClick">
+            <Menu mode="horizontal" theme="dark" :style="{position:'fixed', width: '100%',zIndex:'9999'}" @on-select="headMenuClick">
                 <div class="layout-logo"></div>
                 <div class="layout-nav">
                     <MenuItem name="1">
@@ -81,13 +81,13 @@
             </Menu>
             <Layout :style="{padding: '60px 0 0 0',minHeight: '100vh'}">
                 <Sider collapsible :collapsed-width="100" v-model="isCollapsed">
-                    <Menu :active-name="nowPage.name" theme="dark" width="auto" :class="menuItemClasses" active-name="activeName" @on-select="toOtherPage">
-                        <Submenu v-for="menu in menuList" :key="menu.id" :name="menu.id">
+                    <Menu theme="dark" width="auto" :class="menuItemClasses" @on-select="toOtherPage">
+                        <Submenu v-for="menu in menuList" :key="menu.code" :name="menu.code">
                             <template slot="title">
                                 <Icon type="ios-navigate"></Icon>
-                                <span>{{menu.name}}</span>
+                                <span>{{menu.title}}</span>
                             </template>
-                            <MenuItem v-for='(ch,index) in menu.child' :key='ch.id' :name="ch.id"><span>{{ch.name}}</span>{{index}}</MenuItem>
+                            <MenuItem v-for='(ch,index) in menu.children' :key='ch.code' :name="ch.code"><span>{{ch.title}}</span>{{index}}</MenuItem>
                         </Submenu>
                     </Menu>
                 </Sider>
@@ -106,7 +106,8 @@
                 nowPage:{},
                 userInfo:{},
                 menuList: [],
-                headMenuList:[]
+                headMenuList:[],
+                currentUPage:{},
             };
         },
         computed: {
@@ -119,15 +120,15 @@
         },
         mounted(){
             let vm = this;
-            vm.menuList = window.menuList;
-            vm.headMenuList = window.headMenuList;
-            vm.toOtherPage(vm.menuList[0].child[0].id);
+            vm.$nextTick(function(){
+
+            })
         },
         methods: {
             verificationToken(){
                 let vm = this;
                 let token = vm.$cookies.get("iView-token");
-                let userRole = vm.$cookies.get("user_role");
+                let userRole = vm.$cookies.get("user-role");
                 if(token){
                     vm.$http.post(vm.server_auth+"/oauth/check_token?token="+token).then(function(data){
                         vm.getUserInfo();
@@ -141,10 +142,10 @@
                 vm.$http.get(vm.server_auth+"/users/current").then(function(data){
                     vm.userInfo = data.data.principal;
                     window.currentUser = data.data.principal;
-                    vm.headMenuList[2].name = vm.userInfo.username;
+                    vm.getMenuList();
+                    vm.getHeadMenuList();
                 }).catch(function (error) {
                     vm.$Message.success('Error!');
-                    vm.$router.push('/login')
                 });
             },
             toOtherPage(val){
@@ -152,12 +153,13 @@
                 let isGet = false;
                 //vm.activeName = val;
                 for(let menu of vm.menuList){
-                    for(let ch of menu.child){
-                        if(ch.id == val){
+                    for(let ch of menu.children){
+                        if(ch.code == val){
                             vm.nowPage = {
-                                id:ch.id,
-                                name:ch.name,
-                                url:ch.url,
+                                code:ch.code,
+                                title:ch.title,
+                                menuUrl:ch.menuUrl,
+                                name:ch.name
                             };
                             isGet = true;
                             break;
@@ -167,15 +169,14 @@
                         break;
                     }
                 }
-                vm.$router.push(vm.nowPage.url);
+                vm.$router.push(vm.nowPage.menuUrl);
             },
             changeUserRole(str){
                 let vm = this;
                 vm.$http.get(vm.server_account+"/accounts/changeUserRole/"+str).then(function(data){
-                    console.log(data);
+
                 }).catch(function (error) {
-                    vm.$Message.success('Error!');
-                    vm.$Message.success('Error!');
+                    vm.$Message.Error('Error!');
                 });
             },
             headMenuClick(data){
@@ -195,17 +196,35 @@
             logout(){
                 let vm = this;
                 vm.$http.get(vm.server_auth+"/users/logout").then(function(data){
-                    vm.$cookies.set("iView-token",'');
-                    vm.$cookies.set("refresh-iView-token",'');
-                    sessionStorage.setItem("token_key", '');
-                    vm.$router.push('/login')
+                    vm.$cookies.set("iView-token",'',-1);
+                    vm.$cookies.set("refresh-iView-token",'',-1);
+                    sessionStorage.clear();
+                    vm.$router.push('/login');
                 }).catch(function (error) {
                     vm.$Message.Error("Error!");
                 });
+            },
+            getMenuList(){
+                let vm = this;
+                vm.$http.get(vm.server_account+"/menu/getMenuList").then(function(response){
+                    vm.menuList = response.data.data.children;
+                    window.menuList = response.data.data.children;
+                    if(vm.nowPage.name){
+                        vm.nowPage.name = vm.currentUPage.title;
+                    }else{
+                        vm.toOtherPage(vm.menuList[0].children[0].code);
+                    }
+                });
+            },
+            getHeadMenuList(){
+                let vm = this;
+                vm.headMenuList = window.headMenuList;
+                vm.headMenuList[2].name = vm.userInfo.username;
             }
         },
         beforeRouteEnter(to, from, next) {
             next(function (vm) {
+                vm.currentUPage = to.meta;
                 vm.verificationToken();
             })
         }

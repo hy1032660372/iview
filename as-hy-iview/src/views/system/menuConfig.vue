@@ -216,7 +216,7 @@
                 children.push(_.cloneDeep(vm.menuForm));
                 vm.$set(vm.currentMenu, 'children', children);
                 vm.$http.post(vm.server_account+"/menu/insertMenu",vm.menuForm).then(function(data){
-                    console.log(data);
+
                 });
                 vm.menuForm = {
                     code: '',
@@ -229,7 +229,7 @@
                 let vm = this;
                 vm.configPermission = true;
                 vm.$http.get(vm.server_account+"/accounts/getCustomPermissions").then(function(data){
-                    console.log(data);
+
                 });
             },
             savePermission(){
