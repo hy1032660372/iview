@@ -172,7 +172,7 @@
                     vm.getUserList();
                 }
             },
-            getMenuList(){
+            getAllMenuList(){
                 let vm = this;
                 vm.$http.get(vm.server_account+"/menu/getMenuList").then(function(response){
                     vm.menuData = [];
@@ -268,7 +268,7 @@
         },
         beforeRouteEnter(to, from, next) {
             next(function (vm) {
-                vm.getMenuList();
+                vm.getAllMenuList();
             })
         }
     }

@@ -58,5 +58,4 @@ public class CustomMenuServiceImpl implements CustomMenuService {
         customMenuMapper.insertMenu(customMenu);
         return Message.info("Success");
     }
-
 }

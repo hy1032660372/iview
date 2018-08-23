@@ -17,7 +17,7 @@ public class SysRole {
 
     private String title;
 
-    private String code;
+    private String roleCode;
 
     private String parentCode;
 
@@ -47,12 +47,12 @@ public class SysRole {
         this.expand = expand;
     }
 
-    public String getCode() {
-        return code;
+    public String getRoleCode() {
+        return roleCode;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public void setRoleCode(String roleCode) {
+        this.roleCode = roleCode;
     }
 
     public String getParentCode() {

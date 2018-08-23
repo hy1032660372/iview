@@ -132,6 +132,9 @@
                 if(token){
                     vm.$http.post(vm.server_auth+"/oauth/check_token?token="+token).then(function(data){
                         vm.getUserInfo();
+                    }).catch(function (error) {
+                        vm.$Message.Error('Error!');
+                        vm.$router.push('/login')
                     });
                 }else{
                     vm.$router.push('/login')
@@ -206,12 +209,13 @@
             },
             getMenuList(){
                 let vm = this;
-                vm.$http.get(vm.server_account+"/menu/getMenuList").then(function(response){
-                    vm.menuList = response.data.data.children;
-                    window.menuList = response.data.data.children;
+                vm.$http.get(vm.server_account+"/roleAndMenu/getMenuByRole").then(function(response){
+                    vm.menuList = response.data.data == null?[]:response.data.data.children;
+                    console.log(vm.menuList);
+                    window.menuList = vm.menuList.length == 0 ?[]:response.data.data.children;
                     if(vm.nowPage.name){
                         vm.nowPage.name = vm.currentUPage.title;
-                    }else{
+                    }else if(vm.menuList.length > 0){
                         vm.toOtherPage(vm.menuList[0].children[0].code);
                     }
                 });

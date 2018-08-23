@@ -20,7 +20,7 @@
           t.username as username,
           t.password as "password",
           t.age as age,
-          r.code as roleCode,
+          r.role_code as roleCode,
           r.title as title
         FROM sys_account t
         LEFT JOIN account_role ar ON t.id = ar.account_id

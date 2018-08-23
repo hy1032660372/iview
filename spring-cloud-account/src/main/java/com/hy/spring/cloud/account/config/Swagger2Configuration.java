@@ -14,7 +14,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 /**
  * Swagger2 配置
  *
- * @author NiBo
+ * @author as_hy
  */
 @Configuration
 @EnableSwagger2

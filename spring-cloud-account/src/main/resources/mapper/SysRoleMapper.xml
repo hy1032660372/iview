@@ -6,7 +6,7 @@
         SELECT
           t.id as id,
           t.title as title,
-          t.code as code,
+          t.role_code as roleCode,
           t.expand as expand,
           t.parent_code as parentCode
         FROM sys_role t
@@ -16,7 +16,7 @@
         SELECT
           t.id as id,
           t.title as title,
-          t.code as code,
+          t.role_code as roelCode,
           t.expand as expand,
           t.parent_code as parentCode
         FROM sys_role t
@@ -28,7 +28,7 @@
         (
             id,
             title,
-            code,
+            role_code,
             expand,
             parent_code
         )
@@ -36,7 +36,7 @@
         (
             #{id},
             #{title},
-            #{code},
+            #{roleCode},
             #{expand},
             #{parentCode}
         )
@@ -44,6 +44,6 @@
 
     <delete id="removeRole" parameterType="java.lang.String">
         delete from sys_role
-        WHERE code = #{roleCode}
+        WHERE role_code = #{roleCode}
     </delete>
 </mapper>
