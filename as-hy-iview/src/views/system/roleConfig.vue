@@ -227,7 +227,7 @@
             configPermission(){
                 let vm = this;
                 vm.configPermission = true;
-                vm.$http.get(vm.server_account+"/accounts/getCustomPermissions").then(function(data){
+                vm.$http.get(vm.server_account+"/permissions/getUserAuthPermissions").then(function(data){
                 });
             },
             savePermission(){

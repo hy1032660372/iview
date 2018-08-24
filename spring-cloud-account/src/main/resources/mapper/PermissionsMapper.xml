@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hy.spring.cloud.account.mapper.PermissionsServiceMapper">
+    <select id="getUserAuthPermissions" parameterType="java.lang.String" resultType="com.hy.spring.cloud.account.domain.Entity.Permissions">
+        SELECT
+          t.id as id,
+          t.permission_code as permissionCode,
+          t.permission_name as permissionName
+        FROM sys_permission t
+    </select>
+</mapper>

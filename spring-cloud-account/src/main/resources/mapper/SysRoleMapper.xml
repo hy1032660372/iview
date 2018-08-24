@@ -6,7 +6,7 @@
         SELECT
           t.id as id,
           t.title as title,
-          t.role_code as roleCode,
+          t.role_code as code,
           t.expand as expand,
           t.parent_code as parentCode
         FROM sys_role t
@@ -16,8 +16,18 @@
         SELECT
           t.id as id,
           t.title as title,
-          t.role_code as roelCode,
+          t.role_code as code,
           t.expand as expand,
+          t.parent_code as parentCode
+        FROM sys_role t
+        WHERE t.parent_code = #{roleCode}
+    </select>
+
+    <select id="getUserAuthRole" parameterType="java.lang.String" resultType="com.hy.spring.cloud.account.domain.Entity.SysRole">
+        SELECT
+          t.id as id,
+          t.title as title,
+          t.role_code as roleCode,
           t.parent_code as parentCode
         FROM sys_role t
         WHERE t.parent_code = #{roleCode}

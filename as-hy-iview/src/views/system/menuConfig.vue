@@ -28,10 +28,10 @@
                                         <Button type="primary" @click="configPermission">Config Permission</Button>
                                         <Button type="primary" v-if="sccess" @click="addUserModel=true">Add User</Button>
                                         <Button type="primary" v-if="sccess" @click="addMenuModel=true">Add Menu</Button>
-                                        <Button type="primary" v-if="sccess && userList.length == 0" @click="removeMenu">Remove Menu</Button>
+                                        <Button type="primary" v-if="sccess && roleList.length == 0" @click="removeMenu">Remove Menu</Button>
                                     </Col>
                                 </Row>
-                                <Table :columns="columnsList" :data="userList"></Table>
+                                <Table :columns="columnsList" :data="roleList"></Table>
                             </Card>
                         </div>
                     </Col>
@@ -83,7 +83,7 @@
         data () {
             return {
                 menuData: [],
-                userList:[],
+                roleList:[],
                 permissionsData: [{
                     title: 'parent 1',
                     expand: true,
@@ -104,31 +104,8 @@
                     ]}
                 ],
                 columnsList:[
-                    {title: 'username',key: 'username'},
-                    {title: 'age',key: 'age'},
-                    {title: 'Action',key: 'action',
-                        width: 150,
-                        align: 'center',
-                        render: (h, params) => {
-                            return h('div', [
-                                h('Button', {
-                                    props: {type: 'primary',size: 'small'},
-                                    style: {marginRight: '5px'},
-                                    on: {click: () => {
-                                            this.show(params.index)
-                                        }
-                                    }
-                                }, 'View'),
-                                h('Button', {
-                                    props: {type: 'error', size: 'small'},
-                                    on: {click: () => {
-                                            this.deleteUser(params.index);
-                                        }
-                                    }
-                                }, 'Delete')
-                            ]);
-                        }
-                    }
+                    {type: 'selection',  width: 80,  align: 'center'},
+                    {title: 'roleName',key: 'title'}
                 ],
                 addUserModel:false,
                 addMenuModel:false,
@@ -169,7 +146,7 @@
                 let vm = this;
                 if(data.length != 0){
                     vm.currentMenu = data[0];
-                    vm.getUserList();
+                    vm.getRoleList();
                 }
             },
             getAllMenuList(){
@@ -178,12 +155,14 @@
                     vm.menuData = [];
                     vm.menuData.push(response.data.data);
                     vm.currentMenu = vm.menuData[0];
-                    vm.getUserList();
+                    vm.getRoleList();
                 });
             },
-            getUserList(){
+            getRoleList(){
                 let vm = this;
-                console.log("aaaaaaaaaa");
+                vm.$http.get(vm.server_account+"/role/getUserAuthRole").then(function(response){
+                    vm.roleList = response.data.data;
+                });
             },
             saveUser(){
                 let vm = this;
@@ -240,19 +219,19 @@
             show (index) {
                 this.$Modal.info({
                     title: 'User Info',
-                    content: `Name：${this.userList[index].username}<br>Age：${this.userList[index].age}`
+                    content: `Name：${this.roleList[index].username}<br>Age：${this.roleList[index].age}`
                 })
             },
             deleteUser(index){
                 let vm = this;
-                let user = vm.userList[index];
+                let user = vm.roleList[index];
                 if(user.id != currentUser.userId){
                     vm.$Modal.confirm({
                         title: 'Confirm',
                         content: '<p>Do you want to delete this user?</p>',
                         onOk: () => {
                             vm.$http.delete(vm.server_account+"/accounts/"+user.id).then(function(data){
-                                vm.userList.splice(index,1);
+                                vm.roleList.splice(index,1);
                                 vm.$Message.info('Clicked ok');
                             });
                         },

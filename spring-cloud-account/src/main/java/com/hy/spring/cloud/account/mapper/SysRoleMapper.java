@@ -19,4 +19,6 @@ public interface SysRoleMapper extends MyMapper<Account> {
     void removeRole(@Param("roleCode") String roleCode);
 
     List<SysRoleImpl> getRoleChildren(@Param("roleCode") String roleCode);
+
+    List<SysRole> getUserAuthRole(@Param("roleCode") SysRole currentRole);
 }

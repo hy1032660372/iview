@@ -3,17 +3,24 @@ package com.hy.spring.cloud.account.service.impl;
 import com.hy.spring.cloud.account.domain.Message;
 import com.hy.spring.cloud.account.domain.Entity.SysRole;
 import com.hy.spring.cloud.account.domain.SysRoleImpl;
+import com.hy.spring.cloud.account.domain.User;
 import com.hy.spring.cloud.account.mapper.AccountMapper;
 import com.hy.spring.cloud.account.mapper.SysRoleMapper;
 import com.hy.spring.cloud.account.service.SysRoleService;
+import com.hy.spring.cloud.account.util.ObjectUtil;
 import com.hy.spring.cloud.account.util.TreeUtil;
 import com.hy.spring.cloud.account.util.UUIDUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class SysRoleServiceImpl implements SysRoleService {
@@ -27,19 +34,10 @@ public class SysRoleServiceImpl implements SysRoleService {
     private AccountMapper accountMapper;
 
     @Override
-    public SysRoleImpl getUserRoleList() {
+    public SysRoleImpl getUserRoleList(Principal principal) {
         logger.info("load user role");
         List<SysRoleImpl> roleList = sysRoleMapper.getUserRoleList();
-
-        //找到根节点
-        SysRoleImpl sysRole = new SysRoleImpl();
-        for(int i = 0; i < roleList.size(); i++){
-            sysRole = roleList.get(i);
-            if(sysRole.getParentCode() == null || "".equals(sysRole.getParentCode())){
-                break;
-            }
-        }
-        TreeUtil.converseToTree(roleList,sysRole);
+        SysRoleImpl sysRole = ObjectUtil.getRoleTree(principal,roleList);
         return sysRole;
     }
 
@@ -63,19 +61,12 @@ public class SysRoleServiceImpl implements SysRoleService {
         }
     }
 
-    /**
-     * 将树转化成List
-     * @param roleList
-     * @param sysRole
-     */
-    void converseToList(List<SysRoleImpl> roleList,SysRoleImpl sysRole){
-        roleList.add(sysRole);
-        SysRoleImpl current;
-        List<SysRoleImpl> childrenList = sysRole.getChildren();
-        for(int i = 0; i < roleList.size(); i++){
-            current = roleList.get(i);
-            converseToList(roleList,current);
-        }
+    @Override
+    public Message getUserAuthRole(Principal principal) {
+        List<SysRoleImpl> list = new ArrayList<>();
+        List<SysRoleImpl> roleList = sysRoleMapper.getUserRoleList();
+        SysRoleImpl sysRole = ObjectUtil.getRoleTree(principal,roleList);
+        TreeUtil.converseToList(list,sysRole);
+        return Message.info(list);
     }
-
 }

@@ -1,5 +1,7 @@
 package com.hy.spring.cloud.account.util;
 
+import com.hy.spring.cloud.account.domain.SysRoleImpl;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +13,11 @@ import java.util.List;
  **/
 public class TreeUtil {
 
+    /**
+     * 将List转化成Tree
+     * @param nodeList
+     * @param node
+     */
     public static<T extends TreeData<T>> void converseToTree(List<T> nodeList, T node){
         List<TreeData<T>> children = new ArrayList<>();
         T t;
@@ -22,5 +29,20 @@ public class TreeUtil {
             }
         }
         node.setChildren(children);
+    }
+
+    /**
+     * 将树转化成List
+     * @param roleList
+     * @param sysRole
+     */
+    public static void converseToList(List<SysRoleImpl> roleList, SysRoleImpl sysRole){
+        roleList.add(sysRole);
+        SysRoleImpl current;
+        List<SysRoleImpl> childrenList = sysRole.getChildren();
+        for(int i = 0; i < childrenList.size(); i++){
+            current = childrenList.get(i);
+            converseToList(roleList,current);
+        }
     }
 }
