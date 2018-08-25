@@ -10,7 +10,7 @@ import java.util.List;
 @Mapper
 public interface RoleAndMenuMapper {
 
-    void insertRoleAndMenu(List<RoleAndMenu> roleAndMenuList);
+    void insertRoleAndMenu(@Param("list") List<RoleAndMenu> roleAndMenuList);
 
     List<CustomMenuImpl> getMenuByRole(@Param("roleCode") String roleCode);
 }

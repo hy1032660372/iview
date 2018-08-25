@@ -34,6 +34,7 @@ public class RoleMenuController {
     @Autowired
     private RoleMenuService roleMenuService;
 
+    @RequestMapping(value = "insertRoleAndMenu", method = RequestMethod.POST)
     public Message insertRoleAndMenu(@RequestBody List<RoleAndMenu> roleAndMenuList ){
         return roleMenuService.insertRoleAndMenu(roleAndMenuList);
     }

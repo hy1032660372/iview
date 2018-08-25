@@ -6,6 +6,7 @@ import com.hy.spring.cloud.account.domain.Message;
 import com.hy.spring.cloud.account.domain.User;
 import com.hy.spring.cloud.account.mapper.RoleAndMenuMapper;
 import com.hy.spring.cloud.account.service.RoleMenuService;
+import com.hy.spring.cloud.account.util.ObjectUtil;
 import com.hy.spring.cloud.account.util.TreeUtil;
 import com.hy.spring.cloud.account.util.UUIDUtil;
 import org.slf4j.Logger;
@@ -43,16 +44,14 @@ public class RoleMenuServiceImpl implements RoleMenuService {
 
     @Override
     public Message getMenuByUserName(Principal principal) {
-        OAuth2Authentication oa = ((OAuth2Authentication) principal);
-        HashMap userInfo = (HashMap)oa.getUserAuthentication().getDetails();
-        User user = new User((Map)userInfo.get("principal"));
+        User user = ObjectUtil.getUser(principal);
         List<CustomMenuImpl> menuList = roleAndMenuMapper.getMenuByRole(user.getCurrentRole().getRoleCode());
 
         //找到根节点
         CustomMenuImpl customMenu = new CustomMenuImpl();
         for(int i = 0; i < menuList.size(); i++){
             customMenu = menuList.get(i);
-            if(user.getCurrentRole().getRoleCode().equals(customMenu.getParentCode())){
+            if(user.getCurrentRole().getRoleCode().equals(customMenu.getCode())){
                 break;
             }
         }

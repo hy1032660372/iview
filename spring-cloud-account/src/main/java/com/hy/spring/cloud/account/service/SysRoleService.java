@@ -15,4 +15,6 @@ public interface SysRoleService {
     Message removeRole(String roleCode);
 
     Message getUserAuthRole(Principal principal);
+
+    Message getRoleCurrent(Principal principal,String menuCode);
 }

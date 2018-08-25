@@ -3,7 +3,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.hy.spring.cloud.account.mapper.RoleAndMenuMapper">
 
-    <insert id="insertRoleAndMenu" parameterType="com.hy.spring.cloud.account.domain.Entity.RoleAndMenu">
+    <insert id="insertRoleAndMenu" parameterType="java.util.List">
         insert into role_menu
         (
             id,
@@ -11,11 +11,13 @@
             menu_code
         )
         VALUES
-        (
-            #{id},
-            #{roleCode},
-            #{menuCode}
-        )
+        <foreach collection="list" item="item" index= "index" separator =",">
+            (
+            #{item.id},
+            #{item.roleCode},
+            #{item.menuCode}
+            )
+        </foreach>
     </insert>
 
     <select id="getMenuByRole" parameterType="java.lang.String" resultType="com.hy.spring.cloud.account.domain.CustomMenuImpl">

@@ -25,33 +25,21 @@
                                         {{currentMenu.title}}
                                     </Col>
                                     <Col style="float:right">
-                                        <Button type="primary" @click="configPermission">Config Permission</Button>
-                                        <Button type="primary" v-if="sccess" @click="addUserModel=true">Add User</Button>
-                                        <Button type="primary" v-if="sccess" @click="addMenuModel=true">Add Menu</Button>
-                                        <Button type="primary" v-if="sccess && roleList.length == 0" @click="removeMenu">Remove Menu</Button>
+                                        <Button type="primary" v-if="access" @click="saveRoleAndMenu">Save Role And Menu</Button>
+                                        <Button type="primary" v-if="access" @click="addMenuModel=true">Add Menu</Button>
+                                        <Button type="primary" v-if="access && roleList.length == 0" @click="removeMenu">Remove Menu</Button>
                                     </Col>
                                 </Row>
-                                <Table :columns="columnsList" :data="roleList"></Table>
+                                <Table
+                                        :columns="columnsList"
+                                        :data="roleList"
+                                        @on-select="onSelectRole"></Table>
                             </Card>
                         </div>
                     </Col>
                 </Row>
             </div>
         </Content>
-        <Modal
-                v-model="addUserModel"
-                title="Add User"
-                @on-ok="saveUser"
-                @on-cancel="cancel">
-            <Form :model="userForm" label-position="left" :label-width="100">
-                <FormItem label="username">
-                    <Input :maxlength="20" v-model="userForm.username"></Input>
-                </FormItem>
-                <FormItem label="age">
-                    <Input number :maxlength="3" v-model="userForm.age"></Input>
-                </FormItem>
-            </Form>
-        </Modal>
         <Modal
                 v-model="addMenuModel"
                 title="Add Menu"
@@ -69,13 +57,6 @@
                 </FormItem>
             </Form>
         </Modal>
-        <Modal
-                v-model="configPermissionModel"
-                title="Config Permission"
-                @on-ok="savePermission"
-                @on-cancel="cancel">
-            <Tree :data="permissionsData" show-checkbox></Tree>
-        </Modal>
     </div>
 </template>
 <script>
@@ -84,6 +65,7 @@
             return {
                 menuData: [],
                 roleList:[],
+                selection:[],
                 permissionsData: [{
                     title: 'parent 1',
                     expand: true,
@@ -107,9 +89,7 @@
                     {type: 'selection',  width: 80,  align: 'center'},
                     {title: 'roleName',key: 'title'}
                 ],
-                addUserModel:false,
                 addMenuModel:false,
-                configPermissionModel:false,
                 userForm: {
                     username: '',
                     age: '',
@@ -133,7 +113,7 @@
             let vm = this;
         },
         computed:{
-            sccess:function(){
+            access:function(){
                 let vm = this;
                 if(currentUser){
                     return true;
@@ -142,6 +122,10 @@
             }
         },
         methods:{
+            onSelectRole(selection){
+                let vm = this;
+                vm.selection = selection;
+            },
             onSelectChange(data){
                 let vm = this;
                 if(data.length != 0){
@@ -162,15 +146,42 @@
                 let vm = this;
                 vm.$http.get(vm.server_account+"/role/getUserAuthRole").then(function(response){
                     vm.roleList = response.data.data;
+                    vm.getRoleCurrent();
                 });
             },
-            saveUser(){
+            getRoleCurrent(){
                 let vm = this;
-                if(vm.currentMenu.code != currentMenu.currentMenu.roleCode){
-                    console.log("save menu permission");
-                }else{
-                    vm.$Message.warning('Can not do this!');
-                }
+                let param = {
+                    menuCode:vm.currentMenu.code
+                };
+                let roleListBack = _.cloneDeep(vm.roleList);
+                vm.$http.get(vm.server_account+"/role/getRoleCurrent",{params:param}).then(function(response){
+                    _.each(roleListBack,function(role){
+                        role._checked = false;
+                        _.each(response.data.data,function(data){
+                            if(data.roleCode == role.code){
+                                role._checked = true;
+                            }
+                        });
+                    });
+                    vm.roleList = roleListBack;
+                });
+            },
+            saveRoleAndMenu(){
+                let vm = this;
+                let roleAndMenu;
+                let roleAndMenuList = [];
+                _.each(vm.selection,function (role) {
+                    console.log(role);
+                    roleAndMenu = {
+                        roleCode:role.code,
+                        menuCode:vm.currentMenu.code
+                    };
+                    roleAndMenuList.push(roleAndMenu);
+                });
+                vm.$http.post(vm.server_account+"/roleAndMenu/insertRoleAndMenu",roleAndMenuList).then(function(response){
+                    console.log(response);
+                });
             },
             removeMenu(){
                 let vm = this;
@@ -210,9 +221,6 @@
                 vm.$http.get(vm.server_account+"/accounts/getCustomPermissions").then(function(data){
 
                 });
-            },
-            savePermission(){
-                let vm = this;
             },
             cancel(){
             },

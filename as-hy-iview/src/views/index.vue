@@ -133,7 +133,7 @@
                     vm.$http.post(vm.server_auth+"/oauth/check_token?token="+token).then(function(data){
                         vm.getUserInfo();
                     }).catch(function (error) {
-                        vm.$Message.Error('Error!');
+                        vm.$Message.error('Error!');
                         vm.$router.push('/login')
                     });
                 }else{

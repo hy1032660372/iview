@@ -23,14 +23,15 @@
         WHERE t.parent_code = #{roleCode}
     </select>
 
-    <select id="getUserAuthRole" parameterType="java.lang.String" resultType="com.hy.spring.cloud.account.domain.Entity.SysRole">
+    <select id="getRoleCurrent" parameterType="java.lang.String" resultType="com.hy.spring.cloud.account.domain.Entity.SysRole">
         SELECT
-          t.id as id,
-          t.title as title,
-          t.role_code as roleCode,
-          t.parent_code as parentCode
-        FROM sys_role t
-        WHERE t.parent_code = #{roleCode}
+          r.id as id,
+          r.title as title,
+          r.role_code as roleCode,
+          r.parent_code as parentCode
+        FROM sys_role r
+        INNER JOIN role_menu rm ON rm.role_code = r.role_code
+        WHERE rm.menu_code = #{menuCode}
     </select>
 
     <insert id="insertRole" parameterType="com.hy.spring.cloud.account.domain.Entity.SysRole">

@@ -226,9 +226,9 @@
             },
             configPermission(){
                 let vm = this;
-                vm.configPermission = true;
-                vm.$http.get(vm.server_account+"/permissions/getUserAuthPermissions").then(function(data){
-                });
+                vm.configPermissionModel = true;
+                // vm.$http.get(vm.server_account+"/permissions/getUserAuthPermissions").then(function(data){
+                // });
             },
             savePermission(){
                 let vm = this;

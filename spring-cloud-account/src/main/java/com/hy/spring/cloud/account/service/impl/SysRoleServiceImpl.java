@@ -69,4 +69,11 @@ public class SysRoleServiceImpl implements SysRoleService {
         TreeUtil.converseToList(list,sysRole);
         return Message.info(list);
     }
+
+    @Override
+    public Message getRoleCurrent(Principal principal,String menuCode) {
+        User user = ObjectUtil.getUser(principal);
+        List<SysRole> sysRoleList = sysRoleMapper.getRoleCurrent(menuCode);
+        return Message.info(sysRoleList);
+    }
 }

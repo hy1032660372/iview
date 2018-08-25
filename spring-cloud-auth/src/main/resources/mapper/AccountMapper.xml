@@ -24,7 +24,7 @@
           r.title as title
         FROM sys_account t
         LEFT JOIN account_role ar ON t.id = ar.account_id
-        LEFT JOIN sys_role r on ar.role_code = r.id
+        LEFT JOIN sys_role r on ar.role_code = r.role_code
         WHERE t.username = #{username}
     </select>
 
