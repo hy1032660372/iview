@@ -11,4 +11,5 @@ public interface PermissionsServiceMapper {
 
     List<Permissions> getUserAuthPermissions(@Param("roleCode") String roleCode);
 
+    void insertPermission(Permissions permissions);
 }

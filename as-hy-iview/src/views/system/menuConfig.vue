@@ -5,7 +5,7 @@
     <div class="layout">
         <Content :style="{padding: '0px 16px 16px'}">
             <Breadcrumb :style="{margin: '16px 0'}">
-                <BreadcrumbItem>Home</BreadcrumbItem>
+                <BreadcrumbItem>System</BreadcrumbItem>
                 <BreadcrumbItem>Menu</BreadcrumbItem>
             </Breadcrumb>
             <div>
@@ -22,9 +22,10 @@
                             <Card :bordered="false">
                                 <Row style="padding-bottom: 20px">
                                     <Col span="8">
-                                        {{currentMenu.title}}
+                                        <Button type="text" v-if="currentMenu.code!='root-menu'" @click="configMenuModel=true">{{currentMenu.title}}</Button>
                                     </Col>
                                     <Col style="float:right">
+                                        <Button type="primary" v-if="access" @click="permissionModel=true">addPermission</Button>
                                         <Button type="primary" v-if="access" @click="saveRoleAndMenu">Save Role And Menu</Button>
                                         <Button type="primary" v-if="access" @click="addMenuModel=true">Add Menu</Button>
                                         <Button type="primary" v-if="access && roleList.length == 0" @click="removeMenu">Remove Menu</Button>
@@ -57,6 +58,37 @@
                 </FormItem>
             </Form>
         </Modal>
+        <Modal
+                v-model="configMenuModel"
+                title="config Role"
+                @on-ok="saveMenu"
+                @on-cancel="cancel">
+            <Form :model="currentMenu" label-position="right" :label-width="100">
+                <FormItem label="Title">
+                    <Input v-model="currentMenu.title"></Input>
+                </FormItem>
+                <FormItem label="code">
+                    <Input v-model="currentMenu.code"></Input>
+                </FormItem>
+                <FormItem label="menuUrl">
+                    <Input v-model="currentMenu.menuUrl"></Input>
+                </FormItem>
+            </Form>
+        </Modal>
+        <Modal
+                v-model="permissionModel"
+                title="Config Permission"
+                @on-ok="savePermission"
+                @on-cancel="cancel">
+            <Form :model="permission" label-position="right" :label-width="100">
+                <FormItem label="Name">
+                    <Input v-model="permission.permissionName"></Input>
+                </FormItem>
+                <FormItem label="Code">
+                    <Input v-model="permission.permissionCode"></Input>
+                </FormItem>
+            </Form>
+        </Modal>
     </div>
 </template>
 <script>
@@ -66,6 +98,8 @@
                 menuData: [],
                 roleList:[],
                 selection:[],
+                permissionModel:false,
+                configMenuModel:false,
                 permissionsData: [{
                     title: 'parent 1',
                     expand: true,
@@ -102,6 +136,7 @@
                     expand: true
                 },
                 currentMenu:{},
+                permission:{},
                 pageQuery:{
                     page: 0,
                     size: 0,
@@ -122,6 +157,17 @@
             }
         },
         methods:{
+            saveMenu(){
+                let vm = this;
+
+            },
+            savePermission(){
+                let vm = this;
+                vm.$http.post(vm.server_account+"/permissions/insertPermission",vm.permission).then(function(response){
+                    vm.roleList = response.data.data;
+                    vm.getRoleCurrent();
+                });
+            },
             onSelectRole(selection){
                 let vm = this;
                 vm.selection = selection;
@@ -130,41 +176,16 @@
                 let vm = this;
                 if(data.length != 0){
                     vm.currentMenu = data[0];
-                    vm.getRoleList();
+
                 }
             },
-            getAllMenuList(){
+            getMenuByCurrentRole(){
                 let vm = this;
-                vm.$http.get(vm.server_account+"/menu/getMenuList").then(function(response){
+                vm.$http.get(vm.server_account+"/roleAndMenu/getTreeMenuByCurrentRole").then(function(response){
                     vm.menuData = [];
                     vm.menuData.push(response.data.data);
                     vm.currentMenu = vm.menuData[0];
-                    vm.getRoleList();
-                });
-            },
-            getRoleList(){
-                let vm = this;
-                vm.$http.get(vm.server_account+"/role/getUserAuthRole").then(function(response){
-                    vm.roleList = response.data.data;
-                    vm.getRoleCurrent();
-                });
-            },
-            getRoleCurrent(){
-                let vm = this;
-                let param = {
-                    menuCode:vm.currentMenu.code
-                };
-                let roleListBack = _.cloneDeep(vm.roleList);
-                vm.$http.get(vm.server_account+"/role/getRoleCurrent",{params:param}).then(function(response){
-                    _.each(roleListBack,function(role){
-                        role._checked = false;
-                        _.each(response.data.data,function(data){
-                            if(data.roleCode == role.code){
-                                role._checked = true;
-                            }
-                        });
-                    });
-                    vm.roleList = roleListBack;
+
                 });
             },
             saveRoleAndMenu(){
@@ -172,16 +193,20 @@
                 let roleAndMenu;
                 let roleAndMenuList = [];
                 _.each(vm.selection,function (role) {
-                    console.log(role);
                     roleAndMenu = {
                         roleCode:role.code,
                         menuCode:vm.currentMenu.code
                     };
                     roleAndMenuList.push(roleAndMenu);
                 });
-                vm.$http.post(vm.server_account+"/roleAndMenu/insertRoleAndMenu",roleAndMenuList).then(function(response){
-                    console.log(response);
-                });
+                if(roleAndMenuList.length>0){
+                    vm.$http.post(vm.server_account+"/roleAndMenu/insertRoleAndMenu",roleAndMenuList).then(function(response){
+                        console.log(response);
+                    });
+                }else{
+                    vm.$Message.warning("");
+                    vm.$Message.warning("Have no change");
+                }
             },
             removeMenu(){
                 let vm = this;
@@ -190,7 +215,7 @@
                     content: '<p>Do you want to delete this role?</p>',
                     onOk: () => {
                         vm.$http.get(vm.server_account+"/menu/removeMenu/"+vm.currentMenu.code).then(function(data){
-                            vm.getRoleList();
+
                         });
                     },
                     onCancel: () => {
@@ -255,7 +280,7 @@
         },
         beforeRouteEnter(to, from, next) {
             next(function (vm) {
-                vm.getAllMenuList();
+                vm.getMenuByCurrentRole();
             })
         }
     }

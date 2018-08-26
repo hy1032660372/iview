@@ -26,6 +26,8 @@ public class CustomMenu {
 
     private String parentCode;
 
+    private String icon;
+
     public String getId() {
         return id;
     }
@@ -72,5 +74,13 @@ public class CustomMenu {
 
     public void setParentCode(String parentCode) {
         this.parentCode = parentCode;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 }

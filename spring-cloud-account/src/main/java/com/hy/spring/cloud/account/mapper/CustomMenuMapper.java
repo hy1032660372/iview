@@ -10,8 +10,6 @@ import java.util.List;
 @Mapper
 public interface CustomMenuMapper {
 
-    List<CustomMenuImpl> getCustomMenuList();
-
     void removeMenu(@Param("menuCode") String menuCode);
 
     void insertMenu(CustomMenu customMenu);

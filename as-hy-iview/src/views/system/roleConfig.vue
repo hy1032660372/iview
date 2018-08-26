@@ -5,7 +5,7 @@
     <div class="layout">
         <Content :style="{padding: '0px 16px 16px'}">
             <Breadcrumb :style="{margin: '16px 0'}">
-                <BreadcrumbItem>Home</BreadcrumbItem>
+                <BreadcrumbItem>System</BreadcrumbItem>
                 <BreadcrumbItem>Role</BreadcrumbItem>
             </Breadcrumb>
             <div>
@@ -22,10 +22,11 @@
                             <Card :bordered="false">
                                 <Row style="padding-bottom: 20px">
                                     <Col span="8">
-                                        {{currentRole.title}}
+                                        <Button type="text" v-if="currentRole.code!='199277'" @click="configRoleModel=true">{{currentRole.title}}</Button>
                                     </Col>
                                     <Col style="float:right">
-                                        <Button type="primary" @click="configPermission">Config Permission</Button>
+                                        <Button type="primary" @click="configMenu">Config Menu</Button>
+                                        <Button type="primary" @click="configPermissionModel = true">Config Permission</Button>
                                         <Button type="primary" v-if="access" @click="addUserModel=true">Add User</Button>
                                         <Button type="primary" v-if="access" @click="addRoleModel=true">Add Role</Button>
                                         <Button type="primary" v-if="access && userList.length == 0" @click="removeRole">Remove Role</Button>
@@ -55,11 +56,25 @@
         <Modal
                 v-model="addRoleModel"
                 title="Add Role"
-                @on-ok="saveRole"
+                @on-ok="addRole"
                 @on-cancel="cancel">
             <Form :model="roleForm" label-position="right" :label-width="100">
                 <FormItem label="Title">
                     <Input v-model="roleForm.title"></Input>
+                </FormItem>
+            </Form>
+        </Modal>
+        <Modal
+                v-model="configRoleModel"
+                title="Config Role"
+                @on-ok="saveRole"
+                @on-cancel="cancel">
+            <Form :model="currentRole" label-position="left" :label-width="100">
+                <FormItem label="title">
+                    <Input :maxlength="20" v-model="currentRole.title"></Input>
+                </FormItem>
+                <FormItem label="code">
+                    <Input :maxlength="20" v-model="currentRole.code"></Input>
                 </FormItem>
             </Form>
         </Modal>
@@ -70,6 +85,13 @@
                 @on-cancel="cancel">
             <Tree :data="permissionsData" show-checkbox></Tree>
         </Modal>
+        <Modal
+                v-model="configMenuModel"
+                title="Config Menu"
+                @on-ok="saveMenu"
+                @on-cancel="cancel">
+            <Tree :data="menuTreeData" show-checkbox></Tree>
+        </Modal>
     </div>
 </template>
 <script>
@@ -78,25 +100,13 @@
             return {
                 roleData: [],
                 userList:[],
-                permissionsData: [{
-                    title: 'parent 1',
-                    expand: true,
-                    children: [{
-                        title: 'parent 1-1',
-                        expand: true,
-                        children: [
-                            {title: 'leaf 1-1-1'},
-                            {title: 'leaf 1-1-2'}]
-                    },{
-                        title: 'parent 1-2',
-                        expand: true,
-                        children: [
-                            {title: 'leaf 1-2-1'},
-                            {title: 'leaf 1-2-1'}
-                        ]
-                    }
-                    ]}
-                ],
+                configMenuModel:false,
+                configRoleModel:false,
+                permissionsData: [],
+                menuData:[],
+                menuDataList:[],
+                menuAuthDataList:[],
+                menuTreeData:[],
                 columnsList:[
                     {title: 'username',key: 'username'},
                     {title: 'age',key: 'age'},
@@ -126,6 +136,7 @@
                 ],
                 addUserModel:false,
                 addRoleModel:false,
+                configMenuModel:false,
                 configPermissionModel:false,
                 userForm: {
                     username: '',
@@ -147,6 +158,14 @@
         },
         mounted(){
             let vm = this;
+            vm.$http.all([
+                vm.$http.get(vm.server_account+"/roleAndMenu/getTreeMenuByCurrentRole"),
+                vm.$http.get(vm.server_account+"/roleAndMenu/getMenuByCurrentRole")
+            ]).then(vm.$http.spread(function (menuData, menuDataList) {
+                    // 上面两个请求都完成后，才执行这个回调方法
+                vm.menuData = menuData.data.data.children;
+                vm.menuDataList = menuDataList.data.data;
+            }));
         },
         computed:{
             access:function(){
@@ -158,6 +177,40 @@
             }
         },
         methods:{
+            configMenu(){
+                let vm = this;
+                vm.configMenuModel = true;
+                vm.menuTreeData = vm.menuData;
+                let param = {
+                    roleCode:vm.currentRole.code
+                };
+                let rootMenu = {};
+                vm.$http.get(vm.server_account+"/roleAndMenu/getMenuByRole",{params:param}).then(function(response){
+                    let data = response.data.data.children;
+                    _.each(vm.menuDataList,function(v){
+                        v.selected = false;
+                        _.each(data,function(e){
+                            if(v.code == e.code){
+                                v.selected = true
+                            }
+                        });
+                    });
+                    vm.convertToTree(vm.menuDataList,rootMenu);
+                });
+            },
+            convertToTree(menuDataList,rootMenu){
+                let vm = this;
+                let children = [];
+                let menu;
+                for(let i = 0; i < menuDataList.length; i++){
+                    menu = menuDataList[i];
+                    if(rootMenu.code == menu.getParentCode){
+                        children.push(menu);
+                        convertToTree(menuDataList,rootMenu);
+                    }
+                }
+                rootMenu.children = children;
+            },
             onSelectChange(data){
                 let vm = this;
                 if(data.length != 0){
@@ -208,6 +261,9 @@
             },
             saveRole(){
                 let vm = this;
+            },
+            addRole(){
+                let vm = this;
                 let children = vm.currentRole.children || [];
                 vm.roleForm.code = vm.currentRole.code+children.length;
                 vm.roleForm.expand = true;
@@ -224,13 +280,11 @@
                     expand: true
                 }
             },
-            configPermission(){
-                let vm = this;
-                vm.configPermissionModel = true;
-                // vm.$http.get(vm.server_account+"/permissions/getUserAuthPermissions").then(function(data){
-                // });
-            },
             savePermission(){
+                let vm = this;
+
+            },
+            saveMenu(){
                 let vm = this;
             },
             cancel(){

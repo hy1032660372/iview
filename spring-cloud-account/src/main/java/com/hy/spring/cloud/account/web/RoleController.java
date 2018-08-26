@@ -43,15 +43,6 @@ public class RoleController {
     }
 
     /**
-     * get user role list
-     * @return Message
-     */
-    @RequestMapping(value = "getRoleCurrent", method = RequestMethod.GET)
-    public Message getRoleCurrent(Principal principal,String menuCode) {
-        return sysRoleService.getRoleCurrent(principal,menuCode);
-    }
-
-    /**
      * add user role
      * @param sysRole
      * @return

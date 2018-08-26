@@ -16,5 +16,4 @@ public interface SysRoleService {
 
     Message getUserAuthRole(Principal principal);
 
-    Message getRoleCurrent(Principal principal,String menuCode);
 }

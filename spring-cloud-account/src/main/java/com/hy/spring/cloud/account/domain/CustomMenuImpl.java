@@ -18,6 +18,8 @@ public class CustomMenuImpl extends TreeData {
 
     private Boolean expand;
 
+    private String icon;
+
     public String getId() {
         return id;
     }
@@ -48,5 +50,13 @@ public class CustomMenuImpl extends TreeData {
 
     public void setExpand(Boolean expand) {
         this.expand = expand;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 }

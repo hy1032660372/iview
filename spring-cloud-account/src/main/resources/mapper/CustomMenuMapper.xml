@@ -3,17 +3,6 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.hy.spring.cloud.account.mapper.CustomMenuMapper">
 
-    <select id="getCustomMenuList" resultType="com.hy.spring.cloud.account.domain.CustomMenuImpl">
-        SELECT
-          t.id as id,
-          t.title as title,
-          t.menu_code as code,
-          t.expand as expand,
-          t.menu_url as menuUrl,
-          t.parent_code as parentCode
-        FROM sys_custommenu t
-    </select>
-
     <delete id="removeMenu" parameterType="java.lang.String">
         delete from sys_custommenu
         WHERE menu_code = #{menuCode}
@@ -27,6 +16,7 @@
             menu_code,
             menu_url,
             expand,
+            icon,
             parent_code
         )
         VALUES
@@ -36,6 +26,7 @@
             #{code},
             #{menuUrl},
             #{expand},
+            #{icon},
             #{parentCode}
         )
     </insert>

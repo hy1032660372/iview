@@ -9,4 +9,19 @@
           t.permission_name as permissionName
         FROM sys_permission t
     </select>
+
+    <insert id="insertPermission" parameterType="com.hy.spring.cloud.account.domain.Entity.Permissions">
+        insert into sys_permission
+        (
+            id,
+            permission_name,
+            permission_code
+        )
+        VALUES
+        (
+            #{id},
+            #{permissionName},
+            #{permissionCode}
+        )
+    </insert>
 </mapper>

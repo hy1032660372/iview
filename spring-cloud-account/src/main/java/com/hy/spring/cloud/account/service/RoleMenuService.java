@@ -11,6 +11,9 @@ public interface RoleMenuService {
 
     Message insertRoleAndMenu(List<RoleAndMenu> roleAndMenuList);
 
-    Message getMenuByUserName(Principal principal);
+    Message getTreeMenuByCurrentRole(Principal principal);
 
+    Message getMenuByRole(String roleCode);
+
+    Message getMenuByCurrentRole(Principal principal);
 }

@@ -6,6 +6,7 @@ import com.hy.spring.cloud.account.domain.User;
 import com.hy.spring.cloud.account.mapper.PermissionsServiceMapper;
 import com.hy.spring.cloud.account.service.PermissionsService;
 import com.hy.spring.cloud.account.util.ObjectUtil;
+import com.hy.spring.cloud.account.util.UUIDUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,5 +36,13 @@ public class PermissionsServiceImpl implements PermissionsService {
         User user = ObjectUtil.getUser(principal);
         List<Permissions> permissionList = permissionsServiceMapper.getUserAuthPermissions(user.getCurrentRole().getRoleCode());
         return Message.info(permissionList);
+    }
+
+    @Override
+    public Message insertPermission(Permissions permissions) {
+        logger.info("insert permission");
+        permissions.setId(UUIDUtil.createUUID());
+        permissionsServiceMapper.insertPermission(permissions);
+        return Message.info("Success");
     }
 }

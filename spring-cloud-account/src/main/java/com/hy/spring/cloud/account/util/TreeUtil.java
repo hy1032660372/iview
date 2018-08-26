@@ -19,7 +19,7 @@ public class TreeUtil {
      * @param node
      */
     public static<T extends TreeData<T>> void converseToTree(List<T> nodeList, T node){
-        List<TreeData<T>> children = new ArrayList<>();
+        List<T> children = new ArrayList<>();
         T t;
         for(int i = 0; i < nodeList.size(); i++){
             t = nodeList.get(i);
@@ -33,16 +33,16 @@ public class TreeUtil {
 
     /**
      * 将树转化成List
-     * @param roleList
-     * @param sysRole
+     * @param list
+     * @param t
      */
-    public static void converseToList(List<SysRoleImpl> roleList, SysRoleImpl sysRole){
-        roleList.add(sysRole);
-        SysRoleImpl current;
-        List<SysRoleImpl> childrenList = sysRole.getChildren();
+    public static<T extends TreeData<T>> void converseToList(List<T> list, T t){
+        list.add(t);
+        T current;
+        List<T> childrenList = t.getChildren();
         for(int i = 0; i < childrenList.size(); i++){
             current = childrenList.get(i);
-            converseToList(roleList,current);
+            converseToList(list,current);
         }
     }
 }

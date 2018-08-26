@@ -68,7 +68,7 @@
                         <span v-else-if="headMenu.type=='1'">
                             <Submenu :name="headMenu.id">
                                 <template slot="title">
-                                    <Icon type="stats-bars"></Icon>
+                                    <Icon type="person"></Icon>
                                     {{headMenu.name}}
                                 </template>
                                 <MenuGroup v-for="con in headMenu.child" :key="con.id" :title="con.title">
@@ -84,7 +84,7 @@
                     <Menu theme="dark" width="auto" :class="menuItemClasses" @on-select="toOtherPage">
                         <Submenu v-for="menu in menuList" :key="menu.code" :name="menu.code">
                             <template slot="title">
-                                <Icon type="ios-navigate"></Icon>
+                                <Icon :type="menu.icon"></Icon>
                                 <span>{{menu.title}}</span>
                             </template>
                             <MenuItem v-for='(ch,index) in menu.children' :key='ch.code' :name="ch.code"><span>{{ch.title}}</span>{{index}}</MenuItem>
@@ -209,9 +209,8 @@
             },
             getMenuList(){
                 let vm = this;
-                vm.$http.get(vm.server_account+"/roleAndMenu/getMenuByRole").then(function(response){
+                vm.$http.get(vm.server_account+"/roleAndMenu/getTreeMenuByCurrentRole").then(function(response){
                     vm.menuList = response.data.data == null?[]:response.data.data.children;
-                    console.log(vm.menuList);
                     window.menuList = vm.menuList.length == 0 ?[]:response.data.data.children;
                     if(vm.nowPage.name){
                         vm.nowPage.name = vm.currentUPage.title;

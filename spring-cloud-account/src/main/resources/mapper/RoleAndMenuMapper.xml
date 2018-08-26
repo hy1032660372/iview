@@ -27,10 +27,20 @@
           t.menu_code as code,
           t.expand as expand,
           t.menu_url as menuUrl,
+          t.icon as icon,
           t.parent_code as parentCode
         FROM sys_custommenu t
         INNER JOIN role_menu ON role_menu.menu_code = t.menu_code
         WHERE role_menu.role_code = #{roleCode}
     </select>
+
+    <delete id="removeRoleAndMenu" parameterType="java.lang.String">
+        delete from role_menu
+        <where>
+            <if test="menuCode != null">
+                AND menu_code = #{menuCode}
+            </if>
+        </where>
+    </delete>
 
 </mapper>

@@ -33,6 +33,14 @@ const routers = [{
                 title: 'menuConfig'
             },
             component: (resolve) => require(['./views/system/menuConfig.vue'], resolve)
+        },{
+            path: 'permission',
+            name: 'permission',
+            meta: {
+                parent:'system',
+                title: 'permission'
+            },
+            component: (resolve) => require(['./views/system/permission.vue'], resolve)
         }, {
             path: '*',
             name: 'error-404',
@@ -49,19 +57,13 @@ const routers = [{
     component: (resolve) => require(['./views/index.vue'], resolve),
     children: [
         {
-            path: 'user',
-            name: 'user',
+            path: 'personInfo',
+            name: 'personInfo',
             meta: {
-                title: 'first'
+                parent:'home',
+                title: 'personInfo'
             },
-            component: (resolve) => require(['./views/home/user.vue'], resolve)
-        }, {
-            path: 'second',
-            name: 'second',
-            meta: {
-                title: 'second'
-            },
-            component: (resolve) => require(['./views/home/second.vue'], resolve)
+            component: (resolve) => require(['./views/home/personInfo.vue'], resolve)
         }]
 }, {
     path: '/*',

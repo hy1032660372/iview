@@ -16,6 +16,7 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,21 +38,38 @@ public class RoleMenuServiceImpl implements RoleMenuService {
 
     @Override
     public Message insertRoleAndMenu(List<RoleAndMenu> roleAndMenuList) {
+        roleAndMenuMapper.removeRoleAndMenu(roleAndMenuList.get(0).getMenuCode());
         roleAndMenuList.stream().forEach(e->{e.setId(UUIDUtil.createUUID());});
         roleAndMenuMapper.insertRoleAndMenu(roleAndMenuList);
         return Message.info("Success");
     }
 
     @Override
-    public Message getMenuByUserName(Principal principal) {
+    public Message getTreeMenuByCurrentRole(Principal principal) {
         User user = ObjectUtil.getUser(principal);
-        List<CustomMenuImpl> menuList = roleAndMenuMapper.getMenuByRole(user.getCurrentRole().getRoleCode());
+        return getMenuByRole(user.getCurrentRole().getRoleCode());
+    }
 
+    @Override
+    public Message getMenuByCurrentRole(Principal principal) {
+        User user = ObjectUtil.getUser(principal);
+        List<CustomMenuImpl> customMenuList = new ArrayList<>();
+
+        Message message = getMenuByRole(user.getCurrentRole().getRoleCode());
+        CustomMenuImpl customMenuImpl = (CustomMenuImpl)message.getData();
+        TreeUtil.converseToList(customMenuList,customMenuImpl);
+        return Message.info(customMenuList);
+    }
+
+    @Override
+    public Message getMenuByRole(String roleCode) {
+        logger.info("Get Menu by role");
+        List<CustomMenuImpl> menuList = roleAndMenuMapper.getMenuByRole(roleCode);
         //找到根节点
         CustomMenuImpl customMenu = new CustomMenuImpl();
         for(int i = 0; i < menuList.size(); i++){
             customMenu = menuList.get(i);
-            if(user.getCurrentRole().getRoleCode().equals(customMenu.getCode())){
+            if(customMenu.getCode().equals("root-menu")){
                 break;
             }
         }
