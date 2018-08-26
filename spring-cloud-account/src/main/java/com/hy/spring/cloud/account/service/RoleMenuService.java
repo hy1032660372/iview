@@ -15,5 +15,5 @@ public interface RoleMenuService {
 
     Message getMenuByRole(String roleCode);
 
-    Message getMenuByCurrentRole(Principal principal);
+    Message getMenuByCurrentRole(Principal principal,String roleCode);
 }

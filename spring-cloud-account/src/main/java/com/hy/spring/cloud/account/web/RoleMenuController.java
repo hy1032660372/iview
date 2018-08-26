@@ -49,8 +49,8 @@ public class RoleMenuController {
      * @return Message
      */
     @RequestMapping(value = "getMenuByCurrentRole", method = RequestMethod.GET)
-    public Message getMenuByUserName(Principal principal) {
-        return roleMenuService.getMenuByCurrentRole(principal);
+    public Message getMenuByUserName(Principal principal,String roleCode) {
+        return roleMenuService.getMenuByCurrentRole(principal,roleCode);
     }
 
     /**

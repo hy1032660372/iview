@@ -51,14 +51,45 @@ public class RoleMenuServiceImpl implements RoleMenuService {
     }
 
     @Override
-    public Message getMenuByCurrentRole(Principal principal) {
+    public Message getMenuByCurrentRole(Principal principal,String roleCode) {
         User user = ObjectUtil.getUser(principal);
-        List<CustomMenuImpl> customMenuList = new ArrayList<>();
+        List<CustomMenuImpl> allMenuList = new ArrayList<>();
+        List<CustomMenuImpl> roleMenuList = new ArrayList<>();
 
-        Message message = getMenuByRole(user.getCurrentRole().getRoleCode());
-        CustomMenuImpl customMenuImpl = (CustomMenuImpl)message.getData();
-        TreeUtil.converseToList(customMenuList,customMenuImpl);
-        return Message.info(customMenuList);
+        //Get All Menu
+        Message allMenu = getMenuByRole(user.getCurrentRole().getRoleCode());
+        CustomMenuImpl allMenuImpl = (CustomMenuImpl)allMenu.getData();
+        TreeUtil.converseToList(allMenuList,allMenuImpl);
+
+        //Get Role Menu
+        Message roleMenu = getMenuByRole(roleCode);
+        CustomMenuImpl roleMenuImpl = (CustomMenuImpl)roleMenu.getData();
+        TreeUtil.converseToList(roleMenuList,roleMenuImpl);
+
+        for(CustomMenuImpl am:allMenuList){
+            am.setChecked(false);
+            am.setChildren(new ArrayList());
+            if(!"root-menu".equals(am.getParentCode()) && !"root-menu".equals(am.getCode())){
+                for(CustomMenuImpl rm:roleMenuList){
+                    if(am.getCode().equals(rm.getCode()) && !"root-menu".equals(rm.getParentCode())){
+                        am.setChecked(true);
+                        break;
+                    }
+                }
+            }
+        }
+
+        //找到根节点
+        CustomMenuImpl customMenu = new CustomMenuImpl();
+        for(int i = 0; i < allMenuList.size(); i++){
+            customMenu = allMenuList.get(i);
+            if(customMenu.getCode().equals("root-menu")){
+                break;
+            }
+        }
+
+        TreeUtil.converseToTree(allMenuList,customMenu);
+        return Message.info(customMenu);
     }
 
     @Override

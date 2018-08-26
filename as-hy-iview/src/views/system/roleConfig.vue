@@ -90,7 +90,9 @@
                 title="Config Menu"
                 @on-ok="saveMenu"
                 @on-cancel="cancel">
-            <Tree :data="menuTreeData" show-checkbox></Tree>
+            <Tree :data="menuTreeData"
+                   @on-check-change="onCheckChange"
+                   show-checkbox></Tree>
         </Modal>
     </div>
 </template>
@@ -103,8 +105,6 @@
                 configMenuModel:false,
                 configRoleModel:false,
                 permissionsData: [],
-                menuData:[],
-                menuDataList:[],
                 menuAuthDataList:[],
                 menuTreeData:[],
                 columnsList:[
@@ -158,14 +158,6 @@
         },
         mounted(){
             let vm = this;
-            vm.$http.all([
-                vm.$http.get(vm.server_account+"/roleAndMenu/getTreeMenuByCurrentRole"),
-                vm.$http.get(vm.server_account+"/roleAndMenu/getMenuByCurrentRole")
-            ]).then(vm.$http.spread(function (menuData, menuDataList) {
-                    // 上面两个请求都完成后，才执行这个回调方法
-                vm.menuData = menuData.data.data.children;
-                vm.menuDataList = menuDataList.data.data;
-            }));
         },
         computed:{
             access:function(){
@@ -177,39 +169,19 @@
             }
         },
         methods:{
+            onCheckChange(data){
+                console.log(data);
+            },
             configMenu(){
                 let vm = this;
                 vm.configMenuModel = true;
-                vm.menuTreeData = vm.menuData;
+                vm.menuTreeData = [];
                 let param = {
                     roleCode:vm.currentRole.code
                 };
-                let rootMenu = {};
-                vm.$http.get(vm.server_account+"/roleAndMenu/getMenuByRole",{params:param}).then(function(response){
-                    let data = response.data.data.children;
-                    _.each(vm.menuDataList,function(v){
-                        v.selected = false;
-                        _.each(data,function(e){
-                            if(v.code == e.code){
-                                v.selected = true
-                            }
-                        });
-                    });
-                    vm.convertToTree(vm.menuDataList,rootMenu);
+                vm.$http.get(vm.server_account+"/roleAndMenu/getMenuByCurrentRole",{params:param}).then(function(response){
+                    vm.menuTreeData = response.data.data.children;
                 });
-            },
-            convertToTree(menuDataList,rootMenu){
-                let vm = this;
-                let children = [];
-                let menu;
-                for(let i = 0; i < menuDataList.length; i++){
-                    menu = menuDataList[i];
-                    if(rootMenu.code == menu.getParentCode){
-                        children.push(menu);
-                        convertToTree(menuDataList,rootMenu);
-                    }
-                }
-                rootMenu.children = children;
             },
             onSelectChange(data){
                 let vm = this;
