@@ -60,21 +60,10 @@ public class AccountServiceImpl implements AccountService {
         return accountMapper.deleteByPrimaryKey(id);
     }
 
-    @Override
-    public int batchDeleteAccount(List<String> ids) {
-        return 0;
-    }
-
     @Transactional
     @Override
     public int updateAccount(Account account) {
         return accountMapper.updateByPrimaryKeySelective(account);
     }
 
-    @Transactional
-    @Override
-    public Message insertAccountList(List<Account> accountList) {
-        accountMapper.insertAccountList(accountList);
-        return Message.info("保存成功");
-    }
 }

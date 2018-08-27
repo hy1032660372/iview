@@ -88,7 +88,7 @@
         <Modal
                 v-model="configMenuModel"
                 title="Config Menu"
-                @on-ok="saveMenu"
+                @on-ok="saveRoleMenu"
                 @on-cancel="cancel">
             <Tree :data="menuTreeData"
                    @on-check-change="onCheckChange"
@@ -106,6 +106,7 @@
                 configRoleModel:false,
                 permissionsData: [],
                 menuAuthDataList:[],
+                selection:[],
                 menuTreeData:[],
                 columnsList:[
                     {title: 'username',key: 'username'},
@@ -170,7 +171,8 @@
         },
         methods:{
             onCheckChange(data){
-                console.log(data);
+                let vm = this;
+                vm.selection = data;
             },
             configMenu(){
                 let vm = this;
@@ -209,7 +211,7 @@
             saveUser(){
                 let vm = this;
                 if(vm.currentRole.code != window.currentUser.currentRole.roleCode){
-                    vm.$http.post(vm.server_account+"/accounts/insertAccount/"+vm.currentRole.code,vm.userForm).then(function(data){
+                    vm.$http.post(vm.server_account+"/AccountAndRole/insertAccount/"+vm.currentRole.code,vm.userForm).then(function(data){
                         vm.getUserList();
                     });
                 }else{
@@ -254,10 +256,42 @@
             },
             savePermission(){
                 let vm = this;
-
             },
-            saveMenu(){
+            saveRoleMenu(){
                 let vm = this;
+                let roleAndMenu;
+                let roleAndMenuList = [];
+                let parentCode = [];
+                _.each(vm.selection,function (menu) {
+                    if(menu.parentCode != "root-menu"){
+                        if(parentCode.indexOf(menu.parentCode) == -1){
+                            parentCode.push(menu.parentCode);
+                            roleAndMenu = {
+                                roleCode:vm.currentRole.code,
+                                menuCode:menu.parentCode
+                            };
+                            roleAndMenuList.push(roleAndMenu);
+                        }
+                        roleAndMenu = {
+                            roleCode:vm.currentRole.code,
+                            menuCode:menu.code
+                        };
+                        roleAndMenuList.push(roleAndMenu);
+                    }
+                });
+                if(roleAndMenuList.length>0){
+                    roleAndMenu = {
+                        roleCode:vm.currentRole.code,
+                        menuCode:"root-menu"
+                    };
+                    roleAndMenuList.push(roleAndMenu);
+                    vm.$http.post(vm.server_account+"/roleAndMenu/insertRoleAndMenu",roleAndMenuList).then(function(response){
+                        console.log(response);
+                    });
+                }else{
+                    vm.$Message.warning("");
+                    vm.$Message.warning("Have no change");
+                }
             },
             cancel(){
             },

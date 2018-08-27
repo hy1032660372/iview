@@ -38,7 +38,7 @@ public class RoleMenuServiceImpl implements RoleMenuService {
 
     @Override
     public Message insertRoleAndMenu(List<RoleAndMenu> roleAndMenuList) {
-        roleAndMenuMapper.removeRoleAndMenu(roleAndMenuList.get(0).getMenuCode());
+        roleAndMenuMapper.removeRoleAndMenu(roleAndMenuList.get(0).getRoleCode());
         roleAndMenuList.stream().forEach(e->{e.setId(UUIDUtil.createUUID());});
         roleAndMenuMapper.insertRoleAndMenu(roleAndMenuList);
         return Message.info("Success");

@@ -20,8 +20,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/AccountAndRole")
 public class AccountAndRoleController {
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
-
     @Autowired
     private AccountRoleService accountRoleService;
 

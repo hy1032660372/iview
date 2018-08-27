@@ -45,6 +45,7 @@ const routers = [{
             path: '*',
             name: 'error-404',
             meta: {
+                parent:'system',
                 title: '404-页面不存在'
             },
             component: (resolve) => require(['./views/404.vue'], resolve)
@@ -52,7 +53,7 @@ const routers = [{
 },{
     path: '/home',
     meta: {
-        title: ''
+        title: 'home'
     },
     component: (resolve) => require(['./views/index.vue'], resolve),
     children: [

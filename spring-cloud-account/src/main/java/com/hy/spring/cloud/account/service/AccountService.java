@@ -19,10 +19,6 @@ public interface AccountService {
 
     int deleteAccount(String id);
 
-    int batchDeleteAccount(List<String> ids);
-
     int updateAccount(Account account);
-
-    Message insertAccountList(List<Account> accountList);
 
 }

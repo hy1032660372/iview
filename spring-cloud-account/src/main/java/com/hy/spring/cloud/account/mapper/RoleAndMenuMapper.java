@@ -14,6 +14,6 @@ public interface RoleAndMenuMapper {
 
     List<CustomMenuImpl> getMenuByRole(@Param("roleCode") String roleCode);
 
-    void removeRoleAndMenu(@Param("menuCode") String menuCode);
+    void removeRoleAndMenu(@Param("roleCode") String roleCode);
 
 }

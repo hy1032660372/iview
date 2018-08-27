@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50717
 File Encoding         : 65001
 
-Date: 2018-08-16 23:05:45
+Date: 2018-08-27 22:42:22
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -33,6 +33,7 @@ INSERT INTO `account_role` VALUES ('123', '123', '199277');
 INSERT INTO `account_role` VALUES ('1ff56186aa51437f974c862bdc5e5aac', '1127e2732906420e984b05f58b23390d', '1234561');
 INSERT INTO `account_role` VALUES ('2748539b67344ad1a52d742241bfe11e', 'dffc0df6c94b4573bb7f351be712fee8', '199277');
 INSERT INTO `account_role` VALUES ('305852381e3e4567bde69e095dd0db49', '16bc8d3317b54c23b53ad73b0c9de218', '123456');
+INSERT INTO `account_role` VALUES ('5d4f53f1caa54c069c87481cb701651d', '75359389441c4e0ea722810e80279079', '123456');
 INSERT INTO `account_role` VALUES ('be74bf31753847b38b23bbf56de80e46', 'c39ecacf3f474e498fb187c5bfe789b1', '1234561');
 INSERT INTO `account_role` VALUES ('dd90a802b62b4700b00fb26fe4eaeced', 'e4aaba08531e4c52b7fc6bfe77b9f035', '199277');
 INSERT INTO `account_role` VALUES ('e05a57a8cc2f4414ba3f1f4f9e7078de', 'b61b669506e040b08272e90042ed41ef', '199277');
@@ -54,6 +55,20 @@ CREATE TABLE `role_menu` (
 -- ----------------------------
 -- Records of role_menu
 -- ----------------------------
+INSERT INTO `role_menu` VALUES ('3a8890acd9f5457da358955b55ebdd0b', '1234561', 'root-menu');
+INSERT INTO `role_menu` VALUES ('4444', '199277', 'root-menu');
+INSERT INTO `role_menu` VALUES ('4952f995ec374993b3856dc48a737a9a', '199277', 'role-config');
+INSERT INTO `role_menu` VALUES ('6a191083af354595b22f3551a2adf4ac', '123456', 'system');
+INSERT INTO `role_menu` VALUES ('6a4bc0c360214c74951dd4d66ed193f0', '199277', 'home');
+INSERT INTO `role_menu` VALUES ('9128c9b4938647ae8d065b72e44c8e3c', '199277', 'permission');
+INSERT INTO `role_menu` VALUES ('a13a0a5245154f3e819473c53979940a', '199277', 'menu-config');
+INSERT INTO `role_menu` VALUES ('a369291c3d904c44bf83ed8df320333b', '199277', 'Person-Info');
+INSERT INTO `role_menu` VALUES ('ae16adff9f85444e955a2082c0e8b8dc', '123456', 'home');
+INSERT INTO `role_menu` VALUES ('be807f1bc28746c2aff679fecd2ce733', '123456', 'permission');
+INSERT INTO `role_menu` VALUES ('ebbb4df4d60a448083093e34e0f6e88d', '199277', 'system');
+INSERT INTO `role_menu` VALUES ('f3c34a648da6467485570a84f1082b0f', '1234561', 'role-config');
+INSERT INTO `role_menu` VALUES ('f43cf77344104af2805620c65ebc96de', '123456', 'Person-Info');
+INSERT INTO `role_menu` VALUES ('f704c2ed97454c98b8ed63c6ccadb540', '123456', 'root-menu');
 
 -- ----------------------------
 -- Table structure for `role_permission`
@@ -93,6 +108,7 @@ INSERT INTO `sys_account` VALUES ('1127e2732906420e984b05f58b23390d', 'qqqq', '$
 INSERT INTO `sys_account` VALUES ('123', 'admin123', '$2a$10$WU6/5voJWTEwHERyj4SBVO.P3N0adFERUi56tzwVJuWI.CKK5QXo.', '999');
 INSERT INTO `sys_account` VALUES ('6be2fdc799754381853dd58353ab45cd', 'ddddd', '$2a$10$/hOPRKioOePO6pBaCThAAeZ9ECxknen1Ng9zBHPf/vONxrUeIkDLK', '45');
 INSERT INTO `sys_account` VALUES ('72316fdf058f412fa73f9ff2e6e3cbc1', 'lll', '$2a$10$URcrPTR9ZEntkUvY2BpUOe3GTSeXk2ZbcOKjjPUSjDArlyC8/UhBq', '23');
+INSERT INTO `sys_account` VALUES ('75359389441c4e0ea722810e80279079', 'aaa', '$2a$10$ccl2LCSqPahPhtlzglWElOQp2J2YqjwCLNcWKBAOj2IQJ83cxazb.', '123');
 INSERT INTO `sys_account` VALUES ('c39ecacf3f474e498fb187c5bfe789b1', '223', '$2a$10$WU6/5voJWTEwHERyj4SBVO.P3N0adFERUi56tzwVJuWI.CKK5QXo.', '22');
 
 -- ----------------------------
@@ -106,16 +122,20 @@ CREATE TABLE `sys_custommenu` (
   `menu_url` varchar(50) DEFAULT NULL,
   `expand` tinyint(4) DEFAULT NULL,
   `parent_code` varchar(20) DEFAULT NULL,
+  `icon` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of sys_custommenu
 -- ----------------------------
-INSERT INTO `sys_custommenu` VALUES ('1c7f5ce128c8413189e7e8c39d6c0e38', 'RoleConfig', 'role-config', '/home/permission', '1', 'system');
-INSERT INTO `sys_custommenu` VALUES ('6ecf1ef9f68c47a08d26c85cb333200b', 'MenuConfig', 'menu-config', '/home/menuConfig', '1', 'system');
-INSERT INTO `sys_custommenu` VALUES ('7a28a894192c4b7fae125583a8f31056', 'System', 'system', '', '1', '123');
-INSERT INTO `sys_custommenu` VALUES ('aa', 'Menu', '123', '/user', '0', null);
+INSERT INTO `sys_custommenu` VALUES ('1c7f5ce128c8413189e7e8c39d6c0e38', 'RoleConfig', 'role-config', '/system/roleConfig', '1', 'system', null);
+INSERT INTO `sys_custommenu` VALUES ('4cfe56c29bd84b828f5e2d7ed72837e9', 'PersonInfo', 'Person-Info', '/home/personInfo', '1', 'home', null);
+INSERT INTO `sys_custommenu` VALUES ('6ecf1ef9f68c47a08d26c85cb333200b', 'MenuConfig', 'menu-config', '/system/menuConfig', '1', 'system', null);
+INSERT INTO `sys_custommenu` VALUES ('7a28a894192c4b7fae125583a8f31056', 'System', 'system', '/system', '1', 'root-menu', 'gear-a');
+INSERT INTO `sys_custommenu` VALUES ('7a28a894192c4wefae125583a8f31056', 'Menu', 'root-menu', '/', '0', null, null);
+INSERT INTO `sys_custommenu` VALUES ('7d1d413864f7405ea1a35a69cdbab116', 'Home', 'home', '/home', '1', 'root-menu', 'home');
+INSERT INTO `sys_custommenu` VALUES ('b1aba926744d44a6975c5ec1ea5088fe', 'Permission', 'permission', '/System/permission', '1', 'system', null);
 
 -- ----------------------------
 -- Table structure for `sys_permission`
@@ -143,7 +163,7 @@ DROP TABLE IF EXISTS `sys_role`;
 CREATE TABLE `sys_role` (
   `id` varchar(32) NOT NULL,
   `title` varchar(20) NOT NULL,
-  `code` varchar(20) DEFAULT NULL,
+  `role_code` varchar(20) DEFAULT NULL,
   `expand` tinyint(1) DEFAULT NULL,
   `parent_code` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`id`)

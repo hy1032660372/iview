@@ -37,8 +37,8 @@
     <delete id="removeRoleAndMenu" parameterType="java.lang.String">
         delete from role_menu
         <where>
-            <if test="menuCode != null">
-                AND menu_code = #{menuCode}
+            <if test="roleCode != null">
+                AND role_code = #{roleCode}
             </if>
         </where>
     </delete>
