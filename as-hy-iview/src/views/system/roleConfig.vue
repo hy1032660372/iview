@@ -1,43 +1,43 @@
 <style scoped>
-
+    .layout{
+        background: #fff;
+    }
 </style>
 <template>
     <div class="layout">
-        <Content :style="{padding: '0px 16px 16px'}">
-            <Breadcrumb :style="{margin: '16px 0'}">
+        <Content>
+            <Breadcrumb :style="{padding: '14px'}">
                 <BreadcrumbItem>System</BreadcrumbItem>
                 <BreadcrumbItem>Role</BreadcrumbItem>
             </Breadcrumb>
-            <div>
-                <Row>
-                    <Col span="6">
-                        <div style="background:#eee;padding: 20px 10px 20px 20px">
-                            <Card :bordered="false">
-                                <Tree :data="roleData" @on-select-change="onSelectChange"></Tree>
-                            </Card>
-                        </div>
-                    </Col>
-                    <Col span="18">
-                        <div style="background:#eee;padding: 20px 20px 20px 10px">
-                            <Card :bordered="false">
-                                <Row style="padding-bottom: 20px">
-                                    <Col span="8">
-                                        <Button type="text" v-if="currentRole.code!='199277'" @click="configRoleModel=true">{{currentRole.title}}</Button>
-                                    </Col>
-                                    <Col style="float:right">
-                                        <Button type="primary" @click="configMenu">Config Menu</Button>
-                                        <Button type="primary" @click="configPermissionModel = true">Config Permission</Button>
-                                        <Button type="primary" v-if="access" @click="addUserModel=true">Add User</Button>
-                                        <Button type="primary" v-if="access" @click="addRoleModel=true">Add Role</Button>
-                                        <Button type="primary" v-if="access && userList.length == 0" @click="removeRole">Remove Role</Button>
-                                    </Col>
-                                </Row>
-                                <Table :columns="columnsList" :data="userList"></Table>
-                            </Card>
-                        </div>
-                    </Col>
-                </Row>
-            </div>
+            <Row>
+                <Col span="6">
+                    <div style="background:#eee;padding: 10px 5px 10px 10px">
+                        <Card :bordered="false">
+                            <Tree :data="roleData" @on-select-change="onSelectChange"></Tree>
+                        </Card>
+                    </div>
+                </Col>
+                <Col span="18">
+                    <div style="background:#eee;padding: 10px 10px 10px 5px">
+                        <Card :bordered="false">
+                            <Row style="padding-bottom: 20px">
+                                <Col span="8">
+                                    <Button type="text" v-if="currentRole.code!='199277'" @click="configRoleModel=true">{{currentRole.title}}</Button>
+                                </Col>
+                                <Col style="float:right">
+                                    <Button type="primary" @click="configMenu">Config Menu</Button>
+                                    <Button type="primary" @click="configPermissionModel = true">Config Permission</Button>
+                                    <Button type="primary" v-if="access" @click="addUserModel=true">Add User</Button>
+                                    <Button type="primary" v-if="access" @click="addRoleModel=true">Add Role</Button>
+                                    <Button type="primary" v-if="access && userList.length == 0" @click="removeRole">Remove Role</Button>
+                                </Col>
+                            </Row>
+                            <Table :columns="columnsList" :data="userList"></Table>
+                        </Card>
+                    </div>
+                </Col>
+            </Row>
         </Content>
         <Modal
                 v-model="addUserModel"

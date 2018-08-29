@@ -21,5 +21,11 @@
 
             };
         },
+        mounted(){
+            let vm = this;
+        },
+        beforeRouteEnter(to, from, next) {
+            next();
+        }
     }
 </script>
