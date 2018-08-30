@@ -62,6 +62,25 @@ axios.interceptors.request.use(function (config) {
 axios.interceptors.response.use(function (response) {
     // 对响应数据做点什么
     //Vue.prototype.$Spin.hide();
+    let data = response.data;
+    if(response.data.data == undefined){
+        switch(data.messageCode){
+            case 0:
+                Vue.prototype.$Message.success(data.message);
+                break;
+            case 1:
+                Vue.prototype.$Message.info(data.message);
+                break;
+            case 2:
+                Vue.prototype.$Message.warning(data.message);
+                break;
+            case 3:
+                Vue.prototype.$Message.error(data.message);
+                break;
+            default:
+                break;
+        }
+    }
     return response;
 }, function (error) {
     // 对响应错误做点什么

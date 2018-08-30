@@ -24,34 +24,43 @@ public class Message {
         this.level = level;
     }
 
-    public Message(Integer messageCode, String level,Object data){
+    public Message(Integer messageCode, String level,Object data,String message){
         this.data = data;
         this.messageCode = messageCode;
         this.level = level;
+        this.message = message;
+    }
+
+    public static Message success(String message) {
+        return new Message(0, "success", message);
+    }
+
+    public static Message success(Object data) {
+        return new Message(0, "success", data,"success");
     }
 
     public static Message info(String message) {
-        return new Message(0, "普通消息", message);
+        return new Message(1, "normal", message);
     }
 
     public static Message info(Object data) {
-        return new Message(0, "普通消息", data);
+        return new Message(1, "normal", data,"ok");
     }
 
     public static Message warn(String message) {
-        return new Message(1, "警告消息", message);
+        return new Message(2, "warning", message);
     }
 
     public static Message warn(Object data) {
-        return new Message(1, "警告消息");
+        return new Message(2, "warning");
     }
 
     public static Message error(String message) {
-        return new Message(2, "错误消息", message);
+        return new Message(3, "error", message);
     }
 
     public static Message error(Object data) {
-        return new Message(2, "错误消息");
+        return new Message(3, "error");
     }
 
     public Object getData() {

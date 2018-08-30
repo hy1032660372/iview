@@ -177,6 +177,7 @@
                 let vm = this;
                 vm.$http.get(vm.server_account+"/accounts",{params:vm.pageQuery}).then(function(data){
                     vm.userList = data.data.data.aaData;
+                    vm.$Message.info("ok");
                 });
             },
             show (index) {

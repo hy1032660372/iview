@@ -3,6 +3,11 @@
         height: 100%;
         width: 100%;
     }
+    .layout .head-menu{
+        position:fixed;
+        width: 100%;
+        z-index:999;
+    }
     .menu-item span{
         display: inline-block;
         overflow: hidden;
@@ -51,50 +56,48 @@
 </style>
 <template>
     <div class="layout">
-        <Layout>
-            <Menu mode="horizontal" theme="dark" :style="{position:'fixed', width: '100%',zIndex:'9999'}" @on-select="headMenuClick">
-                <div class="layout-logo"></div>
-                <div class="layout-nav">
-                    <MenuItem name="1">
-                        <img width="50px" src="../images/The_death.png"/>
-                    </MenuItem>
-                </div>
-                <div class="layout-nav-right">
-                    <MenuItem v-for="headMenu in headMenuList" :key="headMenu.id" :name="headMenu.id">
-                        <span v-if="headMenu.type=='0'">
-                            <Icon type="ios-people"></Icon>
-                            {{headMenu.name}}
-                        </span>
-                        <span v-else-if="headMenu.type=='1'">
-                            <Submenu :name="headMenu.id">
-                                <template slot="title">
-                                    <Icon type="person"></Icon>
-                                    {{headMenu.name}}
-                                </template>
-                                <MenuGroup v-for="con in headMenu.child" :key="con.id" :title="con.title">
-                                    <MenuItem v-for="c in con.content" :key="c.id" :name="c.id">{{c.name}}</MenuItem>
-                                </MenuGroup>
-                            </Submenu>
-                        </span>
-                    </MenuItem>
-                </div>
-            </Menu>
-            <Layout :style="{padding: '60px 0 0 0',minHeight: '100vh'}">
-                <Sider collapsible :collapsed-width="100" v-model="isCollapsed">
-                    <Menu theme="dark" width="auto" :class="menuItemClasses" @on-select="toOtherPage">
-                        <Submenu v-for="menu in menuList" :key="menu.code" :name="menu.code">
+        <Menu mode="horizontal" theme="dark" class="head-menu" @on-select="headMenuClick">
+            <div class="layout-logo"></div>
+            <div class="layout-nav">
+                <MenuItem name="1">
+                    <img width="50px" src="../images/The_death.png"/>
+                </MenuItem>
+            </div>
+            <div class="layout-nav-right">
+                <MenuItem v-for="headMenu in headMenuList" :key="headMenu.id" :name="headMenu.id">
+                    <span v-if="headMenu.type=='0'">
+                        <Icon type="ios-people"></Icon>
+                        {{headMenu.name}}
+                    </span>
+                    <span v-else-if="headMenu.type=='1'">
+                        <Submenu :name="headMenu.id">
                             <template slot="title">
-                                <Icon :type="menu.icon"></Icon>
-                                <span>{{menu.title}}</span>
+                                <Icon type="person"></Icon>
+                                {{headMenu.name}}
                             </template>
-                            <MenuItem v-for='(ch,index) in menu.children' :key='ch.code' :name="ch.code"><span>{{ch.title}}</span>{{index}}</MenuItem>
+                            <MenuGroup v-for="con in headMenu.child" :key="con.id" :title="con.title">
+                                <MenuItem v-for="c in con.content" :key="c.id" :name="c.id">{{c.name}}</MenuItem>
+                            </MenuGroup>
                         </Submenu>
-                    </Menu>
-                </Sider>
-                <Content style="height:100%">
-                    <router-view></router-view>
-                </Content>
-            </Layout>
+                    </span>
+                </MenuItem>
+            </div>
+        </Menu>
+        <Layout :style="{padding: '60px 0 0 0',minHeight: '100vh'}">
+            <Sider collapsible :collapsed-width="100" v-model="isCollapsed">
+                <Menu theme="dark" width="auto" :class="menuItemClasses" @on-select="toOtherPage">
+                    <Submenu v-for="menu in menuList" :key="menu.code" :name="menu.code">
+                        <template slot="title">
+                            <Icon :type="menu.icon"></Icon>
+                            <span>{{menu.title}}</span>
+                        </template>
+                        <MenuItem v-for='(ch,index) in menu.children' :key='ch.code' :name="ch.code"><span>{{ch.title}}</span>{{index}}</MenuItem>
+                    </Submenu>
+                </Menu>
+            </Sider>
+            <Content style="height:100%">
+                <router-view></router-view>
+            </Content>
         </Layout>
     </div>
 </template>
@@ -121,7 +124,7 @@
         mounted(){
             let vm = this;
             vm.$nextTick(function(){
-
+                
             })
         },
         methods: {
