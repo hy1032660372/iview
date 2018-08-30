@@ -9,7 +9,7 @@
                 <BreadcrumbItem>Person Information</BreadcrumbItem>
             </Breadcrumb>
             <Card>
-                <div>Content2222</div>
+                <div>Person Information</div>
             </Card>
         </Content>
     </div>

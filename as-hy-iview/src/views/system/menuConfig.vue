@@ -1,14 +1,8 @@
 <style scoped>
-    .layout{
-        background: #fff;
-    }
-    .layout .tree-frame{
-        background:#eee;
-        padding: 10px 10px 10px 10px
-    }
-    .layout .tree-frame .tree-content{
-        border-top: 2px solid #eee;
-    }
+    .layout{background: #fff;}
+    .layout .tree-frame{background:#eee;padding: 10px 10px 10px 10px }
+    .layout .tree-frame .tree-content{border-top: 2px solid #eee; }
+    .layout .tree-frame .tree-content .page-frame{margin-top: 5px}
 </style>
 <template>
     <div class="layout">
@@ -27,11 +21,28 @@
                                 </Col>
                                 <Col style="float:right">
                                     <Button type="primary" v-if="access" @click="addMenuModel=true">Add Menu</Button>
-                                    <Button type="primary" v-if="access && roleList.length == 0" @click="removeMenu">Remove Menu</Button>
+                                    <Button type="primary" v-if="access && permissionList.length == 0" @click="removeMenu">Remove Menu</Button>
                                 </Col>
                             </Row>
                             <Row class="tree-content">
-                                <Tree :data="menuData" @on-select-change="onSelectChange"></Tree>
+                                <Col span="8">
+                                    <Tree :data="menuData" @on-select-change="onSelectChange"></Tree>
+                                </Col>
+                                <Col span="16">
+                                    <Row>
+                                        <Col span="12">
+                                            <Input v-model="pageQuery.filter">
+                                                <Button slot="append" icon="ios-search" @click="getPermissionList"></Button>
+                                            </Input>
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <Table border :columns="columns" :data="permissionList"></Table>
+                                        <Col class="page-frame">
+                                            <Page :total="totalRecord" size="small" show-total show-elevator show-sizer></Page>
+                                        </Col>
+                                    </Row>
+                                </Col>
                             </Row>
                         </Card>
                     </div>
@@ -45,13 +56,13 @@
                 @on-cancel="cancel">
             <Form :model="menuForm" label-position="right" :label-width="100">
                 <FormItem label="Title">
-                    <Input v-model="menuForm.title"></Input>
+                    <Input v-model="menuForm.title" />
                 </FormItem>
                 <FormItem label="code">
-                    <Input v-model="menuForm.code"></Input>
+                    <Input v-model="menuForm.code" />
                 </FormItem>
                 <FormItem label="menuUrl">
-                    <Input v-model="menuForm.menuUrl"></Input>
+                    <Input v-model="menuForm.menuUrl" />
                 </FormItem>
             </Form>
         </Modal>
@@ -62,13 +73,13 @@
                 @on-cancel="cancel">
             <Form :model="currentMenu" label-position="right" :label-width="100">
                 <FormItem label="Title">
-                    <Input v-model="currentMenu.title"></Input>
+                    <Input v-model="currentMenu.title"/>
                 </FormItem>
                 <FormItem label="code">
-                    <Input v-model="currentMenu.code"></Input>
+                    <Input v-model="currentMenu.code"/>
                 </FormItem>
                 <FormItem label="menuUrl">
-                    <Input v-model="currentMenu.menuUrl"></Input>
+                    <Input v-model="currentMenu.menuUrl"/>
                 </FormItem>
             </Form>
         </Modal>
@@ -79,37 +90,27 @@
         data () {
             return {
                 menuData: [],
-                roleList:[],
-                selection:[],
+                permissionList:[],
                 configMenuModel:false,
-                permissionsData: [{
-                    title: 'parent 1',
-                    expand: true,
-                    children: [{
-                        title: 'parent 1-1',
-                        expand: true,
-                        children: [
-                            {title: 'leaf 1-1-1'},
-                            {title: 'leaf 1-1-2'}]
-                    },{
-                        title: 'parent 1-2',
-                        expand: true,
-                        children: [
-                            {title: 'leaf 1-2-1'},
-                            {title: 'leaf 1-2-1'}
-                        ]
+                addPermissionModel:false,
+                columns: [{title: 'permissionName',key: 'permissionName',},
+                    {title: 'permissionCode', key: 'permissionCode' },
+                    {title: 'Action',key: 'action',　width: 150,　align: 'center',
+                        render: (h, params) => {
+                            return h('div', [
+                                h('Button', {
+                                    props: {type: 'error',size: 'small'},
+                                    on: {click: () => {this.deletePermission(params.index)}}
+                                }, 'Delete')
+                            ]);
+                        }
                     }
-                    ]}
                 ],
                 columnsList:[
                     {type: 'selection',  width: 80,  align: 'center'},
                     {title: 'roleName',key: 'title'}
                 ],
                 addMenuModel:false,
-                userForm: {
-                    username: '',
-                    age: '',
-                },
                 menuForm: {
                     code: '',
                     title: '',
@@ -121,13 +122,15 @@
                 permission:{},
                 pageQuery:{
                     page: 0,
-                    size: 0,
+                    size: 10,
                     filter: ""
                 },
+                totalRecord:0,
             };
         },
         mounted(){
             let vm = this;
+            vm.getPermissionList();
         },
         computed:{
             access:function(){
@@ -139,22 +142,25 @@
             }
         },
         methods:{
-            saveMenu(){
+            getPermissionList(){
                 let vm = this;
-
+                vm.pageQuery.filter = vm.pageQuery.filter + "&menuCode="+vm.currentMenu.menuCode;
+                vm.$http.get(vm.server_account+"/permissions/getPermissionList",{params:vm.pageQuery}).then(function(response){
+                    vm.permissionList = response.data.aaData;
+                    vm.totalRecord = response.data.iTotalRecords;
+                    vm.pageQuery.filter = ""
+                });
             },
             savePermission(){
                 let vm = this;
-                vm.$http.post(vm.server_account+"/permissions/insertPermission",vm.permission).then(function(response){
-                    vm.roleList = response.data.data;
-                    vm.getRoleCurrent();
+                vm.$http.post(vm.server_account+"/permissions/insertPermission",vm.menuForm).then(function(response){
+                    console.log(response);
                 });
             },
             onSelectChange(data){
                 let vm = this;
                 if(data.length != 0){
                     vm.currentMenu = data[0];
-
                 }
             },
             getMenuByCurrentRole(){
@@ -198,42 +204,24 @@
                     expand: true
                 }
             },
-            configPermission(){
-                let vm = this;
-                vm.configPermission = true;
-                vm.$http.get(vm.server_account+"/accounts/getCustomPermissions").then(function(data){
-
-                });
-            },
             cancel(){
             },
-            show (index) {
-                this.$Modal.info({
-                    title: 'User Info',
-                    content: `Name：${this.roleList[index].username}<br>Age：${this.roleList[index].age}`
-                })
-            },
-            deleteUser(index){
+            deletePermission(index){
                 let vm = this;
-                let user = vm.roleList[index];
-                if(user.id != currentUser.userId){
-                    vm.$Modal.confirm({
-                        title: 'Confirm',
-                        content: '<p>Do you want to delete this user?</p>',
-                        onOk: () => {
-                            vm.$http.delete(vm.server_account+"/accounts/"+user.id).then(function(data){
-                                vm.roleList.splice(index,1);
-                                vm.$Message.info('Clicked ok');
-                            });
-                        },
-                        onCancel: () => {
-                            vm.$Message.info('You canceled');
-                        }
-                    });
-                }else{
-                    vm.$Message.warning('Don not allow do this');
-                    vm.$Message.warning('Don not allow do this');
-                }
+                let permission = vm.permissionList[index];
+                vm.$Modal.confirm({
+                    title: 'Confirm',
+                    content: '<p>Do you want to delete this user?</p>',
+                    onOk: () => {
+                        vm.$http.delete(vm.server_account+"/permissions/"+permission.id).then(function(data){
+                            vm.permissionList.splice(index,1);
+                            vm.$Message.info('Clicked ok');
+                        });
+                    },
+                    onCancel: () => {
+                        vm.$Message.info('You canceled');
+                    }
+                });
             }
         },
         beforeRouteEnter(to, from, next) {

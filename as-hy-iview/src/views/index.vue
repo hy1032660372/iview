@@ -56,51 +56,53 @@
 </style>
 <template>
     <div class="layout">
-        <Menu mode="horizontal" theme="dark" class="head-menu" @on-select="headMenuClick">
-            <div class="layout-logo"></div>
-            <div class="layout-nav">
-                <MenuItem name="1">
-                    <img width="50px" src="../images/The_death.png"/>
-                </MenuItem>
-            </div>
-            <div class="layout-nav-right">
-                <MenuItem v-for="headMenu in headMenuList" :key="headMenu.id" :name="headMenu.id">
-                    <span v-if="headMenu.type=='0'">
-                        <Icon type="ios-people"></Icon>
-                        {{headMenu.name}}
-                    </span>
-                    <span v-else-if="headMenu.type=='1'">
-                        <Submenu :name="headMenu.id">
+        <Layout>
+            <Menu mode="horizontal" theme="dark" class="head-menu" @on-select="headMenuClick">
+                <div class="layout-logo"></div>
+                <div class="layout-nav">
+                    <MenuItem name="1">
+                        <img width="50px" src="../images/The_death.png"/>
+                    </MenuItem>
+                </div>
+                <div class="layout-nav-right">
+                    <MenuItem v-for="headMenu in headMenuList" :key="headMenu.id" :name="headMenu.id">
+                        <span v-if="headMenu.type=='0'">
+                            <Icon type="ios-people"></Icon>
+                            {{headMenu.name}}
+                        </span>
+                        <span v-else-if="headMenu.type=='1'">
+                            <Submenu :name="headMenu.id">
+                                <template slot="title">
+                                    <Icon type="person"></Icon>
+                                    {{headMenu.name}}
+                                </template>
+                                <MenuGroup v-for="con in headMenu.child" :key="con.id" :title="con.title">
+                                    <MenuItem v-for="c in con.content" :key="c.id" :name="c.id">{{c.name}}</MenuItem>
+                                </MenuGroup>
+                            </Submenu>
+                        </span>
+                    </MenuItem>
+                </div>
+            </Menu>
+            <Layout :style="{padding: '60px 0 0 0',minHeight: '100vh'}">
+                <Sider collapsible :collapsed-width="100" v-model="isCollapsed">
+                    <Menu theme="dark" width="auto" :class="menuItemClasses" @on-select="toOtherPage">
+                        <Submenu v-for="menu in menuList" :key="menu.code" :name="menu.code">
                             <template slot="title">
-                                <Icon type="person"></Icon>
-                                {{headMenu.name}}
+                                <Icon :type="menu.icon"></Icon>
+                                <span>{{menu.title}}</span>
                             </template>
-                            <MenuGroup v-for="con in headMenu.child" :key="con.id" :title="con.title">
-                                <MenuItem v-for="c in con.content" :key="c.id" :name="c.id">{{c.name}}</MenuItem>
-                            </MenuGroup>
+                            <MenuItem v-for='ch in menu.children' :key='ch.code' :name="ch.code">
+                                <Icon :type="ch.icon"></Icon>
+                                <span>{{ch.title}}</span>
+                            </MenuItem>
                         </Submenu>
-                    </span>
-                </MenuItem>
-            </div>
-        </Menu>
-        <Layout :style="{padding: '60px 0 0 0',minHeight: '100vh'}">
-            <Sider collapsible :collapsed-width="100" v-model="isCollapsed">
-                <Menu theme="dark" width="auto" :class="menuItemClasses" @on-select="toOtherPage">
-                    <Submenu v-for="menu in menuList" :key="menu.code" :name="menu.code">
-                        <template slot="title">
-                            <Icon :type="menu.icon"></Icon>
-                            <span>{{menu.title}}</span>
-                        </template>
-                        <MenuItem v-for='ch in menu.children' :key='ch.code' :name="ch.code">
-                            <Icon :type="ch.icon"></Icon>
-                            <span>{{ch.title}}</span>
-                        </MenuItem>
-                    </Submenu>
-                </Menu>
-            </Sider>
-            <Content style="height:100%">
-                <router-view></router-view>
-            </Content>
+                    </Menu>
+                </Sider>
+                <Content style="height:100%">
+                    <router-view></router-view>
+                </Content>
+            </Layout>
         </Layout>
     </div>
 </template>

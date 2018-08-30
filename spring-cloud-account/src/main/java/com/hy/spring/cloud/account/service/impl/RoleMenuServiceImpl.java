@@ -101,6 +101,7 @@ public class RoleMenuServiceImpl implements RoleMenuService {
         for(int i = 0; i < menuList.size(); i++){
             customMenu = menuList.get(i);
             if(customMenu.getCode().equals("root-menu")){
+                customMenu.setExpand(true);
                 break;
             }
         }

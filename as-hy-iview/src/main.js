@@ -142,7 +142,6 @@ const store = new Vuex.Store({
     }
 });
 
-
 new Vue({
     el: '#app',
     router: router,
