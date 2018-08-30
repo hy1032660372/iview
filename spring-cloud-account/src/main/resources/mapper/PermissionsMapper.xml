@@ -10,6 +10,14 @@
         FROM sys_permission t
     </select>
 
+    <select id="getPermissionList" parameterType="java.util.Map" resultType="com.hy.spring.cloud.account.domain.Entity.Permissions">
+        SELECT
+          t.id as id,
+          t.permission_code as permissionCode,
+          t.permission_name as permissionName
+        FROM sys_permission t
+    </select>
+
     <insert id="insertPermission" parameterType="com.hy.spring.cloud.account.domain.Entity.Permissions">
         insert into sys_permission
         (

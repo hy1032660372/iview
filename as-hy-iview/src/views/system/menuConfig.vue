@@ -1,45 +1,42 @@
 <style scoped>
-
+    .layout{
+        background: #fff;
+    }
+    .layout .tree-frame{
+        background:#eee;
+        padding: 10px 10px 10px 10px
+    }
+    .layout .tree-frame .tree-content{
+        border-top: 2px solid #eee;
+    }
 </style>
 <template>
     <div class="layout">
-        <Content :style="{padding: '0px 16px 16px'}">
-            <Breadcrumb :style="{margin: '16px 0'}">
+        <Content>
+            <Breadcrumb :style="{padding: '14px'}">
                 <BreadcrumbItem>System</BreadcrumbItem>
                 <BreadcrumbItem>Menu</BreadcrumbItem>
             </Breadcrumb>
-            <div>
-                <Row>
-                    <Col span="6">
-                        <div style="background:#eee;padding: 20px 10px 20px 20px">
-                            <Card :bordered="false">
+            <Row>
+                <Col span="24">
+                    <div class="tree-frame">
+                        <Card :bordered="false">
+                            <Row style="padding-bottom: 20px">
+                                <Col span="8">
+                                    <Button type="text" v-if="currentMenu.code!='root-menu'" @click="configMenuModel=true">{{currentMenu.title}}</Button>
+                                </Col>
+                                <Col style="float:right">
+                                    <Button type="primary" v-if="access" @click="addMenuModel=true">Add Menu</Button>
+                                    <Button type="primary" v-if="access && roleList.length == 0" @click="removeMenu">Remove Menu</Button>
+                                </Col>
+                            </Row>
+                            <Row class="tree-content">
                                 <Tree :data="menuData" @on-select-change="onSelectChange"></Tree>
-                            </Card>
-                        </div>
-                    </Col>
-                    <Col span="18">
-                        <div style="background:#eee;padding: 20px 20px 20px 10px">
-                            <Card :bordered="false">
-                                <Row style="padding-bottom: 20px">
-                                    <Col span="8">
-                                        <Button type="text" v-if="currentMenu.code!='root-menu'" @click="configMenuModel=true">{{currentMenu.title}}</Button>
-                                    </Col>
-                                    <Col style="float:right">
-                                        <Button type="primary" v-if="access" @click="permissionModel=true">addPermission</Button>
-                                        <Button type="primary" v-if="access" @click="saveRoleAndMenu">Save Role And Menu</Button>
-                                        <Button type="primary" v-if="access" @click="addMenuModel=true">Add Menu</Button>
-                                        <Button type="primary" v-if="access && roleList.length == 0" @click="removeMenu">Remove Menu</Button>
-                                    </Col>
-                                </Row>
-                                <Table
-                                        :columns="columnsList"
-                                        :data="roleList"
-                                        @on-select="onSelectRole"></Table>
-                            </Card>
-                        </div>
-                    </Col>
-                </Row>
-            </div>
+                            </Row>
+                        </Card>
+                    </div>
+                </Col>
+            </Row>
         </Content>
         <Modal
                 v-model="addMenuModel"
@@ -75,20 +72,6 @@
                 </FormItem>
             </Form>
         </Modal>
-        <Modal
-                v-model="permissionModel"
-                title="Config Permission"
-                @on-ok="savePermission"
-                @on-cancel="cancel">
-            <Form :model="permission" label-position="right" :label-width="100">
-                <FormItem label="Name">
-                    <Input v-model="permission.permissionName"></Input>
-                </FormItem>
-                <FormItem label="Code">
-                    <Input v-model="permission.permissionCode"></Input>
-                </FormItem>
-            </Form>
-        </Modal>
     </div>
 </template>
 <script>
@@ -98,7 +81,6 @@
                 menuData: [],
                 roleList:[],
                 selection:[],
-                permissionModel:false,
                 configMenuModel:false,
                 permissionsData: [{
                     title: 'parent 1',
@@ -168,10 +150,6 @@
                     vm.getRoleCurrent();
                 });
             },
-            onSelectRole(selection){
-                let vm = this;
-                vm.selection = selection;
-            },
             onSelectChange(data){
                 let vm = this;
                 if(data.length != 0){
@@ -187,26 +165,6 @@
                     vm.currentMenu = vm.menuData[0];
 
                 });
-            },
-            saveRoleAndMenu(){
-                let vm = this;
-                let roleAndMenu;
-                let roleAndMenuList = [];
-                _.each(vm.selection,function (role) {
-                    roleAndMenu = {
-                        roleCode:role.code,
-                        menuCode:vm.currentMenu.code
-                    };
-                    roleAndMenuList.push(roleAndMenu);
-                });
-                if(roleAndMenuList.length>0){
-                    vm.$http.post(vm.server_account+"/roleAndMenu/insertRoleAndMenu",roleAndMenuList).then(function(response){
-                        console.log(response);
-                    });
-                }else{
-                    vm.$Message.warning("");
-                    vm.$Message.warning("Have no change");
-                }
             },
             removeMenu(){
                 let vm = this;

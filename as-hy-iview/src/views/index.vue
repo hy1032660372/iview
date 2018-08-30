@@ -91,7 +91,10 @@
                             <Icon :type="menu.icon"></Icon>
                             <span>{{menu.title}}</span>
                         </template>
-                        <MenuItem v-for='(ch,index) in menu.children' :key='ch.code' :name="ch.code"><span>{{ch.title}}</span>{{index}}</MenuItem>
+                        <MenuItem v-for='ch in menu.children' :key='ch.code' :name="ch.code">
+                            <Icon :type="ch.icon"></Icon>
+                            <span>{{ch.title}}</span>
+                        </MenuItem>
                     </Submenu>
                 </Menu>
             </Sider>
