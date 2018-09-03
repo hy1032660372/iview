@@ -4,6 +4,7 @@ import com.hy.spring.cloud.account.domain.Entity.CustomMenu;
 import com.hy.spring.cloud.account.domain.Message;
 import com.hy.spring.cloud.account.service.CustomMenuService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 /**

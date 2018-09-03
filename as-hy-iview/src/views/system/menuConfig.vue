@@ -35,6 +35,9 @@
                                                 <Button slot="append" icon="ios-search" @click="getPermissionList"></Button>
                                             </Input>
                                         </Col>
+                                        <Col span="12">
+                                            <Button type="primary" style="float:right" @click="addPermissionModel=true">Add Permission</Button>
+                                        </Col>
                                     </Row>
                                     <Row>
                                         <Table border :columns="columns" :data="permissionList"></Table>
@@ -83,6 +86,20 @@
                 </FormItem>
             </Form>
         </Modal>
+        <Modal
+                v-model="addPermissionModel"
+                title="Add Permission"
+                @on-ok="savePermission"
+                @on-cancel="cancel">
+            <Form :model="permissionForm" label-position="right" :label-width="100">
+                <FormItem label="permissionName">
+                    <Input v-model="permissionForm.permissionName"></Input>
+                </FormItem>
+                <FormItem label="permissionCode">
+                    <Input v-model="permissionForm.permissionCode"></Input>
+                </FormItem>
+            </Form>
+        </Modal>
     </div>
 </template>
 <script>
@@ -117,6 +134,10 @@
                     menuUrl:'',
                     parentCode:'',
                     expand: true
+                },
+                permissionForm:{
+                    permissionName:"",
+                    permissionCode:""
                 },
                 currentMenu:{},
                 permission:{},
@@ -211,11 +232,10 @@
                 let permission = vm.permissionList[index];
                 vm.$Modal.confirm({
                     title: 'Confirm',
-                    content: '<p>Do you want to delete this user?</p>',
+                    content: '<p>Do you want to delete this item?</p>',
                     onOk: () => {
                         vm.$http.delete(vm.server_account+"/permissions/"+permission.id).then(function(data){
                             vm.permissionList.splice(index,1);
-                            vm.$Message.info('Clicked ok');
                         });
                     },
                     onCancel: () => {

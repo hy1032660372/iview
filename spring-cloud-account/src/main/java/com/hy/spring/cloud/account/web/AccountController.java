@@ -52,6 +52,7 @@ public class AccountController {
      * @param id
      * @return
      */
+    @PreAuthorize("hasAuthority('USER_DELETE')")
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
     public Message deleteAccountById(@PathVariable String id) {
         int result = accountService.deleteAccount(id);
@@ -61,6 +62,7 @@ public class AccountController {
         return Message.info("记录删除成功");
     }
 
+    @PreAuthorize("hasAuthority('USER_UPDATE')")
     @RequestMapping(value = "{id}", method = RequestMethod.PUT)
     public Message updateAccount(@PathVariable String id, @RequestBody Account account) {
         account.setId(id);

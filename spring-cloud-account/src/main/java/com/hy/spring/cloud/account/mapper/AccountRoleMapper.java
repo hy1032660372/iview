@@ -1,6 +1,5 @@
 package com.hy.spring.cloud.account.mapper;
 
-import com.hy.spring.cloud.account.domain.Entity.Account;
 import com.hy.spring.cloud.account.domain.Entity.AccountRole;
 import com.hy.spring.cloud.account.util.MyMapper;
 import org.apache.ibatis.annotations.Mapper;
@@ -13,7 +12,7 @@ import org.apache.ibatis.annotations.Mapper;
  */
 
 @Mapper
-public interface AccountRoleMapper extends MyMapper<Account> {
+public interface AccountRoleMapper extends MyMapper<AccountRole> {
 
     void insertAccountRole(AccountRole accountRole);
 
