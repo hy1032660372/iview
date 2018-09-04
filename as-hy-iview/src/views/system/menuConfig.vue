@@ -31,7 +31,7 @@
                                 <Col span="16">
                                     <Row>
                                         <Col span="12">
-                                            <Input v-model="pageQuery.filter">
+                                            <Input v-model="queryObject.queryData">
                                                 <Button slot="append" icon="ios-search" @click="getPermissionList"></Button>
                                             </Input>
                                         </Col>
@@ -144,7 +144,11 @@
                 pageQuery:{
                     page: 0,
                     size: 10,
-                    filter: ""
+                    filter:""
+                },
+                queryObject:{
+                    queryData:"",
+                    menuCode:""
                 },
                 totalRecord:0,
             };
@@ -165,7 +169,8 @@
         methods:{
             getPermissionList(){
                 let vm = this;
-                vm.pageQuery.filter = vm.pageQuery.filter + "&menuCode="+vm.currentMenu.menuCode;
+                vm.queryObject.menuCode = vm.currentMenu.code;
+                vm.pageQuery.filter = decodeURIComponent(vm.jquery.param(vm.queryObject),true);
                 vm.$http.get(vm.server_account+"/permissions/getPermissionList",{params:vm.pageQuery}).then(function(response){
                     vm.permissionList = response.data.aaData;
                     vm.totalRecord = response.data.iTotalRecords;
@@ -183,6 +188,7 @@
                 if(data.length != 0){
                     vm.currentMenu = data[0];
                 }
+                vm.getPermissionList();
             },
             getMenuByCurrentRole(){
                 let vm = this;
@@ -190,7 +196,6 @@
                     vm.menuData = [];
                     vm.menuData.push(response.data.data);
                     vm.currentMenu = vm.menuData[0];
-
                 });
             },
             removeMenu(){

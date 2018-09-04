@@ -59,8 +59,7 @@ public class PermissionsServiceImpl implements PermissionsService {
         if (pageQuery.getPage() > 0 && pageQuery.getSize() > 0) {
             PageHelper.startPage(pageQuery.getPage(), pageQuery.getSize());
         }
-        pageQuery.getFilter();
-        Map query = new HashMap();
+        Map query = pageQuery.convertFilterToMap();
         List<Permissions>  permissionList = permissionsServiceMapper.getPermissionList(query);
         return new SimplePage<Permissions>().convert(new PageInfo<>(permissionList));
     }

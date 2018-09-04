@@ -7,14 +7,13 @@ import Util from './libs/util';
 import App from './app.vue';
 import axios from 'axios';
 import 'iview/dist/styles/iview.css';
-import VueCookies from 'vue-cookies'
+import VueCookies from 'vue-cookies';
+import jquery from 'jquery'
 
 import VueI18n from 'vue-i18n';
 import Locales from './locale';
 import zhLocale from 'iview/src/locale/lang/zh-CN';
 import enLocale from 'iview/src/locale/lang/en-US';
-
-import menuList from './menuList.js'
 
 Vue.use(VueRouter);
 Vue.use(Vuex);
@@ -38,6 +37,7 @@ Vue.locale('en-US', mergeEN);
 
 window.currentUser = {};
 Vue.prototype.$http = axios
+Vue.prototype.jquery = jquery
 Vue.prototype.server_auth = "/auth"
 Vue.prototype.server_account = "/account"
 

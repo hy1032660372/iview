@@ -86,6 +86,8 @@
                                     +"&scope="+data.scope
                                     +"&username="+data.username
                                     +"&password="+data.password;
+                        vm.$cookies.remove("iView-token");
+                        vm.$cookies.remove("refresh-iView-token");
                         vm.$http.post(vm.server_auth+"/oauth/token",paramsStr).then(function(response) {
                             //save token
                             vm.$cookies.set("iView-token",response.data.access_token,"1d");

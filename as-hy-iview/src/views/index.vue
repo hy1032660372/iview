@@ -180,7 +180,6 @@
                         break;
                     }
                 }
-                console.log(vm.nowPage.menuUrl);
                 vm.$router.push(vm.nowPage.menuUrl);
             },
             changeUserRole(str){
@@ -203,7 +202,6 @@
                     default:
                         console.log("other");
                 }
-                console.log(data);
             },
             logout(){
                 let vm = this;
@@ -221,7 +219,7 @@
                 vm.$http.get(vm.server_account+"/roleAndMenu/getTreeMenuByCurrentRole").then(function(response){
                     vm.menuList = response.data.data == null?[]:response.data.data.children;
                     window.menuList = vm.menuList.length == 0 ?[]:response.data.data.children;
-                    if(vm.currentUPage.title){
+                    if(vm.currentUPage.parent){
                         vm.nowPage.name = vm.currentUPage.title;
                     }else if(vm.menuList.length > 0){
                         vm.toOtherPage(vm.menuList[0].children[0].code);
