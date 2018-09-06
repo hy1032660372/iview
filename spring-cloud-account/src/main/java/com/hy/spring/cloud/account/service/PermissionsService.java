@@ -11,9 +11,9 @@ public interface PermissionsService {
 
     Message getUserAuthPermissions(Principal principal);
 
-    Message insertPermission(Permissions permissions);
+    Message insertPermission(String menuCode, Permissions permissions);
 
     SimplePage getPermissionList(PageQuery pageQuery);
 
-    int deletePermissionById(String id);
+    Message deletePermissionById(String menuCode, String permissionCode);
 }

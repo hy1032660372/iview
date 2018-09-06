@@ -32,8 +32,8 @@
         SELECT
           m.permission_code
         FROM role_permission t
-        LEFT JOIN sys_permission m ON m.id = t.permission_id
-        WHERE t.role_id in
+        LEFT JOIN sys_permission m ON m.id = t.permission_code
+        WHERE t.role_code in
         <foreach collection="userRoleList" open="(" close=")" separator="," index="index" item="item">
             #{item}
         </foreach>

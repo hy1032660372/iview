@@ -4,21 +4,21 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
- * FileName: RoleAndMenu
+ * FileName: MenuAndPermission
  * Author:   hy103
- * Date:     2018/8/16 22:53
- * Description: role and menu
+ * Date:     2018/9/6 21:09
+ * Description: menu and permission
  */
 
-@Table(name = "role_menu")
-public class RoleAndMenu {
+@Table(name = "menu_permission")
+public class MenuAndPermission {
 
     @Id
     private String id;
 
-    private String roleCode;
-
     private String menuCode;
+
+    private String permissionCode;
 
     public String getId() {
         return id;
@@ -28,19 +28,19 @@ public class RoleAndMenu {
         this.id = id;
     }
 
-    public String getRoleCode() {
-        return roleCode;
-    }
-
-    public void setRoleCode(String roleCode) {
-        this.roleCode = roleCode;
-    }
-
     public String getMenuCode() {
         return menuCode;
     }
 
     public void setMenuCode(String menuCode) {
         this.menuCode = menuCode;
+    }
+
+    public String getPermissionCode() {
+        return permissionCode;
+    }
+
+    public void setPermissionCode(String permissionCode) {
+        this.permissionCode = permissionCode;
     }
 }

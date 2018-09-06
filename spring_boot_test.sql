@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50717
 File Encoding         : 65001
 
-Date: 2018-09-03 22:51:59
+Date: 2018-09-06 23:24:25
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -40,6 +40,25 @@ INSERT INTO `account_role` VALUES ('e05a57a8cc2f4414ba3f1f4f9e7078de', 'b61b6695
 INSERT INTO `account_role` VALUES ('f679822556834234aeeb538b04c132b8', '72316fdf058f412fa73f9ff2e6e3cbc1', '1234561');
 INSERT INTO `account_role` VALUES ('f6f1f987e14f46bcbfb64bef101e1c33', '553674c2379c448b99479043651cdd99', '199277');
 INSERT INTO `account_role` VALUES ('f9a38d00154842fb8f07fe72bf911d1d', '6be2fdc799754381853dd58353ab45cd', '1234561');
+
+-- ----------------------------
+-- Table structure for `menu_permission`
+-- ----------------------------
+DROP TABLE IF EXISTS `menu_permission`;
+CREATE TABLE `menu_permission` (
+  `id` varchar(32) NOT NULL,
+  `menu_code` varchar(20) DEFAULT NULL,
+  `permission_code` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of menu_permission
+-- ----------------------------
+INSERT INTO `menu_permission` VALUES ('11', 'role-config', 'USER_SELECT');
+INSERT INTO `menu_permission` VALUES ('12', 'role-config', 'USER_DELETE');
+INSERT INTO `menu_permission` VALUES ('13', 'role-config', 'USER_UPDATE');
+INSERT INTO `menu_permission` VALUES ('14', 'role-config', 'USER_ADD');
 
 -- ----------------------------
 -- Table structure for `role_menu`
@@ -77,18 +96,18 @@ INSERT INTO `role_menu` VALUES ('f704c2ed97454c98b8ed63c6ccadb540', '123456', 'r
 DROP TABLE IF EXISTS `role_permission`;
 CREATE TABLE `role_permission` (
   `id` varchar(32) NOT NULL,
-  `role_id` varchar(32) DEFAULT NULL,
-  `permission_id` varchar(32) DEFAULT NULL,
+  `role_code` varchar(20) DEFAULT NULL,
+  `permission_code` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of role_permission
 -- ----------------------------
-INSERT INTO `role_permission` VALUES ('120', '199277', '120');
-INSERT INTO `role_permission` VALUES ('121', '199277', '121');
-INSERT INTO `role_permission` VALUES ('122', '199277', '122');
-INSERT INTO `role_permission` VALUES ('123', '199277', '123');
+INSERT INTO `role_permission` VALUES ('120', '199277', 'USER_SELECT');
+INSERT INTO `role_permission` VALUES ('121', '199277', 'USER_DELETE');
+INSERT INTO `role_permission` VALUES ('122', '199277', 'USER_UPDATE');
+INSERT INTO `role_permission` VALUES ('123', '199277', 'USER_ADD');
 
 -- ----------------------------
 -- Table structure for `sys_account`

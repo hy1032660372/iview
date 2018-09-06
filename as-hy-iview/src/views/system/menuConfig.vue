@@ -35,7 +35,7 @@
                                                 <Button slot="append" icon="ios-search" @click="getPermissionList"></Button>
                                             </Input>
                                         </Col>
-                                        <Col span="12">
+                                        <Col v-if="currentMenu.menuCode" span="12">
                                             <Button type="primary" style="float:right" @click="addPermissionModel=true">Add Permission</Button>
                                         </Col>
                                     </Row>
@@ -179,7 +179,7 @@
             },
             savePermission(){
                 let vm = this;
-                vm.$http.post(vm.server_account+"/permissions/insertPermission",vm.menuForm).then(function(response){
+                vm.$http.post(vm.server_account+"/permissions/insertPermission/" + vm.currentMenu.code,vm.permissionForm).then(function(response){
                     console.log(response);
                 });
             },
@@ -239,7 +239,7 @@
                     title: 'Confirm',
                     content: '<p>Do you want to delete this item?</p>',
                     onOk: () => {
-                        vm.$http.delete(vm.server_account+"/permissions/"+permission.id).then(function(data){
+                        vm.$http.delete(vm.server_account+"/permissions/"+vm.currentMenu.code+"/"+permission.permissionCode).then(function(data){
                             vm.permissionList.splice(index,1);
                         });
                     },
