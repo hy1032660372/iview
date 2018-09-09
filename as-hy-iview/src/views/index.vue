@@ -53,6 +53,7 @@
     .demo-tabs-style1 > .ivu-tabs-card > .ivu-tabs-bar .ivu-tabs-tab-active {
         border-color: #fff;
     }
+    .button-class{background:#eee;}
 </style>
 <template>
     <div class="layout">
@@ -77,7 +78,7 @@
                                     {{headMenu.name}}
                                 </template>
                                 <MenuGroup v-for="con in headMenu.child" :key="con.id" :title="con.title">
-                                    <MenuItem v-for="c in con.content" :key="c.id" :name="c.id">{{c.name}}</MenuItem>
+                                    <MenuItem v-for="c in con.content" :class="userInfo.currentRole == c.name?'button-class':''" :key="c.id" :name="c.id">{{c.name}}</MenuItem>
                                 </MenuGroup>
                             </Submenu>
                         </span>
@@ -104,6 +105,18 @@
                 </Content>
             </Layout>
         </Layout>
+        <Modal
+                v-model="viewUserInfoModel"
+                title="User Info">
+            <Form :model="userInfo" label-position="right" :label-width="100">
+                <FormItem label="User Name: ">
+                    {{userInfo.username}}
+                </FormItem>
+                <FormItem label="Current Role: ">
+                    {{userInfo.currentRole}}
+                </FormItem>
+            </Form>
+        </Modal>
     </div>
 </template>
 <script>
@@ -112,10 +125,16 @@
             return {
                 isCollapsed: false,
                 nowPage:{},
-                userInfo:{},
+                userInfo:{
+                    username:"",
+                    currentRole:""
+                },
+                roleCode:[],
                 menuList: [],
                 headMenuList:[],
                 currentUPage:{},
+                viewUserInfoModel:false,
+                buttonClass:"button-class"
             };
         },
         computed: {
@@ -151,7 +170,8 @@
             getUserInfo(){
                 let vm = this;
                 vm.$http.get(vm.server_auth+"/users/current").then(function(data){
-                    vm.userInfo = data.data.principal;
+                    vm.userInfo.username = data.data.principal.username;
+                    vm.userInfo.currentRole = data.data.principal.currentRole.title;
                     window.currentUser = data.data.principal;
                     vm.getMenuList();
                     vm.getHeadMenuList();
@@ -193,11 +213,14 @@
             headMenuClick(data){
                 let vm = this;
                 switch (data) {
-                    case "h3144":
+                    case "logout":
                         vm.logout();
                         break;
                     case "admin":
                         vm.changeUserRole(data);
+                        break;
+                    case "userInfo":
+                        vm.viewUserInfoModel = true;
                         break;
                     default:
                         console.log("other");
@@ -229,8 +252,17 @@
             getHeadMenuList(){
                 let vm = this;
                 vm.headMenuList = window.headMenuList;
+                window.headMenuList[2].child[0].content = [];
                 vm.headMenuList[2].name = vm.userInfo.username;
-            }
+                let role = {};
+                _.each(window.currentUser.roleCode,function(roleData){
+                    role = {
+                        id:roleData.roleCode,
+                        name:roleData.title,
+                    };
+                    window.headMenuList[2].child[0].content.push(role);
+                });
+            },
         },
         beforeRouteEnter(to, from, next) {
             next(function (vm) {

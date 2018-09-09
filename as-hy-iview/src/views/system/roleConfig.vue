@@ -1,7 +1,11 @@
 <style scoped>
-    .layout{
-        background: #fff;
-    }
+    .layout{background: #fff;height: 650px;}
+    .layout .content-frame{background:#eee;height: 650px}
+    .layout .content-frame .tree-frame{padding: 10px 5px 10px 10px;}
+    .layout .content-frame .tree-class{height: 590px}
+    .layout .content-frame .table-frame{padding: 10px 10px 10px 5px;height: 590px}
+    .layout .content-frame .table-frame .table-head{padding-bottom: 20px;}
+    .layout .content-frame .table-frame .table-content{height: 547px;}
 </style>
 <template>
     <div class="layout">
@@ -10,32 +14,30 @@
                 <BreadcrumbItem>System</BreadcrumbItem>
                 <BreadcrumbItem>Role</BreadcrumbItem>
             </Breadcrumb>
-            <Row>
-                <Col span="6">
-                    <div style="background:#eee;padding: 10px 5px 10px 10px">
-                        <Card :bordered="false">
-                            <Tree :data="roleData" @on-select-change="onSelectChange"></Tree>
-                        </Card>
-                    </div>
+            <Row class="content-frame">
+                <Col span="6" class="tree-frame">
+                    <Card :bordered="false">
+                        <Tree class="tree-class" :data="roleData" @on-select-change="onSelectChange"></Tree>
+                    </Card>
                 </Col>
-                <Col span="18">
-                    <div style="background:#eee;padding: 10px 10px 10px 5px">
-                        <Card :bordered="false">
-                            <Row style="padding-bottom: 20px">
-                                <Col span="8">
-                                    <Button type="text" v-if="currentRole.code!='199277'" @click="configRoleModel=true">{{currentRole.title}}</Button>
-                                </Col>
-                                <Col style="float:right">
-                                    <Button type="primary" @click="configMenu">Config Menu</Button>
-                                    <Button type="primary" @click="configPermission">Config Permission</Button>
-                                    <Button type="primary" v-if="access" @click="addUserModel=true">Add User</Button>
-                                    <Button type="primary" v-if="access" @click="addRoleModel=true">Add Role</Button>
-                                    <Button type="primary" v-if="access && userList.length == 0" @click="removeRole">Remove Role</Button>
-                                </Col>
-                            </Row>
-                            <Table :columns="columnsList" :data="userList"></Table>
-                        </Card>
-                    </div>
+                <Col span="18" class="table-frame">
+                    <Card :bordered="false">
+                        <Row class="table-head">
+                            <Col span="8">
+                                <Button type="text" v-if="currentRole.code!='199277'" @click="configRoleModel=true">{{currentRole.title}}</Button>
+                            </Col>
+                            <Col style="float:right">
+                                <Button type="primary" @click="configMenu">Config Menu</Button>
+                                <Button type="primary" @click="configPermission">Config Permission</Button>
+                                <Button type="primary" v-if="access" @click="addUserModel=true">Add User</Button>
+                                <Button type="primary" v-if="access" @click="addRoleModel=true">Add Role</Button>
+                                <Button type="primary" v-if="access && userList.length == 0" @click="removeRole">Remove Role</Button>
+                            </Col>
+                        </Row>
+                        <div class="table-content">
+                            <Table  :columns="columnsList" :data="userList"></Table>
+                        </div>
+                    </Card>
                 </Col>
             </Row>
         </Content>

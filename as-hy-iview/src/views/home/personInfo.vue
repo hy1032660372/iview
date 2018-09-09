@@ -9,7 +9,8 @@
                 <BreadcrumbItem>Person Information</BreadcrumbItem>
             </Breadcrumb>
             <Card>
-                <div>Person Information</div>
+                <div>current user:{{userInfo.username}}</div>
+                <div>current role:{{userInfo.currentRole.title}}</div>
             </Card>
         </Content>
     </div>
@@ -18,11 +19,14 @@
     export default {
         data () {
             return {
-
+                userInfo:{}
             };
         },
         mounted(){
             let vm = this;
+            vm.userInfo = window.currentUser;
+        },
+        methods:{
         },
         beforeRouteEnter(to, from, next) {
             next();

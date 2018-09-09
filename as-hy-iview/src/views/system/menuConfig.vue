@@ -1,8 +1,9 @@
 <style scoped>
-    .layout{background: #fff;}
-    .layout .tree-frame{background:#eee;padding: 10px 10px 10px 10px }
-    .layout .tree-frame .tree-content{border-top: 2px solid #eee; }
-    .layout .tree-frame .tree-content .page-frame{margin-top: 5px}
+    .layout{background: #fff;height: 695px;}
+    .layout .tree-frame{background:#eee;padding: 10px 10px 10px 10px;height: 650px;}
+    .layout .tree-frame .tree-content{border-top: 2px solid #eee;height: 540px }
+    .layout .tree-frame .tree-content .page-frame{margin-top: 5px; float: right}
+    .layout .tree-frame .tree-content .table-content{border-left: 2px solid #eee;height: 560px}
 </style>
 <template>
     <div class="layout">
@@ -28,7 +29,7 @@
                                 <Col span="8">
                                     <Tree :data="menuData" @on-select-change="onSelectChange"></Tree>
                                 </Col>
-                                <Col span="16">
+                                <Col span="16" class="table-content">
                                     <Row>
                                         <Col span="12">
                                             <Input v-model="queryObject.queryData">

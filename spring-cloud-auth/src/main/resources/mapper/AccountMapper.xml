@@ -30,10 +30,9 @@
 
     <select id="getPermissions" parameterType="java.util.List" resultType="java.lang.String">
         SELECT
-          m.permission_code
-        FROM role_permission t
-        LEFT JOIN sys_permission m ON m.id = t.permission_code
-        WHERE t.role_code in
+        rp.permission_code
+        FROM role_permission rp
+        WHERE rp.role_code in
         <foreach collection="userRoleList" open="(" close=")" separator="," index="index" item="item">
             #{item}
         </foreach>
