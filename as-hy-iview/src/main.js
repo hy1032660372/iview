@@ -46,8 +46,8 @@ axios.interceptors.request.use(function (config) {
     // 在发送请求之前做些什么
     //Vue.prototype.$Spin.show();
     if("/auth/oauth/token" != config.url){
-        let token = $cookies.get("iView-token");
-        let userRole = $cookies.get("user_role");
+        let token = Vue.prototype.$cookies.get("iView-token");
+        let userRole =Vue.prototype.$cookies.get("user_role");
         if(token){
             config.headers['Authorization'] = 'bearer '+ token;
         }

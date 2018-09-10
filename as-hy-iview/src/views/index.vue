@@ -170,6 +170,7 @@
             getUserInfo(){
                 let vm = this;
                 vm.$http.get(vm.server_auth+"/users/current").then(function(data){
+                    vm.$cookies.set("iView-token",data.data.details.tokenValue);
                     vm.userInfo.username = data.data.principal.username;
                     vm.userInfo.currentRole = data.data.principal.currentRole.title;
                     window.currentUser = data.data.principal;

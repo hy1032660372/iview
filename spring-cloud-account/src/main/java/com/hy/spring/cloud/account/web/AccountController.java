@@ -75,13 +75,10 @@ public class AccountController {
     }
 
     @RequestMapping(value = "current", method = RequestMethod.GET)
-    public Account getCurrentAccount(Principal principal) {
+    public Map getCurrentAccount(Principal principal) {
         logger.debug("name: {}", principal.getName());
-
-        logger.info("{}", getUserDetails());
-        return new Account("dddd", principal.getName(), "sdfsdf", 20);
+        return getUserDetails();
     }
-
 
     @RequestMapping(value = "message/{message}", method = RequestMethod.GET)
     public ResponseEntity sayHello(@PathVariable String message) {

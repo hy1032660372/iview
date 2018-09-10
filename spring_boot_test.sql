@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50717
 File Encoding         : 65001
 
-Date: 2018-09-06 23:24:25
+Date: 2018-09-10 23:10:39
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -155,6 +155,22 @@ INSERT INTO `sys_custommenu` VALUES ('6ecf1ef9f68c47a08d26c85cb333200b', 'Menu',
 INSERT INTO `sys_custommenu` VALUES ('7a28a894192c4b7fae125583a8f31056', 'System', 'system', '/system', '1', 'root-menu', 'gear-a');
 INSERT INTO `sys_custommenu` VALUES ('7a28a894192c4wefae125583a8f31056', 'Menu', 'root-menu', '/', '0', null, '');
 INSERT INTO `sys_custommenu` VALUES ('7d1d413864f7405ea1a35a69cdbab116', 'Home', 'home', '/home', '1', 'root-menu', 'home');
+
+-- ----------------------------
+-- Table structure for `sys_login_record`
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_login_record`;
+CREATE TABLE `sys_login_record` (
+  `id` varchar(32) NOT NULL,
+  `login_time` varchar(20) NOT NULL,
+  `user_id` varchar(32) DEFAULT NULL,
+  `activity` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sys_login_record
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for `sys_permission`
