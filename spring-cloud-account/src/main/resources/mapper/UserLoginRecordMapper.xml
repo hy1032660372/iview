@@ -3,23 +3,23 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.hy.spring.cloud.account.mapper.UserLoginRecordMapper">
     <select id="readRecord" resultType="com.hy.spring.cloud.account.domain.Entity.UserLoginRecord">
-        select lr.login_time,lr.activity
+        select lr.operate_time,lr.activity
         from sys_login_record lr
         where lr.user_id = #{userId}
     </select>
 
     <select id="LastRecord" resultType="com.hy.spring.cloud.account.domain.Entity.UserLoginRecord">
-        select lr.login_time,lr.activity
+        select lr.operate_time,lr.activity
         from sys_login_record lr
         where lr.user_id = #{userId}
-        order by lr.login_time limit 1
+        order by lr.operate_time limit 1
     </select>
 
     <insert id="insertRecord" parameterType="com.hy.spring.cloud.account.domain.Entity.UserLoginRecord">
         insert into  sys_login_record
         (
             id,
-            login_time,
+            operate_time,
             user_id,
             activity
         )

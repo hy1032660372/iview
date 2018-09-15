@@ -19,7 +19,7 @@ public class UserLoginRecord {
     private String id;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
-    private String lastLoginTime;
+    private String operateTime;
 
     private String userId;
 
@@ -33,12 +33,12 @@ public class UserLoginRecord {
         this.id = id;
     }
 
-    public String getLastLoginTime() {
-        return lastLoginTime;
+    public String getOperateTime() {
+        return operateTime;
     }
 
-    public void setLastLoginTime(String lastLoginTime) {
-        this.lastLoginTime = lastLoginTime;
+    public void setOperateTime(String operateTime) {
+        this.operateTime = operateTime;
     }
 
     public String getUserId() {
