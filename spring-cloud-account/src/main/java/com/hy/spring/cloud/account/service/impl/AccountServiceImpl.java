@@ -72,7 +72,8 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Message getCurrentAccount(Principal principal) {
         User user = ObjectUtil.getUser(principal);
-        user.setLastLogin(accountMapper.getLastLogin(user.getUserId()).getOperateTime());
+        String dataStr = accountMapper.getLastLogin(user.getUserId())==null?"":accountMapper.getLastLogin(user.getUserId()).getOperateTime();
+        user.setLastLogin(dataStr);
         return Message.info(user);
     }
 }

@@ -85,18 +85,19 @@ axios.interceptors.response.use(function (response) {
 }, function (error) {
     // 对响应错误做点什么
     //Vue.prototype.$Spin.hide();
-    window.$cookies.set("iView-token",'',-1);
-    window.$cookies.set("refresh-iView-token",'',-1);
-    router.replace({
-        path: 'login',
-        query: {redirect: router.currentRoute.fullPath}//登录成功后跳入浏览的当前页面
-    });
+    // window.$cookies.set("iView-token",'',-1);
+    // window.$cookies.set("refresh-iView-token",'',-1);
+    // router.replace({
+    //     path: 'login',
+    //     query: {redirect: router.currentRoute.fullPath}//登录成功后跳入浏览的当前页面
+    // });
     if (error.response) {
         switch (error.response.status) {
             // 这里写清除token的代码
             case 400:
                 break;
             case 401:
+                Vue.prototype.$Message.error("No Permission");
                 break;
             case 504:
                 Vue.prototype.$Message.error("Server Error");

@@ -32,10 +32,9 @@
             getCurrentUser(){
                 let vm = this;
                 vm.$http.get(vm.server_account+"/accounts/current").then(function(data){
-                    console.log();
                     vm.userInfo = {
-                        username:data.data.principal.username,
-                        currentRole:data.data.principal.currentRole.title
+                        username:data.data.data.userName,
+                        currentRole:data.data.data.currentRole.title
                     }
                 }).catch(function (error) {
                     console.log(error);

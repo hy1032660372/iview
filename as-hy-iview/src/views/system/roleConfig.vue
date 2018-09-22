@@ -312,7 +312,6 @@
                         console.log(response);
                     });
                 }else{
-                    vm.$Message.warning("");
                     vm.$Message.warning("Have no change");
                 }
             },

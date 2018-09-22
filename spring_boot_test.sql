@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50717
 File Encoding         : 65001
 
-Date: 2018-09-10 23:10:39
+Date: 2018-09-22 23:42:32
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -162,7 +162,7 @@ INSERT INTO `sys_custommenu` VALUES ('7d1d413864f7405ea1a35a69cdbab116', 'Home',
 DROP TABLE IF EXISTS `sys_login_record`;
 CREATE TABLE `sys_login_record` (
   `id` varchar(32) NOT NULL,
-  `login_time` varchar(20) NOT NULL,
+  `operate_time` varchar(20) NOT NULL,
   `user_id` varchar(32) DEFAULT NULL,
   `activity` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`id`)
