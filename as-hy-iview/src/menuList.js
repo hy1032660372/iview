@@ -7,8 +7,8 @@ window.headMenuList = [
                     {id:'admin',name:'Admin'},
                     {id:'user',name:'User'}
                 ]},
-            {id:'h313',parentId:'h31',type:'1',title:'System',content:[
-                    {id:'h3133',name:'UserInfo'},
-                    {id:'h3144',name:'Logout'}
+            {id:'system',parentId:'system',type:'1',title:'System',content:[
+                    {id:'userInfo',name:'UserInfo'},
+                    {id:'logout',name:'Logout'}
                 ]},
         ]}];

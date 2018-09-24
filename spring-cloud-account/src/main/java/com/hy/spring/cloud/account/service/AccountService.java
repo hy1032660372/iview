@@ -4,6 +4,7 @@ import com.hy.spring.cloud.account.domain.*;
 import com.hy.spring.cloud.account.domain.Entity.Account;
 import com.hy.spring.cloud.account.domain.Message;
 
+import java.security.Principal;
 import java.util.List;
 
 /**
@@ -21,4 +22,5 @@ public interface AccountService {
 
     int updateAccount(Account account);
 
+    Message getCurrentAccount(Principal principal);
 }

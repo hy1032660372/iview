@@ -7,8 +7,10 @@ import com.hy.spring.cloud.account.domain.Entity.AccountRole;
 import com.hy.spring.cloud.account.domain.Message;
 import com.hy.spring.cloud.account.domain.PageQuery;
 import com.hy.spring.cloud.account.domain.SimplePage;
+import com.hy.spring.cloud.account.domain.User;
 import com.hy.spring.cloud.account.mapper.AccountMapper;
 import com.hy.spring.cloud.account.service.AccountService;
+import com.hy.spring.cloud.account.util.ObjectUtil;
 import com.hy.spring.cloud.account.util.UUIDUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +20,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.Principal;
 import java.util.List;
 
 /**
@@ -66,4 +69,11 @@ public class AccountServiceImpl implements AccountService {
         return accountMapper.updateByPrimaryKeySelective(account);
     }
 
+    @Override
+    public Message getCurrentAccount(Principal principal) {
+        User user = ObjectUtil.getUser(principal);
+        String dataStr = accountMapper.getLastLogin(user.getUserId())==null?"":accountMapper.getLastLogin(user.getUserId()).getOperateTime();
+        user.setLastLogin(dataStr);
+        return Message.info(user);
+    }
 }

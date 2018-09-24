@@ -1,5 +1,7 @@
 package com.hy.spring.cloud.account.domain.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
@@ -14,6 +16,7 @@ public class Account implements Serializable {
     @Id
     private String id;
     private String username;
+    @JsonIgnore
     private String password;
     private Integer age;
 

@@ -48,25 +48,23 @@ public class PermissionsController {
 
     /**
      * add permission
+     * @param menuCode
      * @param permissions
      * @return
      */
-    @RequestMapping(value = "insertPermission", method = RequestMethod.POST)
-    public Message insertPermission(@RequestBody Permissions permissions) {
-        return permissionsService.insertPermission(permissions);
+    @RequestMapping(value = "insertPermission/{menuCode}", method = RequestMethod.POST)
+    public Message insertPermission(@PathVariable String menuCode, @RequestBody Permissions permissions) {
+        return permissionsService.insertPermission(menuCode, permissions);
     }
 
     /**
      * delete account by Id
-     * @param id
+     * @param menuCode
+     * @param permissionCode
      * @return
      */
-    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
-    public Message deletePermissionById(@PathVariable String id) {
-        int result = permissionsService.deletePermissionById(id);
-        if (result <= 0) {
-            return Message.warn("要删除的记录不存在或已经被删除");
-        }
-        return Message.info("记录删除成功");
+    @RequestMapping(value = "{menuCode}/{permissionCode}", method = RequestMethod.DELETE)
+    public Message deletePermissionById(@PathVariable String menuCode, @PathVariable String permissionCode) {
+        return permissionsService.deletePermissionById(menuCode, permissionCode);
     }
 }

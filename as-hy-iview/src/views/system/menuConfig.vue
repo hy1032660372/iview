@@ -1,8 +1,9 @@
 <style scoped>
-    .layout{background: #fff;}
-    .layout .tree-frame{background:#eee;padding: 10px 10px 10px 10px }
-    .layout .tree-frame .tree-content{border-top: 2px solid #eee; }
-    .layout .tree-frame .tree-content .page-frame{margin-top: 5px}
+    .layout{background: #fff;height: 695px;}
+    .layout .tree-frame{background:#eee;padding: 10px 10px 10px 10px;height: 650px;}
+    .layout .tree-frame .tree-content{border-top: 2px solid #eee;height: 540px }
+    .layout .tree-frame .tree-content .page-frame{margin-top: 5px; float: right}
+    .layout .tree-frame .tree-content .table-content{border-left: 2px solid #eee;height: 560px}
 </style>
 <template>
     <div class="layout">
@@ -28,12 +29,15 @@
                                 <Col span="8">
                                     <Tree :data="menuData" @on-select-change="onSelectChange"></Tree>
                                 </Col>
-                                <Col span="16">
+                                <Col span="16" class="table-content">
                                     <Row>
                                         <Col span="12">
-                                            <Input v-model="pageQuery.filter">
+                                            <Input v-model="queryObject.queryData">
                                                 <Button slot="append" icon="ios-search" @click="getPermissionList"></Button>
                                             </Input>
+                                        </Col>
+                                        <Col v-if="currentMenu.menuCode" span="12">
+                                            <Button type="primary" style="float:right" @click="addPermissionModel=true">Add Permission</Button>
                                         </Col>
                                     </Row>
                                     <Row>
@@ -83,6 +87,20 @@
                 </FormItem>
             </Form>
         </Modal>
+        <Modal
+                v-model="addPermissionModel"
+                title="Add Permission"
+                @on-ok="savePermission"
+                @on-cancel="cancel">
+            <Form :model="permissionForm" label-position="right" :label-width="100">
+                <FormItem label="permissionName">
+                    <Input v-model="permissionForm.permissionName"></Input>
+                </FormItem>
+                <FormItem label="permissionCode">
+                    <Input v-model="permissionForm.permissionCode"></Input>
+                </FormItem>
+            </Form>
+        </Modal>
     </div>
 </template>
 <script>
@@ -118,12 +136,20 @@
                     parentCode:'',
                     expand: true
                 },
+                permissionForm:{
+                    permissionName:"",
+                    permissionCode:""
+                },
                 currentMenu:{},
                 permission:{},
                 pageQuery:{
                     page: 0,
                     size: 10,
-                    filter: ""
+                    filter:""
+                },
+                queryObject:{
+                    queryData:"",
+                    menuCode:""
                 },
                 totalRecord:0,
             };
@@ -144,7 +170,8 @@
         methods:{
             getPermissionList(){
                 let vm = this;
-                vm.pageQuery.filter = vm.pageQuery.filter + "&menuCode="+vm.currentMenu.menuCode;
+                vm.queryObject.menuCode = vm.currentMenu.code;
+                vm.pageQuery.filter = decodeURIComponent(vm.jquery.param(vm.queryObject),true);
                 vm.$http.get(vm.server_account+"/permissions/getPermissionList",{params:vm.pageQuery}).then(function(response){
                     vm.permissionList = response.data.aaData;
                     vm.totalRecord = response.data.iTotalRecords;
@@ -153,7 +180,7 @@
             },
             savePermission(){
                 let vm = this;
-                vm.$http.post(vm.server_account+"/permissions/insertPermission",vm.menuForm).then(function(response){
+                vm.$http.post(vm.server_account+"/permissions/insertPermission/" + vm.currentMenu.code,vm.permissionForm).then(function(response){
                     console.log(response);
                 });
             },
@@ -162,6 +189,7 @@
                 if(data.length != 0){
                     vm.currentMenu = data[0];
                 }
+                vm.getPermissionList();
             },
             getMenuByCurrentRole(){
                 let vm = this;
@@ -169,7 +197,6 @@
                     vm.menuData = [];
                     vm.menuData.push(response.data.data);
                     vm.currentMenu = vm.menuData[0];
-
                 });
             },
             removeMenu(){
@@ -211,11 +238,10 @@
                 let permission = vm.permissionList[index];
                 vm.$Modal.confirm({
                     title: 'Confirm',
-                    content: '<p>Do you want to delete this user?</p>',
+                    content: '<p>Do you want to delete this item?</p>',
                     onOk: () => {
-                        vm.$http.delete(vm.server_account+"/permissions/"+permission.id).then(function(data){
+                        vm.$http.delete(vm.server_account+"/permissions/"+vm.currentMenu.code+"/"+permission.permissionCode).then(function(data){
                             vm.permissionList.splice(index,1);
-                            vm.$Message.info('Clicked ok');
                         });
                     },
                     onCancel: () => {

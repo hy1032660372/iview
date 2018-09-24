@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50717
 File Encoding         : 65001
 
-Date: 2018-08-27 22:42:22
+Date: 2018-09-22 23:42:32
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -42,6 +42,25 @@ INSERT INTO `account_role` VALUES ('f6f1f987e14f46bcbfb64bef101e1c33', '553674c2
 INSERT INTO `account_role` VALUES ('f9a38d00154842fb8f07fe72bf911d1d', '6be2fdc799754381853dd58353ab45cd', '1234561');
 
 -- ----------------------------
+-- Table structure for `menu_permission`
+-- ----------------------------
+DROP TABLE IF EXISTS `menu_permission`;
+CREATE TABLE `menu_permission` (
+  `id` varchar(32) NOT NULL,
+  `menu_code` varchar(20) DEFAULT NULL,
+  `permission_code` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of menu_permission
+-- ----------------------------
+INSERT INTO `menu_permission` VALUES ('11', 'role-config', 'USER_SELECT');
+INSERT INTO `menu_permission` VALUES ('12', 'role-config', 'USER_DELETE');
+INSERT INTO `menu_permission` VALUES ('13', 'role-config', 'USER_UPDATE');
+INSERT INTO `menu_permission` VALUES ('14', 'role-config', 'USER_ADD');
+
+-- ----------------------------
 -- Table structure for `role_menu`
 -- ----------------------------
 DROP TABLE IF EXISTS `role_menu`;
@@ -55,18 +74,19 @@ CREATE TABLE `role_menu` (
 -- ----------------------------
 -- Records of role_menu
 -- ----------------------------
-INSERT INTO `role_menu` VALUES ('3a8890acd9f5457da358955b55ebdd0b', '1234561', 'root-menu');
 INSERT INTO `role_menu` VALUES ('4444', '199277', 'root-menu');
 INSERT INTO `role_menu` VALUES ('4952f995ec374993b3856dc48a737a9a', '199277', 'role-config');
 INSERT INTO `role_menu` VALUES ('6a191083af354595b22f3551a2adf4ac', '123456', 'system');
 INSERT INTO `role_menu` VALUES ('6a4bc0c360214c74951dd4d66ed193f0', '199277', 'home');
+INSERT INTO `role_menu` VALUES ('6f5072ee18fc4091aafb5e5451be9a73', '1234561', 'Person-Info');
 INSERT INTO `role_menu` VALUES ('9128c9b4938647ae8d065b72e44c8e3c', '199277', 'permission');
 INSERT INTO `role_menu` VALUES ('a13a0a5245154f3e819473c53979940a', '199277', 'menu-config');
 INSERT INTO `role_menu` VALUES ('a369291c3d904c44bf83ed8df320333b', '199277', 'Person-Info');
+INSERT INTO `role_menu` VALUES ('a8974f0c30c148a59bfbb7fbcec8fb51', '1234561', 'root-menu');
 INSERT INTO `role_menu` VALUES ('ae16adff9f85444e955a2082c0e8b8dc', '123456', 'home');
 INSERT INTO `role_menu` VALUES ('be807f1bc28746c2aff679fecd2ce733', '123456', 'permission');
 INSERT INTO `role_menu` VALUES ('ebbb4df4d60a448083093e34e0f6e88d', '199277', 'system');
-INSERT INTO `role_menu` VALUES ('f3c34a648da6467485570a84f1082b0f', '1234561', 'role-config');
+INSERT INTO `role_menu` VALUES ('f0cce1b23b7847e3a3b2b8952de80a00', '1234561', 'home');
 INSERT INTO `role_menu` VALUES ('f43cf77344104af2805620c65ebc96de', '123456', 'Person-Info');
 INSERT INTO `role_menu` VALUES ('f704c2ed97454c98b8ed63c6ccadb540', '123456', 'root-menu');
 
@@ -76,18 +96,18 @@ INSERT INTO `role_menu` VALUES ('f704c2ed97454c98b8ed63c6ccadb540', '123456', 'r
 DROP TABLE IF EXISTS `role_permission`;
 CREATE TABLE `role_permission` (
   `id` varchar(32) NOT NULL,
-  `role_id` varchar(32) DEFAULT NULL,
-  `permission_id` varchar(32) DEFAULT NULL,
+  `role_code` varchar(20) DEFAULT NULL,
+  `permission_code` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of role_permission
 -- ----------------------------
-INSERT INTO `role_permission` VALUES ('120', '199277', '120');
-INSERT INTO `role_permission` VALUES ('121', '199277', '121');
-INSERT INTO `role_permission` VALUES ('122', '199277', '122');
-INSERT INTO `role_permission` VALUES ('123', '199277', '123');
+INSERT INTO `role_permission` VALUES ('120', '199277', 'USER_SELECT');
+INSERT INTO `role_permission` VALUES ('121', '199277', 'USER_DELETE');
+INSERT INTO `role_permission` VALUES ('122', '199277', 'USER_UPDATE');
+INSERT INTO `role_permission` VALUES ('123', '199277', 'USER_ADD');
 
 -- ----------------------------
 -- Table structure for `sys_account`
@@ -129,13 +149,28 @@ CREATE TABLE `sys_custommenu` (
 -- ----------------------------
 -- Records of sys_custommenu
 -- ----------------------------
-INSERT INTO `sys_custommenu` VALUES ('1c7f5ce128c8413189e7e8c39d6c0e38', 'RoleConfig', 'role-config', '/system/roleConfig', '1', 'system', null);
-INSERT INTO `sys_custommenu` VALUES ('4cfe56c29bd84b828f5e2d7ed72837e9', 'PersonInfo', 'Person-Info', '/home/personInfo', '1', 'home', null);
-INSERT INTO `sys_custommenu` VALUES ('6ecf1ef9f68c47a08d26c85cb333200b', 'MenuConfig', 'menu-config', '/system/menuConfig', '1', 'system', null);
+INSERT INTO `sys_custommenu` VALUES ('1c7f5ce128c8413189e7e8c39d6c0e38', 'Role', 'role-config', '/system/roleConfig', '1', 'system', 'key');
+INSERT INTO `sys_custommenu` VALUES ('4cfe56c29bd84b828f5e2d7ed72837e9', 'PersonInfo', 'Person-Info', '/home/personInfo', '1', 'home', 'ios-person');
+INSERT INTO `sys_custommenu` VALUES ('6ecf1ef9f68c47a08d26c85cb333200b', 'Menu', 'menu-config', '/system/menuConfig', '1', 'system', 'ios-list');
 INSERT INTO `sys_custommenu` VALUES ('7a28a894192c4b7fae125583a8f31056', 'System', 'system', '/system', '1', 'root-menu', 'gear-a');
-INSERT INTO `sys_custommenu` VALUES ('7a28a894192c4wefae125583a8f31056', 'Menu', 'root-menu', '/', '0', null, null);
+INSERT INTO `sys_custommenu` VALUES ('7a28a894192c4wefae125583a8f31056', 'Menu', 'root-menu', '/', '0', null, '');
 INSERT INTO `sys_custommenu` VALUES ('7d1d413864f7405ea1a35a69cdbab116', 'Home', 'home', '/home', '1', 'root-menu', 'home');
-INSERT INTO `sys_custommenu` VALUES ('b1aba926744d44a6975c5ec1ea5088fe', 'Permission', 'permission', '/System/permission', '1', 'system', null);
+
+-- ----------------------------
+-- Table structure for `sys_login_record`
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_login_record`;
+CREATE TABLE `sys_login_record` (
+  `id` varchar(32) NOT NULL,
+  `operate_time` varchar(20) NOT NULL,
+  `user_id` varchar(32) DEFAULT NULL,
+  `activity` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sys_login_record
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for `sys_permission`

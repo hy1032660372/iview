@@ -3,6 +3,7 @@ package com.hy.spring.cloud.account.web;
 import com.hy.spring.cloud.account.domain.Entity.Account;
 import com.hy.spring.cloud.account.domain.Message;
 import com.hy.spring.cloud.account.domain.PageQuery;
+import com.hy.spring.cloud.account.domain.User;
 import com.hy.spring.cloud.account.service.AccountService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,6 +53,7 @@ public class AccountController {
      * @param id
      * @return
      */
+    @PreAuthorize("hasAuthority('USER_DELETE')")
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
     public Message deleteAccountById(@PathVariable String id) {
         int result = accountService.deleteAccount(id);
@@ -61,6 +63,7 @@ public class AccountController {
         return Message.info("记录删除成功");
     }
 
+    @PreAuthorize("hasAuthority('USER_UPDATE')")
     @RequestMapping(value = "{id}", method = RequestMethod.PUT)
     public Message updateAccount(@PathVariable String id, @RequestBody Account account) {
         account.setId(id);
@@ -73,13 +76,10 @@ public class AccountController {
     }
 
     @RequestMapping(value = "current", method = RequestMethod.GET)
-    public Account getCurrentAccount(Principal principal) {
+    public Message getCurrentAccount(Principal principal) {
         logger.debug("name: {}", principal.getName());
-
-        logger.info("{}", getUserDetails());
-        return new Account("dddd", principal.getName(), "sdfsdf", 20);
+        return accountService.getCurrentAccount(principal);
     }
-
 
     @RequestMapping(value = "message/{message}", method = RequestMethod.GET)
     public ResponseEntity sayHello(@PathVariable String message) {

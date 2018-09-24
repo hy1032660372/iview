@@ -1,5 +1,6 @@
 package com.hy.spring.cloud.account.domain.Entity;
 
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
@@ -12,6 +13,7 @@ import javax.persistence.Table;
 @Table(name = "account_role")
 public class AccountRole {
 
+    @Id
     private String id;
 
     private String accountId;

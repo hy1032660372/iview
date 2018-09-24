@@ -7,6 +7,7 @@ import com.hy.spring.cloud.account.service.AccountService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -31,6 +32,7 @@ public class AccountAndRoleController {
      * @param account
      * @return Message
      */
+    @PreAuthorize("hasAuthority('USER_ADD')")
     @RequestMapping(value = "insertAccount/{roleCode}", method = RequestMethod.POST)
     public Message insertUser(@PathVariable String roleCode, @RequestBody Account account) {
         accountService.saveAccount(account,roleCode);

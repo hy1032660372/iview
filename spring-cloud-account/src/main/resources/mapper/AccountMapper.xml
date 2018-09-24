@@ -20,6 +20,15 @@
         WHERE ar.role_code = #{roleCode}
     </select>
 
+    <select id="getLastLogin" parameterType="java.lang.String" resultType="com.hy.spring.cloud.account.domain.Entity.UserLoginRecord">
+        SELECT
+          t.user_id as userId,
+          t.operate_time as operateTime,
+          t.activity as activity
+        FROM sys_login_record t
+        WHERE t.user_id = #{userId}
+    </select>
+
     <insert id="insertAccountList">
         INSERT INTO account
         (

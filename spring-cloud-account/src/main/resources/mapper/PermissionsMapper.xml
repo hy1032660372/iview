@@ -2,12 +2,27 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.hy.spring.cloud.account.mapper.PermissionsServiceMapper">
-    <select id="getUserAuthPermissions" parameterType="java.lang.String" resultType="com.hy.spring.cloud.account.domain.Entity.Permissions">
+
+    <resultMap id="authPermissions" type="com.hy.spring.cloud.account.domain.MenuPermissions">
+        <id property="menuCode" column="menuCode"/>
+        <result property="menuName" column="menuName"/>
+        <collection property="permissionList" ofType="java.util.Map" javaType="java.util.ArrayList">
+            <id property="permissionCode" column="permissionCode" />
+            <result property="permissionName" column="permissionName" />
+        </collection>
+    </resultMap>
+
+    <select id="getUserAuthPermissions" parameterType="java.lang.String" resultMap="authPermissions">
         SELECT
-          t.id as id,
-          t.permission_code as permissionCode,
-          t.permission_name as permissionName
-        FROM sys_permission t
+          sp.permission_code as permissionCode,
+          sp.permission_name as permissionName,
+          sc.menu_code as menuCode,
+          sc.title as menuName
+        FROM  role_permission rp
+        INNER JOIN sys_permission sp ON sp.permission_code = rp.permission_code
+        LEFT JOIN menu_permission mp ON mp.permission_code = sp.permission_code
+        LEFT JOIN sys_custommenu sc ON sc.menu_code = mp.menu_code
+        where rp.role_code = #{roleCode}
     </select>
 
     <select id="getPermissionList" parameterType="java.util.Map" resultType="com.hy.spring.cloud.account.domain.Entity.Permissions">
@@ -16,6 +31,16 @@
           t.permission_code as permissionCode,
           t.permission_name as permissionName
         FROM sys_permission t
+        INNER JOIN menu_permission mp ON mp.permission_code = t.permission_code
+        <where>
+            <if test="queryData != null and queryData != ''">
+                <bind name="queryData" value="'%' + queryData + '%'"/>
+                and t.permission_name like #{queryData}
+            </if>
+            <if test="menuCode != null and menuCode != ''">
+                and mp.menu_code = #{menuCode}
+            </if>
+        </where>
     </select>
 
     <insert id="insertPermission" parameterType="com.hy.spring.cloud.account.domain.Entity.Permissions">
@@ -32,4 +57,29 @@
             #{permissionCode}
         )
     </insert>
+
+    <insert id="insertMenuPermission" parameterType="com.hy.spring.cloud.account.domain.Entity.MenuAndPermission">
+        insert into menu_permission
+        (
+            id,
+            menu_code,
+            permission_code
+        )
+        VALUES
+        (
+            #{id},
+            #{menuCode},
+            #{permissionCode}
+        )
+    </insert>
+
+    <delete id="deleteMenuPermission" parameterType="java.lang.String">
+        delete from menu_permission
+        where menu_code = #{menuCode} and permission_code = #{permissionCode}
+    </delete>
+
+    <delete id="deletePermission" parameterType="java.lang.String">
+        delete from sys_permission
+        where permission_code = #{permissionCode}
+    </delete>
 </mapper>

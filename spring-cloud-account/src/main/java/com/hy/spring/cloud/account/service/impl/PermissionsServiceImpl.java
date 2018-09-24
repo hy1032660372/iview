@@ -2,6 +2,7 @@ package com.hy.spring.cloud.account.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hy.spring.cloud.account.domain.Entity.MenuAndPermission;
 import com.hy.spring.cloud.account.domain.Entity.Permissions;
 import com.hy.spring.cloud.account.domain.Message;
 import com.hy.spring.cloud.account.domain.PageQuery;
@@ -41,13 +42,23 @@ public class PermissionsServiceImpl implements PermissionsService {
     public Message getUserAuthPermissions(Principal principal) {
         logger.info("Get user auth permissions");
         User user = ObjectUtil.getUser(principal);
+        //current User's permissions
         List<Permissions> permissionList = permissionsServiceMapper.getUserAuthPermissions(user.getCurrentRole().getRoleCode());
+
         return Message.info(permissionList);
     }
 
     @Override
-    public Message insertPermission(Permissions permissions) {
+    @Transactional
+    public Message insertPermission(String menuCode, Permissions permissions) {
         logger.info("insert permission");
+
+        MenuAndPermission menuAndPermission = new MenuAndPermission();
+        menuAndPermission.setId(UUIDUtil.createUUID());
+        menuAndPermission.setMenuCode(menuCode);
+        menuAndPermission.setPermissionCode(permissions.getPermissionCode());
+        permissionsServiceMapper.insertMenuPermission(menuAndPermission);
+
         permissions.setId(UUIDUtil.createUUID());
         permissionsServiceMapper.insertPermission(permissions);
         return Message.info("Success");
@@ -59,15 +70,16 @@ public class PermissionsServiceImpl implements PermissionsService {
         if (pageQuery.getPage() > 0 && pageQuery.getSize() > 0) {
             PageHelper.startPage(pageQuery.getPage(), pageQuery.getSize());
         }
-        pageQuery.getFilter();
-        Map query = new HashMap();
+        Map query = pageQuery.convertFilterToMap();
         List<Permissions>  permissionList = permissionsServiceMapper.getPermissionList(query);
         return new SimplePage<Permissions>().convert(new PageInfo<>(permissionList));
     }
 
     @Transactional
     @Override
-    public int deletePermissionById(String id) {
-        return permissionsServiceMapper.deleteByPrimaryKey(id);
+    public Message deletePermissionById(String menuCode, String permissionCode) {
+        permissionsServiceMapper.deleteMenuPermission(menuCode,permissionCode);
+        permissionsServiceMapper.deletePermission(permissionCode);
+        return Message.info("记录删除成功");
     }
 }

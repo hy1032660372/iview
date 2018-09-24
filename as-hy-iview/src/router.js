@@ -33,22 +33,6 @@ const routers = [{
                 title: 'menuConfig'
             },
             component: (resolve) => require(['./views/system/menuConfig.vue'], resolve)
-        },{
-            path: 'permission',
-            name: 'permission',
-            meta: {
-                parent:'system',
-                title: 'permission'
-            },
-            component: (resolve) => require(['./views/system/permission.vue'], resolve)
-        }, {
-            path: '*',
-            name: 'error-404',
-            meta: {
-                parent:'system',
-                title: '404-页面不存在'
-            },
-            component: (resolve) => require(['./views/404.vue'], resolve)
         }]
 },{
     path: '/home',

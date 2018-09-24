@@ -9,7 +9,8 @@
                 <BreadcrumbItem>Person Information</BreadcrumbItem>
             </Breadcrumb>
             <Card>
-                <div>Person Information</div>
+                <div>current user:  {{userInfo.username}}</div>
+                <div>current role:  {{userInfo.currentRole}}</div>
             </Card>
         </Content>
     </div>
@@ -18,14 +19,33 @@
     export default {
         data () {
             return {
-
+                userInfo:{
+                    username:"",
+                    currentRole:""
+                }
             };
         },
         mounted(){
             let vm = this;
         },
+        methods:{
+            getCurrentUser(){
+                let vm = this;
+                vm.$http.get(vm.server_account+"/accounts/current").then(function(data){
+                    vm.userInfo = {
+                        username:data.data.data.userName,
+                        currentRole:data.data.data.currentRole.title
+                    }
+                }).catch(function (error) {
+                    console.log(error);
+                    vm.$Message.error('Error!');
+                });
+            }
+        },
         beforeRouteEnter(to, from, next) {
-            next();
+            next(function(vm){
+                vm.getCurrentUser();
+            });
         }
     }
 </script>

@@ -7,14 +7,13 @@ import Util from './libs/util';
 import App from './app.vue';
 import axios from 'axios';
 import 'iview/dist/styles/iview.css';
-import VueCookies from 'vue-cookies'
+import VueCookies from 'vue-cookies';
+import jquery from 'jquery'
 
 import VueI18n from 'vue-i18n';
 import Locales from './locale';
 import zhLocale from 'iview/src/locale/lang/zh-CN';
 import enLocale from 'iview/src/locale/lang/en-US';
-
-import menuList from './menuList.js'
 
 Vue.use(VueRouter);
 Vue.use(Vuex);
@@ -38,6 +37,7 @@ Vue.locale('en-US', mergeEN);
 
 window.currentUser = {};
 Vue.prototype.$http = axios
+Vue.prototype.jquery = jquery
 Vue.prototype.server_auth = "/auth"
 Vue.prototype.server_account = "/account"
 
@@ -46,8 +46,8 @@ axios.interceptors.request.use(function (config) {
     // 在发送请求之前做些什么
     //Vue.prototype.$Spin.show();
     if("/auth/oauth/token" != config.url){
-        let token = $cookies.get("iView-token");
-        let userRole = $cookies.get("user_role");
+        let token = Vue.prototype.$cookies.get("iView-token");
+        let userRole =Vue.prototype.$cookies.get("user_role");
         if(token){
             config.headers['Authorization'] = 'bearer '+ token;
         }
@@ -85,18 +85,19 @@ axios.interceptors.response.use(function (response) {
 }, function (error) {
     // 对响应错误做点什么
     //Vue.prototype.$Spin.hide();
-    window.$cookies.set("iView-token",'',-1);
-    window.$cookies.set("refresh-iView-token",'',-1);
-    router.replace({
-        path: 'login',
-        query: {redirect: router.currentRoute.fullPath}//登录成功后跳入浏览的当前页面
-    });
+    // window.$cookies.set("iView-token",'',-1);
+    // window.$cookies.set("refresh-iView-token",'',-1);
+    // router.replace({
+    //     path: 'login',
+    //     query: {redirect: router.currentRoute.fullPath}//登录成功后跳入浏览的当前页面
+    // });
     if (error.response) {
         switch (error.response.status) {
             // 这里写清除token的代码
             case 400:
                 break;
             case 401:
+                Vue.prototype.$Message.error("No Permission");
                 break;
             case 504:
                 Vue.prototype.$Message.error("Server Error");
