@@ -170,11 +170,7 @@
             getUserInfo(){
                 let vm = this;
                 vm.$http.get(vm.server_auth+"/users/current").then(function(data){
-<<<<<<< Updated upstream
                     vm.$cookies.set("iView-token",data.data.details.tokenValue,"1d",null,window.domainUrl);
-=======
-                    vm.$cookies.set("iView-token",data.data.details.tokenValue,"1d",null,domainUrl);
->>>>>>> Stashed changes
                     vm.userInfo.username = data.data.principal.username;
                     vm.userInfo.currentRole = data.data.principal.currentRole.title;
                     window.currentUser = data.data.principal;
