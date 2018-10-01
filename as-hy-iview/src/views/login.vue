@@ -89,9 +89,8 @@
                         vm.$cookies.remove("refresh-iView-token");
                         vm.$http.post(vm.server_auth+"/oauth/token",paramsStr).then(function(response) {
                             //save token
-                            vm.$cookies.set("iView-token",response.data.access_token,"1d");
-                            vm.$cookies.set("refresh-iView-token",response.data.refresh_token,"1d");
-                            sessionStorage.setItem("token_key", response.data.access_token);
+                            vm.$cookies.set("iView-token",response.data.access_token,"1d",null,vm.domainStr);
+                            vm.$cookies.set("refresh-iView-token",response.data.refresh_token,"1d",null,vm.domainStr);
                             vm.$Message.success('Success!');
                             vm.$router.push("/home");
                         }).catch(function (error) {

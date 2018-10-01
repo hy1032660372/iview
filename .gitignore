@@ -144,4 +144,5 @@ spring-cloud-account/target/
 spring-cloud-auth/target/
 spring-cloud-eureka-server-ha/target/
 spring-cloud-wish/target/
+spring-cloud-message/target/
 
