@@ -8,15 +8,15 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * FileName: MessageController
+ * FileName: FileController
  * Author:   hy103
- * Date:     2018/8/15 22:07
- * Description: Message
+ * Date:     2018/10/22 21:44
+ * Description: file controller
  */
 
 @RestController
 @RequestMapping("/util")
-public class MessageController {
+public class FileController {
 
     @Autowired
     private UtilService utilService;
@@ -26,7 +26,7 @@ public class MessageController {
      * @param attachment
      * @return Message
      */
-    @PreAuthorize("hasAuthority('USER_ADD')")
+    //@PreAuthorize("hasAuthority('FILE_ADD')")
     @RequestMapping(value = "upload/{roleCode}", method = RequestMethod.POST)
     public Message upload(@PathVariable String roleCode, @RequestBody Attachment attachment) {
         return utilService.uploadAttachment(attachment);

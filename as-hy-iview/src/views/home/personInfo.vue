@@ -11,8 +11,24 @@
             <Card>
                 <div>current user:  {{userInfo.username}}</div>
                 <div>current role:  {{userInfo.currentRole}}</div>
+                <div><Button type="primary" @click="upload">Primary</Button></div>
             </Card>
         </Content>
+        <Modal
+                v-model="isShow"
+                title="Common Modal dialog box title"
+                @on-ok="ok"
+                @on-cancel="cancel">
+            <Upload
+                    multiple
+                    type="drag"
+                    action="//jsonplaceholder.typicode.com/posts/">
+                <div style="padding: 20px 0">
+                    <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
+                    <p>Click or drag files here to upload</p>
+                </div>
+            </Upload>
+        </Modal>
     </div>
 </template>
 <script>
@@ -21,7 +37,8 @@
             return {
                 userInfo:{
                     username:"",
-                    currentRole:""
+                    currentRole:"",
+                    isShow:false
                 }
             };
         },
@@ -40,6 +57,10 @@
                     console.log(error);
                     vm.$Message.error('Error!');
                 });
+            },
+            upload(){
+                let vm = this;
+                vm.isShow = true
             }
         },
         beforeRouteEnter(to, from, next) {
