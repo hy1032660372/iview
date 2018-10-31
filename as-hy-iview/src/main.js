@@ -40,6 +40,7 @@ Vue.prototype.$http = axios
 Vue.prototype.jquery = jquery
 Vue.prototype.server_auth = "/auth"
 Vue.prototype.server_account = "/account"
+Vue.prototype.server_util = "/util"
 Vue.prototype.domainStr = "localhost"
 
 // 添加请求拦截器

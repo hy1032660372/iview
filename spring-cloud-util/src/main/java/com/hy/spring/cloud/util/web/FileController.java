@@ -6,6 +6,9 @@ import com.hy.spring.cloud.util.service.UtilService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * FileName: FileController
@@ -15,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
  */
 
 @RestController
-@RequestMapping("/util")
+@RequestMapping("/upload")
 public class FileController {
 
     @Autowired
@@ -23,13 +26,14 @@ public class FileController {
 
     /**
      * add new message
-     * @param attachment
+     * @param file
      * @return Message
      */
     //@PreAuthorize("hasAuthority('FILE_ADD')")
-    @RequestMapping(value = "upload/{roleCode}", method = RequestMethod.POST)
-    public Message upload(@PathVariable String roleCode, @RequestBody Attachment attachment) {
-        return utilService.uploadAttachment(attachment);
+    @RequestMapping(value = "fileUpload", method = RequestMethod.POST)
+    @ResponseBody
+    public Message upload(@RequestParam("file") MultipartFile[] file) {
+        return utilService.uploadAttachment();
     }
 
 }

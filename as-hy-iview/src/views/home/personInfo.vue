@@ -11,35 +11,24 @@
             <Card>
                 <div>current user:  {{userInfo.username}}</div>
                 <div>current role:  {{userInfo.currentRole}}</div>
-                <div><Button type="primary" @click="upload">Primary</Button></div>
+                <dialog-upload></dialog-upload>
             </Card>
         </Content>
-        <Modal
-                v-model="isShow"
-                title="Common Modal dialog box title"
-                @on-ok="ok"
-                @on-cancel="cancel">
-            <Upload
-                    multiple
-                    type="drag"
-                    action="//jsonplaceholder.typicode.com/posts/">
-                <div style="padding: 20px 0">
-                    <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
-                    <p>Click or drag files here to upload</p>
-                </div>
-            </Upload>
-        </Modal>
     </div>
 </template>
 <script>
+    import dialogUpload from '../common/dialogUpload'
     export default {
+        components: {
+            "dialog-upload": dialogUpload,
+        },
         data () {
             return {
                 userInfo:{
                     username:"",
                     currentRole:"",
-                    isShow:false
-                }
+                },
+                isShow:false
             };
         },
         mounted(){
@@ -58,10 +47,6 @@
                     vm.$Message.error('Error!');
                 });
             },
-            upload(){
-                let vm = this;
-                vm.isShow = true
-            }
         },
         beforeRouteEnter(to, from, next) {
             next(function(vm){

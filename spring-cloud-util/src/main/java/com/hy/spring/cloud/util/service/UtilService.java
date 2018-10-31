@@ -5,6 +5,6 @@ import com.hy.spring.cloud.util.domain.Entity.Message;
 
 public interface UtilService {
 
-    Message uploadAttachment(Attachment attachment);
+    Message uploadAttachment();
 
 }

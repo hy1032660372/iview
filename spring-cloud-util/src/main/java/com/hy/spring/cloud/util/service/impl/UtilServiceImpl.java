@@ -24,8 +24,8 @@ public class UtilServiceImpl implements UtilService {
     @Autowired
     private UtilMapper utilMapper;
 
-    public Message uploadAttachment(Attachment attachment){
-        utilMapper.uploadAttachment(attachment);
+    public Message uploadAttachment(){
+        //utilMapper.uploadAttachment(attachment);
         return Message.info("ok");
     }
 }

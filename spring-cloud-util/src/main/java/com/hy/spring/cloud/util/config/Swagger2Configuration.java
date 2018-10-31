@@ -1,4 +1,4 @@
-package com.hy.spring.cloud.message.config;
+package com.hy.spring.cloud.util.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

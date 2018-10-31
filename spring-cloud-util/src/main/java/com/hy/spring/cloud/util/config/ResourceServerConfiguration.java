@@ -1,6 +1,6 @@
-package com.hy.spring.cloud.message.config;
+package com.hy.spring.cloud.util.config;
 
-import com.hy.spring.cloud.message.security.CustomUserInfoTokenServices;
+import com.hy.spring.cloud.util.security.CustomUserInfoTokenServices;
 import feign.RequestInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;

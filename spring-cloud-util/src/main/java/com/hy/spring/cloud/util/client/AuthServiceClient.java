@@ -1,6 +1,6 @@
-package com.hy.spring.cloud.message.client;
+package com.hy.spring.cloud.util.client;
 
-import com.hy.spring.cloud.message.domain.Entity.Message;
+import com.hy.spring.cloud.util.domain.Entity.Message;
 import feign.hystrix.FallbackFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

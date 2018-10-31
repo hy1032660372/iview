@@ -7,7 +7,6 @@ import java.util.List;
 
 /**
  * @ClassName TreeUtil
- * @Description TODO
  * @Author P1316771
  * @Date 8/3/2018
  **/

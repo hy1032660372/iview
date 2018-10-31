@@ -55,6 +55,13 @@ module.exports = merge(webpackBaseConfig, {
                 pathRewrite: {'^/account' : '/account'},
                 changeOrigin: true,
                 secure: false
+            },
+            '/util': {
+                target: 'http://localhost:8086',
+                //路径重写
+                pathRewrite: {'^/util' : '/util'},
+                changeOrigin: true,
+                secure: false
             }
         }
     }
