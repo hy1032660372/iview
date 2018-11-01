@@ -10,8 +10,10 @@
                     multiple
                     type="drag"
                     name="file"
+                    :headers="headers"
                     :on-success="onSuccess"
                     :on-error="onError"
+                    :data="extData"
                     :action="actionUrl">
                 <div style="padding: 20px 0">
                     <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
@@ -29,13 +31,20 @@
             return {
                 isShow:false,
                 actionUrl:"",
-                fileList:[]
+                fileList:[],
+                extData:{},
+            }
+        },
+        computed:{
+            headers(){
+                let vm = this;
+                let token = vm.$cookies.get("iView-token");
+                return {Authorization: 'bearer '+ token}
             }
         },
         mounted(){
             let vm= this;
-            let token = vm.$cookies.get("iView-token");
-            vm.actionUrl = vm.server_util+ "/upload/fileUpload?token="+token;
+            vm.actionUrl = vm.server_util+ "/upload/fileUpload";
         },
         methods: {
             uploadFile(){

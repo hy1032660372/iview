@@ -36,4 +36,16 @@ public class FileController {
         return utilService.uploadAttachment();
     }
 
+    /**
+     * add new message
+     * @param
+     * @return Message
+     */
+    //@PreAuthorize("hasAuthority('FILE_ADD')")
+    @RequestMapping(value = "test", method = RequestMethod.GET)
+    @ResponseBody
+    public Message test() {
+        return Message.info("aaaaaaaaaaa");
+    }
+
 }
