@@ -32,8 +32,8 @@ public class FileController {
     //@PreAuthorize("hasAuthority('FILE_ADD')")
     @RequestMapping(value = "fileUpload", method = RequestMethod.POST)
     @ResponseBody
-    public Message upload(@RequestParam("file") MultipartFile[] file) {
-        return utilService.uploadAttachment();
+    public Message upload(@RequestParam("file") MultipartFile file) {
+        return utilService.uploadAttachment(file);
     }
 
     /**
