@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * FileName: FileController
@@ -34,6 +35,18 @@ public class FileController {
     @ResponseBody
     public Message upload(@RequestParam("file") MultipartFile file) {
         return utilService.uploadAttachment(file);
+    }
+
+    /**
+     * add new message
+     * @param attachmentList
+     * @return Message
+     */
+    //@PreAuthorize("hasAuthority('FILE_ADD')")
+    @RequestMapping(value = "saveFileList", method = RequestMethod.POST)
+    @ResponseBody
+    public Message saveFileList(@RequestBody List<Attachment> attachmentList) {
+        return utilService.saveFileList(attachmentList);
     }
 
     /**

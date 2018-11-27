@@ -31,7 +31,7 @@
             return {
                 isShow:false,
                 actionUrl:"",
-                fileList:[],
+                originFileList:[],
                 extData:{},
             }
         },
@@ -52,6 +52,24 @@
                 vm.isShow = true
             },
             ok () {
+                let vm = this;
+                let fileList = [];
+                let file;
+                _.each(vm.originFileList,function(file){
+                    file = {
+                        id:file.response.data.id,
+                        fileName:file.name,
+                        pathUrl:file.response.data.pathUrl,
+                        fileType:"test"
+                    }
+                    fileList.push(file);
+                });
+                vm.$http.post(vm.server_util+ "/upload/saveFileList",fileList).then(function(response){
+                    console.log(response);
+                }).catch(function (error) {
+                    console.log(error);
+                    vm.$Message.error('Error!');
+                });
                 this.$Message.info('Clicked ok');
             },
             cancel () {
@@ -59,7 +77,8 @@
                 this.$Message.info('Clicked cancel');
             },
             onSuccess(response, file, fileList){
-                console.log(fileList);
+                let vm = this;
+                vm.originFileList = fileList;
             },
             onError(error, file, fileList){
                 console.log(error);

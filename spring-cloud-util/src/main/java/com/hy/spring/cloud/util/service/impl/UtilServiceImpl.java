@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * FileName: UtilServiceImpl
@@ -40,8 +41,8 @@ public class UtilServiceImpl implements UtilService {
         String suffixName = fileName.substring(fileName.lastIndexOf("."));
         // 文件上传后的路径
         String filePath = "E://test//";
-        // 解决中文问题，liunx下中文路径，图片显示问题 //
-        fileName = UUIDUtil.createUUID() + suffixName;
+        // 解决中文问题，liunx下中文路径，图片显示问题
+        // fileName = UUIDUtil.createUUID() + suffixName;
         File dest = new File(filePath + fileName);
         // 检测是否存在目录
         if (!dest.getParentFile().exists()) {
@@ -49,12 +50,20 @@ public class UtilServiceImpl implements UtilService {
         }
         try {
             file.transferTo(dest);
-            return Message.info("上传成功");
+            Attachment attachment = new Attachment();
+            attachment.setId(UUIDUtil.createUUID());
+            attachment.setPathUrl(filePath+fileName);
+            return Message.info(attachment);
         } catch (IllegalStateException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
         return Message.info("上传失败");
+    }
+
+    public Message saveFileList(List<Attachment> attachmentList){
+        utilMapper.saveFileList(attachmentList);
+        return Message.info("Success");
     }
 }

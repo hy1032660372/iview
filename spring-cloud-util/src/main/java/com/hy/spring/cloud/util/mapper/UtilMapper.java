@@ -3,6 +3,9 @@ package com.hy.spring.cloud.util.mapper;
 import com.hy.spring.cloud.util.util.MyMapper;
 import com.hy.spring.cloud.util.domain.Entity.Attachment;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * FileName: MessageMapper
@@ -14,6 +17,8 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface UtilMapper extends MyMapper<Attachment> {
 
-    void uploadAttachment(Attachment attachment);
+    void saveFileList(@Param("attachmentList") List<Attachment> attachmentList);
+
+    void deleteFileList(@Param("attachmentList") List<Attachment> attachmentList);
 
 }
