@@ -31,4 +31,14 @@
         )
     </delete>
 
+    <select id="getAttachment" parameterType="java.lang.String" resultType="com.hy.spring.cloud.util.domain.Entity.Attachment">
+          select
+            id,
+            fileName,
+            pathUrl,
+            fileType
+          from file_attachment
+          where id = #{fileId}
+    </select>
+
 </mapper>

@@ -34,7 +34,7 @@ public class Swagger2Configuration {
         return new ApiInfoBuilder()
                 .title("用户服务 RESTful APIs")
                 .description("使用 Swagger2 构建 RESTful APIs 文档")
-                .contact(new Contact("xxx", "", "xxxx@gmail.com"))
+                .contact(new Contact("as_hy", "", "1032660372@qq.com"))
                 .version("1.0")
                 .build();
     }

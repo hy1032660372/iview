@@ -3,12 +3,13 @@ package com.hy.spring.cloud.util.web;
 import com.hy.spring.cloud.util.domain.Entity.Attachment;
 import com.hy.spring.cloud.util.domain.Entity.Message;
 import com.hy.spring.cloud.util.service.UtilService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -19,8 +20,10 @@ import java.util.List;
  */
 
 @RestController
-@RequestMapping("/upload")
+@RequestMapping("/file")
 public class FileController {
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private UtilService utilService;
@@ -35,6 +38,18 @@ public class FileController {
     @ResponseBody
     public Message upload(@RequestParam("file") MultipartFile file) {
         return utilService.uploadAttachment(file);
+    }
+
+    /**
+     * add new message
+     * @param response
+     * @return Message
+     */
+    //@PreAuthorize("hasAuthority('FILE_ADD')")
+    @RequestMapping(value = "fileDownLoad", method = RequestMethod.POST)
+    @ResponseBody
+    public void fileDownLoad(HttpServletResponse response,String fileId) {
+        utilService.fileDownLoad(response,fileId);
     }
 
     /**

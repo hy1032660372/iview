@@ -12,6 +12,7 @@
                 <div>current user:  {{userInfo.username}}</div>
                 <div>current role:  {{userInfo.currentRole}}</div>
                 <dialog-upload></dialog-upload>
+                <img src="http://localhost:8086/util/test/hyd.png"/>
             </Card>
         </Content>
     </div>
