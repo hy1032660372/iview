@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hy.spring.cloud.util.mapper.UtilMapper">
+
+    <insert id="saveFileList">
+        INSERT INTO file_attachment
+        (
+        id,
+        fileName,
+        pathUrl,
+        fileType
+        )
+        VALUES
+        <foreach item="el" collection="attachmentList" separator=",">
+            (
+            #{el.id},
+            #{el.fileName},
+            #{el.pathUrl},
+            #{el.fileType}
+            )
+        </foreach>
+    </insert>
+
+    <delete id="deleteFileList" parameterType="com.hy.spring.cloud.util.domain.Entity.Attachment">
+        delete from file_attachment
+        where id in (
+            <foreach item="el" collection="attachmentList" separator=",">
+                #{el.id}
+            </foreach>
+        )
+    </delete>
+
+    <select id="getAttachment" parameterType="java.lang.String" resultType="com.hy.spring.cloud.util.domain.Entity.Attachment">
+          select
+            id,
+            fileName,
+            pathUrl,
+            fileType
+          from file_attachment
+          where id = #{fileId}
+    </select>
+
+</mapper>

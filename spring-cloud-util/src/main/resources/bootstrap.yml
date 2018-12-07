@@ -1,0 +1,48 @@
+spring:
+  application:
+    name: spring-cloud-util
+#    instance-id: ${random.int[10000,19999]}
+  datasource:
+    url: jdbc:mysql://localhost:3306/spring_boot_test?useSSL=false
+    username: root
+    password: ashy1992
+    driver-class-name: com.mysql.jdbc.Driver
+
+  #URL访问图片路径
+  mvc:
+    static-path-pattern: /images/**
+  resources:
+    static-locations: file:E://test/
+
+info:
+  app:
+    name: ${spring.application.name}
+
+server:
+  context-path: /util
+  port: 8086
+
+eureka:
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${spring.cloud.client.ipAddress}:${spring.application.instance-id:${server.port:8084}}
+    lease-renewal-interval-in-seconds: 15
+    lease-expiration-duration-in-seconds: 30
+    health-check-url-path: ${server.context-path}/health
+    status-page-url-path: ${server.context-path}/info
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+mybatis:
+  mapper-locations: classpath*:mapper/*Mapper.xml
+
+security:
+  oauth2:
+    resource:
+      user-info-uri: http://localhost:8083/auth/users/current
+    client:
+      clientId: spring-cloud-util
+      clientSecret: util123
+      accessTokenUri: http://localhost:8083/auth/oauth/token
+      grant-type: client_credentials
+      scope: server
