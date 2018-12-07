@@ -1,5 +1,7 @@
 <style scoped>
-
+    .img{
+        width: 300px;
+    }
 </style>
 <template>
     <div class="layout">
@@ -12,7 +14,7 @@
                 <div>current user:  {{userInfo.username}}</div>
                 <div>current role:  {{userInfo.currentRole}}</div>
                 <dialog-upload></dialog-upload>
-                <img src="http://localhost:8086/util/test/hyd.png"/>
+                <img class="img" src="http://localhost:8082/wish-service/images/hyd.png"/>
             </Card>
         </Content>
     </div>
