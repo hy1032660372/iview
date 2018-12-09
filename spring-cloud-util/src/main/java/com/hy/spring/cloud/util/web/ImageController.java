@@ -28,7 +28,7 @@ public class ImageController {
     //@PreAuthorize("hasAuthority('FILE_ADD')")
     @ResponseBody
     @RequestMapping(value = "{fileId}", method = RequestMethod.GET)
-    public Message getImage(@PathVariable String fileId) {
+    public String getImage(@PathVariable String fileId) {
         return imageService.getImage(fileId);
     }
 

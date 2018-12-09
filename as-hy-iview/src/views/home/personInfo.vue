@@ -14,7 +14,7 @@
                 <div>current user:  {{userInfo.username}}</div>
                 <div>current role:  {{userInfo.currentRole}}</div>
                 <dialog-upload></dialog-upload>
-                <img class="img" src="http://localhost:8082/wish-service/images/hyd.png"/>
+                <img class="img" :src="imgUrl"/>
             </Card>
         </Content>
     </div>
@@ -31,11 +31,19 @@
                     username:"",
                     currentRole:"",
                 },
-                isShow:false
+                isShow:false,
+                imgUrl:""
             };
         },
         mounted(){
             let vm = this;
+            vm.urlPre = "http://localhost:8086/util";
+            vm.$http.get(vm.server_util+"/image/a3f5683baa254803a3e2f30256fc1815").then(function(response){
+                vm.imgUrl = vm.urlPre + "/images/"+response.data.data.pathUrl;
+            }).catch(function (error) {
+                console.log(error);
+            });
+            //vm.imgUrl = "http://localhost:8086/util/images/hyd.png";
         },
         methods:{
             getCurrentUser(){
