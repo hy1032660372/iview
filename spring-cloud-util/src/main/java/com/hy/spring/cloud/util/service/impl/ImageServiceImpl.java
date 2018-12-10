@@ -23,9 +23,9 @@ public class ImageServiceImpl implements ImageService {
     @Autowired
     private ImageMapper imageMapper;
 
-    public Message getImage(String fileId){
+    public String getImage(String fileId){
         Attachment attachment = imageMapper.getImage(fileId);
-        return Message.info(attachment);
+        return attachment.getPathUrl();
     }
 
 }

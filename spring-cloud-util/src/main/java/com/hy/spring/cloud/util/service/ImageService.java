@@ -4,6 +4,6 @@ import com.hy.spring.cloud.util.domain.Entity.Message;
 
 public interface ImageService {
 
-    Message getImage(String fileId);
+    String getImage(String fileId);
 
 }

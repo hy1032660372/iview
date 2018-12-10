@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50717
 File Encoding         : 65001
 
-Date: 2018-09-22 23:42:32
+Date: 2018-12-07 23:42:11
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -42,6 +42,23 @@ INSERT INTO `account_role` VALUES ('f6f1f987e14f46bcbfb64bef101e1c33', '553674c2
 INSERT INTO `account_role` VALUES ('f9a38d00154842fb8f07fe72bf911d1d', '6be2fdc799754381853dd58353ab45cd', '1234561');
 
 -- ----------------------------
+-- Table structure for `file_attachment`
+-- ----------------------------
+DROP TABLE IF EXISTS `file_attachment`;
+CREATE TABLE `file_attachment` (
+  `id` varchar(32) NOT NULL,
+  `fileName` varchar(100) NOT NULL,
+  `pathUrl` varchar(100) DEFAULT NULL,
+  `fileType` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of file_attachment
+-- ----------------------------
+INSERT INTO `file_attachment` VALUES ('a3f5683baa254803a3e2f30256fc1815', 'hyd.png', 'E://test//hyd.png', 'test');
+
+-- ----------------------------
 -- Table structure for `menu_permission`
 -- ----------------------------
 DROP TABLE IF EXISTS `menu_permission`;
@@ -59,6 +76,19 @@ INSERT INTO `menu_permission` VALUES ('11', 'role-config', 'USER_SELECT');
 INSERT INTO `menu_permission` VALUES ('12', 'role-config', 'USER_DELETE');
 INSERT INTO `menu_permission` VALUES ('13', 'role-config', 'USER_UPDATE');
 INSERT INTO `menu_permission` VALUES ('14', 'role-config', 'USER_ADD');
+
+-- ----------------------------
+-- Table structure for `message_body`
+-- ----------------------------
+DROP TABLE IF EXISTS `message_body`;
+CREATE TABLE `message_body` (
+  `id` varchar(32) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of message_body
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for `role_menu`
