@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50717
 File Encoding         : 65001
 
-Date: 2018-12-07 23:42:11
+Date: 2018-12-10 22:15:39
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -50,13 +50,14 @@ CREATE TABLE `file_attachment` (
   `fileName` varchar(100) NOT NULL,
   `pathUrl` varchar(100) DEFAULT NULL,
   `fileType` varchar(20) DEFAULT NULL,
+  `status` int(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of file_attachment
 -- ----------------------------
-INSERT INTO `file_attachment` VALUES ('a3f5683baa254803a3e2f30256fc1815', 'hyd.png', 'E://test//hyd.png', 'test');
+INSERT INTO `file_attachment` VALUES ('2dcf889e68344593889971b9aedf5cf7', '965eccef9c35e8b663ce4d5a39ea2cdd.png', '965eccef9c35e8b663ce4d5a39ea2cdd.png', 'test', null);
 
 -- ----------------------------
 -- Table structure for `menu_permission`
