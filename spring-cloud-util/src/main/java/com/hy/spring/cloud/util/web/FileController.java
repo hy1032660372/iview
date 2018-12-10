@@ -39,14 +39,14 @@ public class FileController {
 
     /**
      * add new message
-     * @param file
+     * @param fileList
      * @return Message
      */
     //@PreAuthorize("hasAuthority('FILE_ADD')")
     @RequestMapping(value = "fileUpload", method = RequestMethod.POST)
     @ResponseBody
-    public Message upload(@RequestParam("file") MultipartFile file) {
-        return utilService.uploadAttachment(file);
+    public Message upload(@RequestParam("file") MultipartFile[] fileList) {
+        return utilService.uploadAttachment(fileList);
     }
 
     /**
@@ -62,7 +62,7 @@ public class FileController {
     }
 
     /**
-     * add new message
+     * save file
      * @param attachmentList
      * @return Message
      */
@@ -74,28 +74,13 @@ public class FileController {
     }
 
     /**
-     * add new message
-     * @param
-     * @return Message
+     * remove file
+     * @param attachmentList
+     * @return
      */
-    //@PreAuthorize("hasAuthority('FILE_ADD')")
-    @RequestMapping(value = "test", method = RequestMethod.GET)
+    @RequestMapping(value = "deleteFileList", method = RequestMethod.POST)
     @ResponseBody
-    public Message test() {
-        return Message.info("aaaaaaaaaaa");
+    public Message deleteFileList(@RequestBody List<Attachment> attachmentList){
+        return utilService.deleteFileList(attachmentList);
     }
-
-
-    /**
-     * add new message
-     * @param
-     * @return Message
-     */
-    //@PreAuthorize("hasAuthority('FILE_ADD')")
-    @RequestMapping(value = "showImage", method = RequestMethod.GET)
-    @ResponseBody
-    public ResponseEntity<?> showImage() {
-        return ResponseEntity.ok(resourceLoader.getResource("file:D:/test/crop_20a7dc7fbd29d679b456fa0f77bd9525d.jpg"));
-    }
-
 }

@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * FileName: ImageServiceImpl
  * Author:   hy103
@@ -26,6 +28,11 @@ public class ImageServiceImpl implements ImageService {
     public String getImage(String fileId){
         Attachment attachment = imageMapper.getImage(fileId);
         return attachment.getPathUrl();
+    }
+
+    public List<Attachment> getAllImage(){
+        List<Attachment> attachmentList = imageMapper.getAllImage();
+        return attachmentList;
     }
 
 }

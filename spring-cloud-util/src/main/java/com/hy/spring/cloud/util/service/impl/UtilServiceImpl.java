@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,30 +31,38 @@ public class UtilServiceImpl implements UtilService {
     @Autowired
     private UtilMapper utilMapper;
 
-    public Message uploadAttachment(MultipartFile file){
+    public Message uploadAttachment(MultipartFile[] fileList){
         //utilMapper.uploadAttachment(attachment);
-        if (file.isEmpty()) {
-            return Message.info("文件为空");
-        }
-        // 获取文件名
-        String fileName = file.getOriginalFilename();
-        // 获取文件的后缀名
-        String suffixName = fileName.substring(fileName.lastIndexOf("."));
+
         // 文件上传后的路径
         String filePath = "D://test//";
-        // 解决中文问题，liunx下中文路径，图片显示问题
-        // fileName = UUIDUtil.createUUID() + suffixName;
-        File dest = new File(filePath + fileName);
-        // 检测是否存在目录
-        if (!dest.getParentFile().exists()) {
-            dest.getParentFile().mkdirs();
-        }
+        List<Attachment> attachmentList = new ArrayList();
+
         try {
-            file.transferTo(dest);
-            Attachment attachment = new Attachment();
-            attachment.setId(UUIDUtil.createUUID());
-            attachment.setPathUrl(filePath+fileName);
-            return Message.info(attachment);
+            for(MultipartFile file:fileList){
+                if (file.isEmpty()) {
+                    return Message.info("文件为空");
+                }
+                // 获取文件名
+                String fileName = file.getOriginalFilename();
+                // 获取文件的后缀名
+                String suffixName = fileName.substring(fileName.lastIndexOf("."));
+
+                // 解决中文问题，liunx下中文路径，图片显示问题
+                // fileName = UUIDUtil.createUUID() + suffixName;
+                File dest = new File(filePath + fileName);
+                // 检测是否存在目录
+                if (!dest.getParentFile().exists()) {
+                    dest.getParentFile().mkdirs();
+                }
+
+                file.transferTo(dest);
+                Attachment attachment = new Attachment();
+                attachment.setId(UUIDUtil.createUUID());
+                attachment.setPathUrl(fileName);
+                attachmentList.add(attachment);
+            }
+            return Message.info(attachmentList);
         } catch (IllegalStateException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -63,7 +72,7 @@ public class UtilServiceImpl implements UtilService {
     }
 
     public Message saveFileList(List<Attachment> attachmentList){
-        //utilMapper.saveFileList(attachmentList);
+        utilMapper.saveFileList(attachmentList);
         return Message.info("Success");
     }
 
@@ -104,4 +113,18 @@ public class UtilServiceImpl implements UtilService {
             logger.error(e.getMessage());
         }
     }
+
+    @Override
+    public Message deleteFileList(List<Attachment> attachmentList) {
+        if(attachmentList != null && attachmentList.size() > 0){
+            utilMapper.deleteFileList(attachmentList);
+        }
+        return Message.info("Success");
+    }
+
+    @Override
+    public List<Attachment> queryAttachmentList(Attachment attachment) {
+        return utilMapper.queryAttachmentList(attachment);
+    }
+
 }

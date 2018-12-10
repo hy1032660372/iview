@@ -9,9 +9,14 @@ import java.util.List;
 
 public interface UtilService {
 
-    Message uploadAttachment(MultipartFile file);
+    Message uploadAttachment(MultipartFile[] fileList);
 
     Message saveFileList(List<Attachment> attachmentList);
 
     void fileDownLoad(HttpServletResponse response, String fileId);
+
+    Message deleteFileList(List<Attachment> attachmentList);
+
+    List<Attachment> queryAttachmentList(Attachment attachment);
+
 }

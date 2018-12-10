@@ -13,6 +13,8 @@
                     :headers="headers"
                     :on-success="onSuccess"
                     :on-error="onError"
+                    :on-remove="onRemove"
+                    :default-file-list="originFileList"
                     :data="extData"
                     :action="actionUrl">
                 <div style="padding: 20px 0">
@@ -49,12 +51,19 @@
         methods: {
             uploadFile(){
                 let vm = this;
-                vm.isShow = true
+                vm.isShow = true;
+                vm.originFileList = [];
             },
             ok () {
                 let vm = this;
                 let fileList = [];
                 let file;
+
+                if(vm.originFileList.length == 0){
+                    vm.$Message.warning('Please select Attachments');
+                    return;
+                }
+
                 _.each(vm.originFileList,function(file){
                     file = {
                         id:file.response.data.id,
@@ -65,24 +74,36 @@
                     fileList.push(file);
                 });
                 vm.$http.post(vm.server_util+ "/file/saveFileList",fileList).then(function(response){
-                    console.log(response);
+                    vm.onNotify();
                 }).catch(function (error) {
-                    console.log(error);
                     vm.$Message.error('Error!');
                 });
-                this.$Message.info('Clicked ok');
             },
             cancel () {
-                console.log(window.server_util);
+                let vm = this;
                 this.$Message.info('Clicked cancel');
             },
             onSuccess(response, file, fileList){
                 let vm = this;
+                debugger
                 vm.originFileList = fileList;
             },
             onError(error, file, fileList){
                 console.log(error);
             },
+            onRemove(data){
+                let vm = this;
+                console.log(vm.$refs);
+                for(let i = 0; i < vm.originFileList.length; i++){
+                    if(vm.originFileList[i].name == data.name){
+                        vm.originFileList.splice(i,1);
+                        break;
+                    }
+                }
+            },
+            onNotify(){
+                this.$emit('onNotify','ok');
+            }
         }
     }
 </script>

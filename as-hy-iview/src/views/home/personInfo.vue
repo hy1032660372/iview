@@ -13,9 +13,12 @@
             <Card>
                 <div>current user:  {{userInfo.username}}</div>
                 <div>current role:  {{userInfo.currentRole}}</div>
-                <dialog-upload></dialog-upload>
-                <img class="img" :src="imgUrl"/>
-                <img src="http://localhost:8086/util/showImage"/>
+                <dialog-upload @onNotify="notify"></dialog-upload>
+                <!--<img class="img" :src="imgUrl"/>-->
+                <!--<img src="http://localhost:8086/util/showImage"/>-->
+                <div v-for="image in images" :key="image.id" >
+                    <img class="img" :src="image.pathUrl"/>
+                </div>
             </Card>
         </Content>
     </div>
@@ -33,18 +36,13 @@
                     currentRole:"",
                 },
                 isShow:false,
-                imgUrl:""
+                imgUrl:"",
+                images:[]
             };
         },
         mounted(){
             let vm = this;
-            vm.urlPre = "http://localhost:8086/util";
-            vm.$http.get(vm.server_util+"/image/a3f5683baa254803a3e2f30256fc1815").then(function(response){
-                vm.imgUrl = vm.urlPre + "/images/"+response.data.data.pathUrl;
-            }).catch(function (error) {
-                console.log(error);
-            });
-            //vm.imgUrl = "http://localhost:8086/util/images/hyd.png";
+            vm.getImages();
         },
         methods:{
             getCurrentUser(){
@@ -59,6 +57,28 @@
                     vm.$Message.error('Error!');
                 });
             },
+            getImages(){
+                let vm = this;
+                vm.urlPre = "http://localhost:8086/util";
+                vm.$http.get(vm.server_util+"/image/getAllImage").then(function(response){
+                    //vm.imgUrl = vm.urlPre + "/images/"+response.data;
+                    vm.images = [];
+                    _.each(response.data,function(param){
+                        param.pathUrl = vm.urlPre + "/images/" + param.pathUrl;
+                        vm.images.push(param);
+                    });
+                }).catch(function (error) {
+                    console.log(error);
+                });
+                //vm.imgUrl = "http://localhost:8086/util/images/hyd.png";
+            },
+            notify(message){
+                let vm = this;
+                console.log(message);
+                if("ok" == message){
+                    vm.getImages();
+                }
+            }
         },
         beforeRouteEnter(to, from, next) {
             next(function(vm){

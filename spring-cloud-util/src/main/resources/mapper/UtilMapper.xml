@@ -41,4 +41,22 @@
           where id = #{fileId}
     </select>
 
+    <select id="queryAttachmentList" parameterType="java.lang.String" resultType="com.hy.spring.cloud.util.domain.Entity.Attachment">
+        select
+            id,
+            fileName,
+            pathUrl,
+            fileType
+        from file_attachment t
+        <where>
+            <if test="fileName != null and fileName != ''">
+                <bind name="fileName" value="'%' + fileName + '%'"/>
+                and t.fileName like #{fileName}
+            </if>
+            <if test="fileType != null and fileType != ''">
+                and t.fileType = #{fileType}
+            </if>
+        </where>
+    </select>
+
 </mapper>
