@@ -7,7 +7,6 @@
                 @on-ok="ok"
                 @on-cancel="cancel">
             <Upload
-                    multiple
                     type="drag"
                     name="file"
                     :headers="headers"
@@ -35,6 +34,7 @@
                 actionUrl:"",
                 originFileList:[],
                 extData:{},
+                uploadPromiss:false
             }
         },
         computed:{
@@ -85,7 +85,6 @@
             },
             onSuccess(response, file, fileList){
                 let vm = this;
-                debugger
                 vm.originFileList = fileList;
             },
             onError(error, file, fileList){
@@ -93,7 +92,6 @@
             },
             onRemove(data){
                 let vm = this;
-                console.log(vm.$refs);
                 for(let i = 0; i < vm.originFileList.length; i++){
                     if(vm.originFileList[i].name == data.name){
                         vm.originFileList.splice(i,1);

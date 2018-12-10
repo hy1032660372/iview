@@ -31,38 +31,32 @@ public class UtilServiceImpl implements UtilService {
     @Autowired
     private UtilMapper utilMapper;
 
-    public Message uploadAttachment(MultipartFile[] fileList){
-        //utilMapper.uploadAttachment(attachment);
+    public Message uploadAttachment(MultipartFile file){
 
         // 文件上传后的路径
         String filePath = "D://test//";
-        List<Attachment> attachmentList = new ArrayList();
 
+        if (file.isEmpty()) {
+            return Message.info("文件为空");
+        }
+        // 获取文件名
+        String fileName = file.getOriginalFilename();
+        // 获取文件的后缀名
+        String suffixName = fileName.substring(fileName.lastIndexOf("."));
+
+        // 解决中文问题，liunx下中文路径，图片显示问题
+        // fileName = UUIDUtil.createUUID() + suffixName;
+        File dest = new File(filePath + fileName);
+        // 检测是否存在目录
+        if (!dest.getParentFile().exists()) {
+            dest.getParentFile().mkdirs();
+        }
         try {
-            for(MultipartFile file:fileList){
-                if (file.isEmpty()) {
-                    return Message.info("文件为空");
-                }
-                // 获取文件名
-                String fileName = file.getOriginalFilename();
-                // 获取文件的后缀名
-                String suffixName = fileName.substring(fileName.lastIndexOf("."));
-
-                // 解决中文问题，liunx下中文路径，图片显示问题
-                // fileName = UUIDUtil.createUUID() + suffixName;
-                File dest = new File(filePath + fileName);
-                // 检测是否存在目录
-                if (!dest.getParentFile().exists()) {
-                    dest.getParentFile().mkdirs();
-                }
-
-                file.transferTo(dest);
-                Attachment attachment = new Attachment();
-                attachment.setId(UUIDUtil.createUUID());
-                attachment.setPathUrl(fileName);
-                attachmentList.add(attachment);
-            }
-            return Message.info(attachmentList);
+            file.transferTo(dest);
+            Attachment attachment = new Attachment();
+            attachment.setId(UUIDUtil.createUUID());
+            attachment.setPathUrl(fileName);
+            return Message.info(attachment);
         } catch (IllegalStateException e) {
             e.printStackTrace();
         } catch (IOException e) {

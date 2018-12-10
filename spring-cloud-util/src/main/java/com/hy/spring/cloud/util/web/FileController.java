@@ -39,14 +39,14 @@ public class FileController {
 
     /**
      * add new message
-     * @param fileList
+     * @param file
      * @return Message
      */
     //@PreAuthorize("hasAuthority('FILE_ADD')")
     @RequestMapping(value = "fileUpload", method = RequestMethod.POST)
     @ResponseBody
-    public Message upload(@RequestParam("file") MultipartFile[] fileList) {
-        return utilService.uploadAttachment(fileList);
+    public Message upload(@RequestParam("file") MultipartFile file) {
+        return utilService.uploadAttachment(file);
     }
 
     /**

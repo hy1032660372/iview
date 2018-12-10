@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface UtilService {
 
-    Message uploadAttachment(MultipartFile[] fileList);
+    Message uploadAttachment(MultipartFile file);
 
     Message saveFileList(List<Attachment> attachmentList);
 

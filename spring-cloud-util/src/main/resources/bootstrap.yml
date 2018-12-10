@@ -3,10 +3,10 @@ spring:
     name: spring-cloud-util
 #    instance-id: ${random.int[10000,19999]}
   datasource:
-    url: jdbc:mysql://localhost:3306/spring_boot_test?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
-    username: admin
-    password: admin
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/spring_boot_test?useSSL=false
+    username: root
+    password: ashy1992
+    driver-class-name: com.mysql.jdbc.Driver
 
   #URL访问图片路径
   mvc:
