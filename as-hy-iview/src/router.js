@@ -50,7 +50,23 @@ const routers = [{
             },
             component: (resolve) => require(['./views/home/personInfo.vue'], resolve)
         }]
-},{
+}, {
+       path: '/index2',
+       meta: {
+           title: ''
+       },
+       component: (resolve) => require(['./views/index2.vue'], resolve),
+       children: [
+           {
+               path: 'sssourcing',
+               name: 'sssourcing',
+               meta: {
+                   title: 'sssourcing'
+               },
+               component: (resolve) => require(['./views/qh/sssourcing.vue'], resolve)
+           }
+       ]
+   },{
     path: '/*',
     name: 'error404',
     meta: {

@@ -44,7 +44,7 @@
         },
         mounted(){
             let vm= this;
-            vm.actionUrl = vm.server_util+ "/upload/fileUpload";
+            vm.actionUrl = vm.server_util+ "/file/fileUpload";
         },
         methods: {
             uploadFile(){
@@ -64,7 +64,7 @@
                     }
                     fileList.push(file);
                 });
-                vm.$http.post(vm.server_util+ "/upload/saveFileList",fileList).then(function(response){
+                vm.$http.post(vm.server_util+ "/file/saveFileList",fileList).then(function(response){
                     console.log(response);
                 }).catch(function (error) {
                     console.log(error);

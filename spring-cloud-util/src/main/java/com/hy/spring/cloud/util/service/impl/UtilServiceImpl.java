@@ -40,7 +40,7 @@ public class UtilServiceImpl implements UtilService {
         // 获取文件的后缀名
         String suffixName = fileName.substring(fileName.lastIndexOf("."));
         // 文件上传后的路径
-        String filePath = "E://test//";
+        String filePath = "D://test//";
         // 解决中文问题，liunx下中文路径，图片显示问题
         // fileName = UUIDUtil.createUUID() + suffixName;
         File dest = new File(filePath + fileName);
@@ -63,7 +63,7 @@ public class UtilServiceImpl implements UtilService {
     }
 
     public Message saveFileList(List<Attachment> attachmentList){
-        utilMapper.saveFileList(attachmentList);
+        //utilMapper.saveFileList(attachmentList);
         return Message.info("Success");
     }
 

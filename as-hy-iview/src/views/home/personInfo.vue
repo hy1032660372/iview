@@ -15,6 +15,7 @@
                 <div>current role:  {{userInfo.currentRole}}</div>
                 <dialog-upload></dialog-upload>
                 <img class="img" :src="imgUrl"/>
+                <img src="http://localhost:8086/util/showImage"/>
             </Card>
         </Content>
     </div>

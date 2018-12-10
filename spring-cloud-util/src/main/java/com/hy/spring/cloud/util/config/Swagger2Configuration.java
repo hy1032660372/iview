@@ -19,6 +19,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Configuration
 @EnableSwagger2
 public class Swagger2Configuration {
+
     @Bean
     public Docket createRestApi() {
         return new Docket(DocumentationType.SWAGGER_2)
@@ -28,14 +29,16 @@ public class Swagger2Configuration {
                 .apis(RequestHandlerSelectors.basePackage("com.hy.spring.cloud.util"))
                 .paths(PathSelectors.any())
                 .build();
+
     }
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("用户服务 RESTful APIs")
+                .title("许愿墙 服务 RESTful APIs")
                 .description("使用 Swagger2 构建 RESTful APIs 文档")
-                .contact(new Contact("as_hy", "", "1032660372@qq.com"))
+                .contact(new Contact("as_hy", "", "hy1032660372@163.com"))
                 .version("1.0")
                 .build();
     }
+
 }

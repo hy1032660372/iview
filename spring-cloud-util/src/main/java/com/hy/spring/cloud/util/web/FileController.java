@@ -6,6 +6,8 @@ import com.hy.spring.cloud.util.service.UtilService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,8 +27,15 @@ public class FileController {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
+    private final ResourceLoader resourceLoader;
+
     @Autowired
     private UtilService utilService;
+
+    @Autowired
+    public FileController(ResourceLoader resourceLoader) {
+        this.resourceLoader = resourceLoader;
+    }
 
     /**
      * add new message
@@ -74,6 +83,19 @@ public class FileController {
     @ResponseBody
     public Message test() {
         return Message.info("aaaaaaaaaaa");
+    }
+
+
+    /**
+     * add new message
+     * @param
+     * @return Message
+     */
+    //@PreAuthorize("hasAuthority('FILE_ADD')")
+    @RequestMapping(value = "showImage", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<?> showImage() {
+        return ResponseEntity.ok(resourceLoader.getResource("file:D:/test/crop_20a7dc7fbd29d679b456fa0f77bd9525d.jpg"));
     }
 
 }
