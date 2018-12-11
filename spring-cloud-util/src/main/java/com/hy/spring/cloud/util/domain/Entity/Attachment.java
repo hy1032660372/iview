@@ -16,6 +16,8 @@ public class Attachment {
 
     private String fileType;
 
+    private Integer status;
+
     public String getId() {
         return id;
     }
@@ -46,5 +48,13 @@ public class Attachment {
 
     public void setFileType(String fileType) {
         this.fileType = fileType;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 }

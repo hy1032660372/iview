@@ -5,6 +5,7 @@ import com.hy.spring.cloud.util.domain.Entity.Message;
 import com.hy.spring.cloud.util.mapper.UtilMapper;
 import com.hy.spring.cloud.util.service.UtilService;
 import com.hy.spring.cloud.message.util.UUIDUtil;
+import com.hy.spring.cloud.util.util.FileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,41 +31,28 @@ public class UtilServiceImpl implements UtilService {
     @Autowired
     private UtilMapper utilMapper;
 
-    public Message uploadAttachment(MultipartFile file){
+    // 文件上传后的路径
+    String filePath = "D:/test";
+    String pathUrl = "/temp";
 
-        // 文件上传后的路径
-        String filePath = "D://test//";
+    public Message uploadAttachment(MultipartFile fileList){
 
-        if (file.isEmpty()) {
-            return Message.info("文件为空");
-        }
-        // 获取文件名
-        String fileName = file.getOriginalFilename();
-        // 获取文件的后缀名
-        String suffixName = fileName.substring(fileName.lastIndexOf("."));
+        Attachment attachment = new Attachment();
 
-        // 解决中文问题，liunx下中文路径，图片显示问题
-        // fileName = UUIDUtil.createUUID() + suffixName;
-        File dest = new File(filePath + fileName);
-        // 检测是否存在目录
-        if (!dest.getParentFile().exists()) {
-            dest.getParentFile().mkdirs();
-        }
-        try {
-            file.transferTo(dest);
-            Attachment attachment = new Attachment();
-            attachment.setId(UUIDUtil.createUUID());
-            attachment.setPathUrl(fileName);
-            return Message.info(attachment);
-        } catch (IllegalStateException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return Message.info("上传失败");
+        transferTo(fileList, attachment);
+        //multipleSave(fileList, attachmentList);
+
+        return Message.info(attachment);
     }
 
+    @Override
     public Message saveFileList(List<Attachment> attachmentList){
+
+        for(Attachment attachment:attachmentList){
+            FileUtil.copyFile(filePath+pathUrl+"/"+attachment.getFileName(),
+                    filePath+attachment.getPathUrl()+"/"+attachment.getFileName());
+        }
+
         utilMapper.saveFileList(attachmentList);
         return Message.info("Success");
     }
@@ -119,6 +106,65 @@ public class UtilServiceImpl implements UtilService {
     @Override
     public List<Attachment> queryAttachmentList(Attachment attachment) {
         return utilMapper.queryAttachmentList(attachment);
+    }
+
+    //transferTo
+    public void transferTo(MultipartFile file, Attachment attachment) {
+        try {
+
+            // 获取文件名
+            String fileName = file.getOriginalFilename();
+            // 获取文件的后缀名
+            String suffixName = fileName.substring(fileName.lastIndexOf("."));
+
+            // 解决中文问题，liunx下中文路径，图片显示问题
+            // fileName = UUIDUtil.createUUID() + suffixName;
+            File dest = new File(filePath + pathUrl + "/" + fileName);
+            // 检测是否存在目录
+            if (!dest.getParentFile().exists()) {
+                dest.getParentFile().mkdirs();
+            }
+            file.transferTo(dest);
+
+            attachment.setId(UUIDUtil.createUUID());
+            attachment.setFileType("temp");
+            attachment.setFileName(fileName);
+            attachment.setPathUrl(pathUrl);
+            attachment.setStatus(0);
+
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //multipleSave
+    public void multipleSave(MultipartFile[] fileList, Attachment attachment){
+
+        String fileName = null;
+        if (fileList != null && fileList.length >0) {
+            for(int i =0 ;i< fileList.length; i++){
+                attachment = new Attachment();
+                try {
+                    fileName = fileList[i].getOriginalFilename();
+                    byte[] bytes = fileList[i].getBytes();
+                    BufferedOutputStream buffStream =
+                            new BufferedOutputStream(new FileOutputStream(new File(filePath + pathUrl + "/" + fileName)));
+                    buffStream.write(bytes);
+                    buffStream.close();
+                } catch (Exception e) {
+                    logger.warn("You failed to upload " + fileName + ": " + e.getMessage() +"<br/>");
+                }
+
+                attachment.setId(UUIDUtil.createUUID());
+                attachment.setFileType("temp");
+                attachment.setFileName(fileName);
+                attachment.setPathUrl(pathUrl);
+            }
+        } else {
+            logger.warn("Unable to upload. File is empty.");
+        }
     }
 
 }

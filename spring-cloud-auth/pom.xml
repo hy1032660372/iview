@@ -37,6 +37,8 @@
         <jacoco-maven-plugin.version>0.7.9</jacoco-maven-plugin.version>
         <maven-surefire-plugin.version>2.20</maven-surefire-plugin.version>
         <!-- endregion -->
+
+        <mysql.version>8.0.11</mysql.version>
     </properties>
 
     <dependencyManagement>
@@ -135,6 +137,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql.version}</version>
         </dependency>
 
         <!-- MyBatis 通用 Mapper 插件 -->

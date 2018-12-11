@@ -7,6 +7,7 @@
                 @on-ok="ok"
                 @on-cancel="cancel">
             <Upload
+                    multiple
                     type="drag"
                     name="file"
                     :headers="headers"
@@ -33,8 +34,8 @@
                 isShow:false,
                 actionUrl:"",
                 originFileList:[],
+                attachmentList:[],
                 extData:{},
-                uploadPromiss:false
             }
         },
         computed:{
@@ -53,27 +54,23 @@
                 let vm = this;
                 vm.isShow = true;
                 vm.originFileList = [];
+                vm.attachmentList = [];
             },
             ok () {
                 let vm = this;
-                let fileList = [];
-                let file;
 
-                if(vm.originFileList.length == 0){
+                if(vm.attachmentList.length == 0){
                     vm.$Message.warning('Please select Attachments');
                     return;
                 }
 
-                _.each(vm.originFileList,function(file){
-                    file = {
-                        id:file.response.data.id,
-                        fileName:file.name,
-                        pathUrl:file.response.data.pathUrl,
-                        fileType:"test"
-                    }
-                    fileList.push(file);
+                _.each(vm.attachmentList,function(file){
+                    file.pathUrl = '/'+currentUser.userId;
+                    file.status = 1;
+                    file.fileType = '' ;
                 });
-                vm.$http.post(vm.server_util+ "/file/saveFileList",fileList).then(function(response){
+
+                vm.$http.post(vm.server_util+ "/file/saveFileList",vm.attachmentList).then(function(response){
                     vm.onNotify();
                 }).catch(function (error) {
                     vm.$Message.error('Error!');
@@ -85,16 +82,16 @@
             },
             onSuccess(response, file, fileList){
                 let vm = this;
-                vm.originFileList = fileList;
+                vm.attachmentList.push(response.data);
             },
             onError(error, file, fileList){
                 console.log(error);
             },
             onRemove(data){
                 let vm = this;
-                for(let i = 0; i < vm.originFileList.length; i++){
-                    if(vm.originFileList[i].name == data.name){
-                        vm.originFileList.splice(i,1);
+                for(let i = 0; i < vm.attachmentList.length; i++){
+                    if(vm.attachmentList[i].fileName == data.name){
+                        vm.attachmentList.splice(i,1);
                         break;
                     }
                 }

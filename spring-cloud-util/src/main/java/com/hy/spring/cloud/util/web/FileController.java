@@ -39,14 +39,14 @@ public class FileController {
 
     /**
      * add new message
-     * @param file
+     * @param fileList
      * @return Message
      */
     //@PreAuthorize("hasAuthority('FILE_ADD')")
     @RequestMapping(value = "fileUpload", method = RequestMethod.POST)
     @ResponseBody
-    public Message upload(@RequestParam("file") MultipartFile file) {
-        return utilService.uploadAttachment(file);
+    public Message upload(@RequestParam("file") MultipartFile fileList) {
+        return utilService.uploadAttachment(fileList);
     }
 
     /**
@@ -82,5 +82,16 @@ public class FileController {
     @ResponseBody
     public Message deleteFileList(@RequestBody List<Attachment> attachmentList){
         return utilService.deleteFileList(attachmentList);
+    }
+
+    /**
+     * remove file
+     * @param attachment
+     * @return
+     */
+    @RequestMapping(value = "queryAttachmentList", method = RequestMethod.POST)
+    @ResponseBody
+    public List<Attachment> queryAttachmentList(@RequestBody Attachment attachment){
+        return utilService.queryAttachmentList(attachment);
     }
 }

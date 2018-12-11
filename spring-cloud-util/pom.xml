@@ -35,7 +35,10 @@
         <!-- region Plugins version define -->
         <jacoco-maven-plugin.version>0.7.9</jacoco-maven-plugin.version>
         <maven-surefire-plugin.version>2.20</maven-surefire-plugin.version>
-        <!-- endregion -->
+
+        <druid-spring.version>1.1.5</druid-spring.version>
+        <apache-poi.version>4.0.1</apache-poi.version>
+
     </properties>
 
     <dependencyManagement>
@@ -156,6 +159,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.11</version>
         </dependency>
 
         <!-- MyBatis 通用 Mapper 插件 -->
@@ -175,7 +179,7 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid-spring-boot-starter</artifactId>
-            <version>1.1.5</version>
+            <version>${druid-spring.version}</version>
         </dependency>
 
         <dependency>
@@ -194,14 +198,9 @@
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
-            <version>3.17</version>
+            <version>${apache-poi.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml</artifactId>
-            <version>3.16</version>
-        </dependency>
 
     </dependencies>
 
@@ -287,26 +286,6 @@
                     </execution>
                 </executions>
 
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>compile</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>testCompile</id>
-                        <phase>test-compile</phase>
-                        <goals>
-                            <goal>testCompile</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
             <!-- endregion -->
 

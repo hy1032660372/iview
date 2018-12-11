@@ -2,6 +2,7 @@ package com.hy.spring.cloud.util.service.impl;
 
 import com.hy.spring.cloud.util.domain.Entity.Attachment;
 import com.hy.spring.cloud.util.service.UtilService;
+import com.hy.spring.cloud.util.util.FileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,24 +29,28 @@ public class ScheduledService {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Async
-    @Scheduled(cron = "0 0/5 * * * *")
+    @Scheduled(cron = "0 0/10 * * * *")
     public void removeNoUseFile(){
 
-        String filePath = "D:/test/";
+        String filePath = "D:/test";
+        String fileUrl = "/temp";
+        File f;
 
         //query no use file list
         Attachment Attachment = new Attachment();
-        Attachment.setFileType("test");
+        Attachment.setStatus(0);
         List<Attachment> attachmentList = utilService.queryAttachmentList(Attachment);
-
         for(Attachment attachment:attachmentList){
-            File f = new File(filePath + attachment.getPathUrl());
+            f = new File(filePath + attachment.getPathUrl() + attachment.getFileName());
             if(f.exists()){
                 f.delete();
             }
         }
-
         utilService.deleteFileList(attachmentList);
+
+        //delete temp file
+        FileUtil.delBlankFolder(filePath);
+        FileUtil.delAllFile(filePath + fileUrl);
         logger.info("Remove file");
     }
 

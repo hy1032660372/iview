@@ -9,7 +9,8 @@
         id,
         fileName,
         pathUrl,
-        fileType
+        fileType,
+        status
         )
         VALUES
         <foreach item="el" collection="attachmentList" separator=",">
@@ -17,7 +18,8 @@
             #{el.id},
             #{el.fileName},
             #{el.pathUrl},
-            #{el.fileType}
+            #{el.fileType},
+            #{el.status}
             )
         </foreach>
     </insert>
@@ -36,17 +38,19 @@
             id,
             fileName,
             pathUrl,
-            fileType
+            fileType,
+            status
           from file_attachment
           where id = #{fileId}
     </select>
 
-    <select id="queryAttachmentList" parameterType="java.lang.String" resultType="com.hy.spring.cloud.util.domain.Entity.Attachment">
+    <select id="queryAttachmentList" parameterType="com.hy.spring.cloud.util.domain.Entity.Attachment" resultType="com.hy.spring.cloud.util.domain.Entity.Attachment">
         select
             id,
             fileName,
             pathUrl,
-            fileType
+            fileType,
+            status
         from file_attachment t
         <where>
             <if test="fileName != null and fileName != ''">
@@ -54,7 +58,10 @@
                 and t.fileName like #{fileName}
             </if>
             <if test="fileType != null and fileType != ''">
-                and t.fileType = #{fileType}
+                or t.fileType = #{fileType}
+            </if>
+            <if test="status != null">
+                or t.status = #{status}
             </if>
         </where>
     </select>

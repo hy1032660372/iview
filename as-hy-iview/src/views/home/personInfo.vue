@@ -43,6 +43,7 @@
         mounted(){
             let vm = this;
             vm.getImages();
+            vm.getImagesList();
         },
         methods:{
             getCurrentUser(){
@@ -61,12 +62,23 @@
                 let vm = this;
                 vm.urlPre = "http://localhost:8086/util";
                 vm.$http.get(vm.server_util+"/image/getAllImage").then(function(response){
-                    //vm.imgUrl = vm.urlPre + "/images/"+response.data;
                     vm.images = [];
                     _.each(response.data,function(param){
-                        param.pathUrl = vm.urlPre + "/images/" + param.pathUrl;
+                        param.pathUrl = vm.urlPre + "/images" + param.pathUrl+"/"+param.fileName;
                         vm.images.push(param);
                     });
+                }).catch(function (error) {
+                    console.log(error);
+                });
+                //vm.imgUrl = "http://localhost:8086/util/images/hyd.png";
+            },
+            getImagesList(){
+                let vm = this;
+                let data={
+                    status:1
+                }
+                vm.$http.post(vm.server_util+"/file/queryAttachmentList",data).then(function(response){
+                    console.log(response);
                 }).catch(function (error) {
                     console.log(error);
                 });

@@ -18,7 +18,8 @@
             id,
             fileName,
             pathUrl,
-            fileType
+            fileType,
+            status
           from file_attachment
     </select>
 
