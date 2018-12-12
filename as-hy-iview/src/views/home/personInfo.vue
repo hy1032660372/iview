@@ -1,7 +1,7 @@
 <style scoped>
     .img{
-        width: 400px;
-        height: 300px;
+        width: 240px;
+        height: 200px;
         margin-top: 20px;
     }
 </style>
@@ -18,8 +18,8 @@
                 <dialog-upload @onNotify="notify"></dialog-upload>
                 <!--<img class="img" :src="imgUrl"/>-->
                 <!--<img src="http://localhost:8086/util/showImage"/>-->
-                <Row>
-                    <Col :span="8" v-for="image in images" :key="image.id" >
+                <Row :gutter="16">
+                    <Col :span="5" v-for="image in images" :key="image.id" >
                         <img class="img" :src="image.pathUrl"/>
                         <Button @click="downLoadPic(image.id)">downLoadPic</Button>
                     </Col>

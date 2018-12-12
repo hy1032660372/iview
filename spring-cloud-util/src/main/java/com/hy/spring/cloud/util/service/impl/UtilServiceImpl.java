@@ -38,7 +38,7 @@ public class UtilServiceImpl implements UtilService {
         // 获取文件名
         String fileName = file.getOriginalFilename();
         // 获取文件的后缀名
-        String suffixName = fileName.substring(fileName.lastIndexOf("."));
+        String suffixName = fileName.substring(fileName.lastIndexOf(".")+1);
         if (suffixName.matches("png|jpg|jpeg|gif")){
             //images
             FileUtil.transferTo(file, attachment);

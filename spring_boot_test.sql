@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50717
 File Encoding         : 65001
 
-Date: 2018-12-10 22:15:39
+Date: 2018-12-12 22:00:21
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -47,17 +47,20 @@ INSERT INTO `account_role` VALUES ('f9a38d00154842fb8f07fe72bf911d1d', '6be2fdc7
 DROP TABLE IF EXISTS `file_attachment`;
 CREATE TABLE `file_attachment` (
   `id` varchar(32) NOT NULL,
-  `fileName` varchar(100) NOT NULL,
-  `pathUrl` varchar(100) DEFAULT NULL,
-  `fileType` varchar(20) DEFAULT NULL,
-  `status` int(1) DEFAULT NULL,
+  `file_name` varchar(100) NOT NULL,
+  `path_url` varchar(100) DEFAULT NULL,
+  `file_type` varchar(20) DEFAULT NULL,
+  `file_status` int(1) DEFAULT NULL,
+  `suffix_name` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of file_attachment
 -- ----------------------------
-INSERT INTO `file_attachment` VALUES ('2dcf889e68344593889971b9aedf5cf7', '965eccef9c35e8b663ce4d5a39ea2cdd.png', '965eccef9c35e8b663ce4d5a39ea2cdd.png', 'test', null);
+INSERT INTO `file_attachment` VALUES ('33edecfda6174c3caaf653db46f54cf8', '11813bbcf9dd32a375fda54a7fd34e05.jpg', '/123', '', '1', null);
+INSERT INTO `file_attachment` VALUES ('83c31188cf8a4cf781c6629a9d491377', 'a89ce0fe03afe861941e8a32ca9a22bc.jpg', '/123', '', '1', null);
+INSERT INTO `file_attachment` VALUES ('cb5bb7da2d8d4fb8b9567faf715f4a77', '965eccef9c35e8b663ce4d5a39ea2cdd.png', '/123', '', '1', null);
 
 -- ----------------------------
 -- Table structure for `menu_permission`

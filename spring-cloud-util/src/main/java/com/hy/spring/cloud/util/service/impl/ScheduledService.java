@@ -38,7 +38,7 @@ public class ScheduledService {
 
         //query no use file list
         Attachment Attachment = new Attachment();
-        Attachment.setStatus(0);
+        Attachment.setFileStatus(0);
         List<Attachment> attachmentList = utilService.queryAttachmentList(Attachment);
         for(Attachment attachment:attachmentList){
             f = new File(filePath + attachment.getPathUrl() + attachment.getFileName());

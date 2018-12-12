@@ -130,7 +130,8 @@ public class FileUtil {
             attachment.setFileType("temp");
             attachment.setFileName(fileName);
             attachment.setPathUrl(pathUrl);
-            attachment.setStatus(0);
+            attachment.setFileStatus(0);
+            attachment.setSuffixName(suffixName);
 
         } catch (IllegalStateException e) {
             e.printStackTrace();

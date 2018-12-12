@@ -16,7 +16,9 @@ public class Attachment {
 
     private String fileType;
 
-    private Integer status;
+    private Integer fileStatus;
+
+    private String suffixName;
 
     public String getId() {
         return id;
@@ -50,11 +52,19 @@ public class Attachment {
         this.fileType = fileType;
     }
 
-    public Integer getStatus() {
-        return status;
+    public Integer getFileStatus() {
+        return fileStatus;
     }
 
-    public void setStatus(Integer status) {
-        this.status = status;
+    public void setFileStatus(Integer fileStatus) {
+        this.fileStatus = fileStatus;
+    }
+
+    public String getSuffixName() {
+        return suffixName;
+    }
+
+    public void setSuffixName(String suffixName) {
+        this.suffixName = suffixName;
     }
 }

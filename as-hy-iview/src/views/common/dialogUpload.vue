@@ -66,7 +66,7 @@
 
                 _.each(vm.attachmentList,function(file){
                     file.pathUrl = '/'+currentUser.userId;
-                    file.status = 1;
+                    file.fileStatus = 1;
                     file.fileType = '' ;
                 });
 
