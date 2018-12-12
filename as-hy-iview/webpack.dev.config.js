@@ -41,6 +41,14 @@ module.exports = merge(webpackBaseConfig, {
         stats: { colors: true },
         proxy: {
             //匹配代理的url
+            '/wish': {
+                // 目标服务器地址
+                target: 'http://localhost:8082',
+                //路径重写
+                pathRewrite: {'^/wish' : '/wish'},
+                changeOrigin: true,
+                secure: false
+            },
             '/auth': {
                 // 目标服务器地址
                 target: 'http://localhost:8083',
@@ -53,6 +61,13 @@ module.exports = merge(webpackBaseConfig, {
                 target: 'http://localhost:8084',
                 //路径重写
                 pathRewrite: {'^/account' : '/account'},
+                changeOrigin: true,
+                secure: false
+            },
+            '/util': {
+                target: 'http://localhost:8086',
+                //路径重写
+                pathRewrite: {'^/util' : '/util'},
                 changeOrigin: true,
                 secure: false
             }

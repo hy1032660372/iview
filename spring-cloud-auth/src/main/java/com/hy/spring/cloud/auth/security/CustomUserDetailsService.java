@@ -63,7 +63,10 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     private List<String> initPermission(List<String> userRoleList) {
-        List<String> permissions = userMapper.getPermissions(userRoleList);
+        List<String> permissions = new ArrayList<>();
+        if(userRoleList.size() > 0){
+            permissions = userMapper.getPermissions(userRoleList);
+        }
         return permissions;
     }
 }

@@ -1,14 +1,13 @@
 package com.hy.spring.cloud.account.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hy.spring.cloud.account.domain.Entity.SysRole;
 import com.hy.spring.cloud.account.util.ObjectUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.GrantedAuthority;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +27,9 @@ public class User implements Serializable {
     private List<String> authorities = new ArrayList<>();
     private Boolean enabled;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    private String lastLogin;
+
     public User(Map userMap){
         try{
             this.currentRole = (SysRole)ObjectUtil.mapToObjectIntrospector((Map)userMap.get("currentRole"),SysRole.class);
@@ -46,6 +48,14 @@ public class User implements Serializable {
         this.userId = userMap.get("userId").toString();
         this.userName = userMap.get("username").toString();
         this.enabled = (Boolean)userMap.get("enabled");
+    }
+
+    public String getLastLogin() {
+        return lastLogin;
+    }
+
+    public void setLastLogin(String lastLogin) {
+        this.lastLogin = lastLogin;
     }
 
     public static long getSerialVersionUID() {

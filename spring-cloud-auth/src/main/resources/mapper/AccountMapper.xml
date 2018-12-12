@@ -24,16 +24,15 @@
           r.title as title
         FROM sys_account t
         LEFT JOIN account_role ar ON t.id = ar.account_id
-        LEFT JOIN sys_role r on ar.role_code = r.id
+        LEFT JOIN sys_role r on ar.role_code = r.role_code
         WHERE t.username = #{username}
     </select>
 
     <select id="getPermissions" parameterType="java.util.List" resultType="java.lang.String">
         SELECT
-          m.permission_code
-        FROM role_permission t
-        LEFT JOIN sys_permission m ON m.id = t.permission_id
-        WHERE t.role_id in
+        rp.permission_code
+        FROM role_permission rp
+        WHERE rp.role_code in
         <foreach collection="userRoleList" open="(" close=")" separator="," index="index" item="item">
             #{item}
         </foreach>

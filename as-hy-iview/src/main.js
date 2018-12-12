@@ -7,14 +7,13 @@ import Util from './libs/util';
 import App from './app.vue';
 import axios from 'axios';
 import 'iview/dist/styles/iview.css';
-import VueCookies from 'vue-cookies'
+import VueCookies from 'vue-cookies';
+import jquery from 'jquery'
 
 import VueI18n from 'vue-i18n';
 import Locales from './locale';
 import zhLocale from 'iview/src/locale/lang/zh-CN';
 import enLocale from 'iview/src/locale/lang/en-US';
-
-import menuList from './menuList.js'
 
 Vue.use(VueRouter);
 Vue.use(Vuex);
@@ -38,16 +37,19 @@ Vue.locale('en-US', mergeEN);
 
 window.currentUser = {};
 Vue.prototype.$http = axios
+Vue.prototype.jquery = jquery
 Vue.prototype.server_auth = "/auth"
 Vue.prototype.server_account = "/account"
+Vue.prototype.server_util = "/util"
+Vue.prototype.domainStr = "localhost"
 
 // 添加请求拦截器
 axios.interceptors.request.use(function (config) {
     // 在发送请求之前做些什么
     //Vue.prototype.$Spin.show();
     if("/auth/oauth/token" != config.url){
-        let token = $cookies.get("iView-token");
-        let userRole = $cookies.get("user_role");
+        let token = Vue.prototype.$cookies.get("iView-token");
+        let userRole =Vue.prototype.$cookies.get("user_role");
         if(token){
             config.headers['Authorization'] = 'bearer '+ token;
         }
@@ -62,18 +64,42 @@ axios.interceptors.request.use(function (config) {
 axios.interceptors.response.use(function (response) {
     // 对响应数据做点什么
     //Vue.prototype.$Spin.hide();
+    let data = response.data;
+    if(response.data.data == undefined){
+        switch(data.messageCode){
+            case 0:
+                Vue.prototype.$Message.success(data.message);
+                break;
+            case 1:
+                Vue.prototype.$Message.info(data.message);
+                break;
+            case 2:
+                Vue.prototype.$Message.warning(data.message);
+                break;
+            case 3:
+                Vue.prototype.$Message.error(data.message);
+                break;
+            default:
+                break;
+        }
+    }
     return response;
 }, function (error) {
     // 对响应错误做点什么
-    Vue.prototype.$Spin.hide();
+    //Vue.prototype.$Spin.hide();
+    // window.$cookies.set("iView-token",'',-1);
+    // window.$cookies.set("refresh-iView-token",'',-1);
+    // router.replace({
+    //     path: 'login',
+    //     query: {redirect: router.currentRoute.fullPath}//登录成功后跳入浏览的当前页面
+    // });
     if (error.response) {
         switch (error.response.status) {
+            // 这里写清除token的代码
+            case 400:
+                break;
             case 401:
-                // 这里写清除token的代码
-                router.replace({
-                    path: 'login',
-                    query: {redirect: router.currentRoute.fullPath}//登录成功后跳入浏览的当前页面
-                });
+                Vue.prototype.$Message.error("No Permission");
                 break;
             case 504:
                 Vue.prototype.$Message.error("Server Error");
@@ -118,7 +144,6 @@ const store = new Vuex.Store({
 
     }
 });
-
 
 new Vue({
     el: '#app',

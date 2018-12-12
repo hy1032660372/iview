@@ -130,6 +130,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.11</version>
         </dependency>
 
         <!-- MyBatis 通用 Mapper 插件 -->

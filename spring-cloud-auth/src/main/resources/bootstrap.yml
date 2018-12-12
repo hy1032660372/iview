@@ -3,10 +3,11 @@ spring:
     name: spring-cloud-auth
 #    instance-id: ${random.int[10000,19999]}
   datasource:
-    url: jdbc:mysql://localhost:3306/spring_boot_test?useSSL=false
+    url: jdbc:mysql://localhost:3306/spring_boot_test?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
     username: root
     password: ashy1992
-    driver-class-name: com.mysql.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
+#    driver-class-name: com.mysql.jdbc.Driver
 info:
   app:
     name: ${spring.application.name}

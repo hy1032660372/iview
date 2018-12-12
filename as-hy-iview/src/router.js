@@ -33,37 +33,40 @@ const routers = [{
                 title: 'menuConfig'
             },
             component: (resolve) => require(['./views/system/menuConfig.vue'], resolve)
-        }, {
-            path: '*',
-            name: 'error-404',
-            meta: {
-                title: '404-页面不存在'
-            },
-            component: (resolve) => require(['./views/404.vue'], resolve)
         }]
 },{
     path: '/home',
     meta: {
-        title: ''
+        title: 'home'
     },
     component: (resolve) => require(['./views/index.vue'], resolve),
     children: [
         {
-            path: 'user',
-            name: 'user',
+            path: 'personInfo',
+            name: 'personInfo',
             meta: {
-                title: 'first'
+                parent:'home',
+                title: 'personInfo'
             },
-            component: (resolve) => require(['./views/home/user.vue'], resolve)
-        }, {
-            path: 'second',
-            name: 'second',
-            meta: {
-                title: 'second'
-            },
-            component: (resolve) => require(['./views/home/second.vue'], resolve)
+            component: (resolve) => require(['./views/home/personInfo.vue'], resolve)
         }]
 }, {
+       path: '/index2',
+       meta: {
+           title: ''
+       },
+       component: (resolve) => require(['./views/index2.vue'], resolve),
+       children: [
+           {
+               path: 'sssourcing',
+               name: 'sssourcing',
+               meta: {
+                   title: 'sssourcing'
+               },
+               component: (resolve) => require(['./views/qh/sssourcing.vue'], resolve)
+           }
+       ]
+   },{
     path: '/*',
     name: 'error404',
     meta: {

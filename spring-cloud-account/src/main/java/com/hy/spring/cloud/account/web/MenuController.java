@@ -3,12 +3,9 @@ package com.hy.spring.cloud.account.web;
 import com.hy.spring.cloud.account.domain.Entity.CustomMenu;
 import com.hy.spring.cloud.account.domain.Message;
 import com.hy.spring.cloud.account.service.CustomMenuService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.security.Principal;
 
 /**
  * FileName: MenuController
@@ -21,19 +18,8 @@ import java.security.Principal;
 @RequestMapping("/menu")
 public class MenuController {
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
-
     @Autowired
     private CustomMenuService customMenuService;
-
-    /**
-     * get user role list
-     * @return Message
-     */
-    @RequestMapping(value = "getMenuList", method = RequestMethod.GET)
-    public Message getMenuList() {
-        return Message.info(customMenuService.getCustomMenu());
-    }
 
     /**
      * remove menu

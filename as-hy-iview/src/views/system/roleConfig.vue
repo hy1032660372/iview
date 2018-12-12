@@ -1,42 +1,45 @@
 <style scoped>
-
+    .layout{background: #fff;height: 650px;}
+    .layout .content-frame{background:#eee;height: 650px}
+    .layout .content-frame .tree-frame{padding: 10px 5px 10px 10px;}
+    .layout .content-frame .tree-class{height: 590px}
+    .layout .content-frame .table-frame{padding: 10px 10px 10px 5px;height: 590px}
+    .layout .content-frame .table-frame .table-head{padding-bottom: 20px;}
+    .layout .content-frame .table-frame .table-content{height: 547px;}
 </style>
 <template>
     <div class="layout">
-        <Content :style="{padding: '0px 16px 16px'}">
-            <Breadcrumb :style="{margin: '16px 0'}">
-                <BreadcrumbItem>Home</BreadcrumbItem>
+        <Content>
+            <Breadcrumb :style="{padding: '14px'}">
+                <BreadcrumbItem>System</BreadcrumbItem>
                 <BreadcrumbItem>Role</BreadcrumbItem>
             </Breadcrumb>
-            <div>
-                <Row>
-                    <Col span="6">
-                        <div style="background:#eee;padding: 20px 10px 20px 20px">
-                            <Card :bordered="false">
-                                <Tree :data="roleData" @on-select-change="onSelectChange"></Tree>
-                            </Card>
+            <Row class="content-frame">
+                <Col span="6" class="tree-frame">
+                    <Card :bordered="false">
+                        <Tree class="tree-class" :data="roleData" @on-select-change="onSelectChange"></Tree>
+                    </Card>
+                </Col>
+                <Col span="18" class="table-frame">
+                    <Card :bordered="false">
+                        <Row class="table-head">
+                            <Col span="8">
+                                <Button type="text" v-if="currentRole.code!='199277'" @click="configRoleModel=true">{{currentRole.title}}</Button>
+                            </Col>
+                            <Col style="float:right">
+                                <Button type="primary" @click="configMenu">Config Menu</Button>
+                                <Button type="primary" @click="configPermission">Config Permission</Button>
+                                <Button type="primary" v-if="access" @click="addUserModel=true">Add User</Button>
+                                <Button type="primary" v-if="access" @click="addRoleModel=true">Add Role</Button>
+                                <Button type="primary" v-if="access && userList.length == 0" @click="removeRole">Remove Role</Button>
+                            </Col>
+                        </Row>
+                        <div class="table-content">
+                            <Table  :columns="columnsList" :data="userList"></Table>
                         </div>
-                    </Col>
-                    <Col span="18">
-                        <div style="background:#eee;padding: 20px 20px 20px 10px">
-                            <Card :bordered="false">
-                                <Row style="padding-bottom: 20px">
-                                    <Col span="8">
-                                        {{currentRole.title}}
-                                    </Col>
-                                    <Col style="float:right">
-                                        <Button type="primary" @click="configPermission">Config Permission</Button>
-                                        <Button type="primary" v-if="access" @click="addUserModel=true">Add User</Button>
-                                        <Button type="primary" v-if="access" @click="addRoleModel=true">Add Role</Button>
-                                        <Button type="primary" v-if="access && userList.length == 0" @click="removeRole">Remove Role</Button>
-                                    </Col>
-                                </Row>
-                                <Table :columns="columnsList" :data="userList"></Table>
-                            </Card>
-                        </div>
-                    </Col>
-                </Row>
-            </div>
+                    </Card>
+                </Col>
+            </Row>
         </Content>
         <Modal
                 v-model="addUserModel"
@@ -55,7 +58,7 @@
         <Modal
                 v-model="addRoleModel"
                 title="Add Role"
-                @on-ok="saveRole"
+                @on-ok="addRole"
                 @on-cancel="cancel">
             <Form :model="roleForm" label-position="right" :label-width="100">
                 <FormItem label="Title">
@@ -64,11 +67,45 @@
             </Form>
         </Modal>
         <Modal
+                v-model="configRoleModel"
+                title="Config Role"
+                @on-ok="saveRole"
+                @on-cancel="cancel">
+            <Form :model="currentRole" label-position="left" :label-width="100">
+                <FormItem label="title">
+                    <Input :maxlength="20" v-model="currentRole.title"></Input>
+                </FormItem>
+                <FormItem label="code">
+                    <Input :maxlength="20" v-model="currentRole.code"></Input>
+                </FormItem>
+            </Form>
+        </Modal>
+        <Modal
                 v-model="configPermissionModel"
                 title="Config Permission"
                 @on-ok="savePermission"
                 @on-cancel="cancel">
-            <Tree :data="permissionsData" show-checkbox></Tree>
+            <Collapse v-model="openMenu">
+                <Panel v-for="menu in permissionsData" :key="menu.menuCode" name="menu.menuCode">
+                    {{menu.menuName}}
+                    <p slot="content">
+                        <CheckboxGroup v-model="checkedPermission">
+                            <Checkbox v-for="permission in menu.permissionList" :key="permission.permissionCode" label="permission.permissionCode">
+                                <span>{{permission.permissionName}}</span>
+                            </Checkbox>
+                        </CheckboxGroup>
+                    </p>
+                </Panel>
+            </Collapse>
+        </Modal>
+        <Modal
+                v-model="configMenuModel"
+                title="Config Menu"
+                @on-ok="saveRoleMenu"
+                @on-cancel="cancel">
+            <Tree :data="menuTreeData"
+                   @on-check-change="onCheckChange"
+                   show-checkbox></Tree>
         </Modal>
     </div>
 </template>
@@ -78,25 +115,14 @@
             return {
                 roleData: [],
                 userList:[],
-                permissionsData: [{
-                    title: 'parent 1',
-                    expand: true,
-                    children: [{
-                        title: 'parent 1-1',
-                        expand: true,
-                        children: [
-                            {title: 'leaf 1-1-1'},
-                            {title: 'leaf 1-1-2'}]
-                    },{
-                        title: 'parent 1-2',
-                        expand: true,
-                        children: [
-                            {title: 'leaf 1-2-1'},
-                            {title: 'leaf 1-2-1'}
-                        ]
-                    }
-                    ]}
-                ],
+                configMenuModel:false,
+                configRoleModel:false,
+                permissionsData: [],
+                openMenu:"",
+                checkedPermission:[],
+                menuAuthDataList:[],
+                selection:[],
+                menuTreeData:[],
                 columnsList:[
                     {title: 'username',key: 'username'},
                     {title: 'age',key: 'age'},
@@ -126,6 +152,7 @@
                 ],
                 addUserModel:false,
                 addRoleModel:false,
+                configMenuModel:false,
                 configPermissionModel:false,
                 userForm: {
                     username: '',
@@ -158,6 +185,29 @@
             }
         },
         methods:{
+            configPermission(){
+                let vm = this;
+                vm.configPermissionModel = true
+                vm.$http.get(vm.server_account+"/permissions/getUserAuthPermissions").then(function(response){
+                    vm.permissionsData = response.data.data;
+                    vm.openMenu = vm.permissionsData[0].menuCode
+                });
+            },
+            onCheckChange(data){
+                let vm = this;
+                vm.selection = data;
+            },
+            configMenu(){
+                let vm = this;
+                vm.configMenuModel = true;
+                vm.menuTreeData = [];
+                let param = {
+                    roleCode:vm.currentRole.code
+                };
+                vm.$http.get(vm.server_account+"/roleAndMenu/getMenuByCurrentRole",{params:param}).then(function(response){
+                    vm.menuTreeData = response.data.data.children;
+                });
+            },
             onSelectChange(data){
                 let vm = this;
                 if(data.length != 0){
@@ -184,7 +234,7 @@
             saveUser(){
                 let vm = this;
                 if(vm.currentRole.code != window.currentUser.currentRole.roleCode){
-                    vm.$http.post(vm.server_account+"/accounts/insertAccount/"+vm.currentRole.code,vm.userForm).then(function(data){
+                    vm.$http.post(vm.server_account+"/AccountAndRole/insertAccount/"+vm.currentRole.code,vm.userForm).then(function(data){
                         vm.getUserList();
                     });
                 }else{
@@ -208,6 +258,9 @@
             },
             saveRole(){
                 let vm = this;
+            },
+            addRole(){
+                let vm = this;
                 let children = vm.currentRole.children || [];
                 vm.roleForm.code = vm.currentRole.code+children.length;
                 vm.roleForm.expand = true;
@@ -224,14 +277,43 @@
                     expand: true
                 }
             },
-            configPermission(){
-                let vm = this;
-                vm.configPermission = true;
-                vm.$http.get(vm.server_account+"/accounts/getCustomPermissions").then(function(data){
-                });
-            },
             savePermission(){
                 let vm = this;
+            },
+            saveRoleMenu(){
+                let vm = this;
+                let roleAndMenu;
+                let roleAndMenuList = [];
+                let parentCode = [];
+                _.each(vm.selection,function (menu) {
+                    if(menu.parentCode != "root-menu"){
+                        if(parentCode.indexOf(menu.parentCode) == -1){
+                            parentCode.push(menu.parentCode);
+                            roleAndMenu = {
+                                roleCode:vm.currentRole.code,
+                                menuCode:menu.parentCode
+                            };
+                            roleAndMenuList.push(roleAndMenu);
+                        }
+                        roleAndMenu = {
+                            roleCode:vm.currentRole.code,
+                            menuCode:menu.code
+                        };
+                        roleAndMenuList.push(roleAndMenu);
+                    }
+                });
+                if(roleAndMenuList.length>0){
+                    roleAndMenu = {
+                        roleCode:vm.currentRole.code,
+                        menuCode:"root-menu"
+                    };
+                    roleAndMenuList.push(roleAndMenu);
+                    vm.$http.post(vm.server_account+"/roleAndMenu/insertRoleAndMenu",roleAndMenuList).then(function(response){
+                        console.log(response);
+                    });
+                }else{
+                    vm.$Message.warning("Have no change");
+                }
             },
             cancel(){
             },

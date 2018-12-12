@@ -1,12 +1,18 @@
 package com.hy.spring.cloud.account.util;
 
+import com.hy.spring.cloud.account.domain.SysRoleImpl;
+import com.hy.spring.cloud.account.domain.User;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
+
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.security.Principal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -90,8 +96,28 @@ public class ObjectUtil{
             field.setAccessible(true);
             map.put(field.getName(), field.get(obj));
         }
-
         return map;
+    }
+
+    public static User getUser(Principal principal){
+        OAuth2Authentication oa = ((OAuth2Authentication) principal);
+        HashMap userInfo = (HashMap)oa.getUserAuthentication().getDetails();
+        User user = new User((Map)userInfo.get("principal"));
+        return user;
+    }
+
+    public static SysRoleImpl getRoleTree(Principal principal, List<SysRoleImpl> roleList){
+        User user = getUser(principal);
+        //找到根节点
+        SysRoleImpl sysRole = new SysRoleImpl();
+        for(int i = 0; i < roleList.size(); i++){
+            sysRole = roleList.get(i);
+            if(user.getCurrentRole().getRoleCode().equals(sysRole.getCode())){
+                break;
+            }
+        }
+        TreeUtil.converseToTree(roleList,sysRole);
+        return sysRole;
     }
 
 }

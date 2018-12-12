@@ -4,6 +4,7 @@ import com.hy.spring.cloud.account.domain.*;
 import com.hy.spring.cloud.account.domain.Entity.Account;
 import com.hy.spring.cloud.account.domain.Message;
 
+import java.security.Principal;
 import java.util.List;
 
 /**
@@ -19,10 +20,7 @@ public interface AccountService {
 
     int deleteAccount(String id);
 
-    int batchDeleteAccount(List<String> ids);
-
     int updateAccount(Account account);
 
-    Message insertAccountList(List<Account> accountList);
-
+    Message getCurrentAccount(Principal principal);
 }

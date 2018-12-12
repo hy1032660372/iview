@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hy.spring.cloud.util.mapper.ImageMapper">
+
+    <select id="getImage" parameterType="java.lang.String" resultType="com.hy.spring.cloud.util.domain.Entity.Attachment">
+          select
+            id as id,
+            file_name as fileName,
+            path_url as pathUrl,
+            file_type as fileType,
+            file_status as fileStatus,
+            suffix_name as suffixName
+          from file_attachment
+          where id = #{fileId}
+    </select>
+
+    <select id="getAllImage" parameterType="java.lang.String" resultType="com.hy.spring.cloud.util.domain.Entity.Attachment">
+          select
+            id as id,
+            file_name as fileName,
+            path_url as pathUrl,
+            file_type as fileType,
+            file_status as fileStatus,
+            suffix_name as suffixName
+          from file_attachment
+    </select>
+
+</mapper>

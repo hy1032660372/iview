@@ -3,6 +3,11 @@
         height: 100%;
         width: 100%;
     }
+    .layout .head-menu{
+        position:fixed;
+        width: 100%;
+        z-index:999;
+    }
     .menu-item span{
         display: inline-block;
         overflow: hidden;
@@ -48,11 +53,12 @@
     .demo-tabs-style1 > .ivu-tabs-card > .ivu-tabs-bar .ivu-tabs-tab-active {
         border-color: #fff;
     }
+    .button-class{background:#eee;}
 </style>
 <template>
     <div class="layout">
         <Layout>
-            <Menu mode="horizontal" theme="dark" :style="{position:'fixed', width: '100%',zIndex:'9999'}" @on-select="headMenuClick">
+            <Menu mode="horizontal" theme="dark" class="head-menu" @on-select="headMenuClick">
                 <div class="layout-logo"></div>
                 <div class="layout-nav">
                     <MenuItem name="1">
@@ -68,11 +74,11 @@
                         <span v-else-if="headMenu.type=='1'">
                             <Submenu :name="headMenu.id">
                                 <template slot="title">
-                                    <Icon type="stats-bars"></Icon>
+                                    <Icon type="person"></Icon>
                                     {{headMenu.name}}
                                 </template>
                                 <MenuGroup v-for="con in headMenu.child" :key="con.id" :title="con.title">
-                                    <MenuItem v-for="c in con.content" :key="c.id" :name="c.id">{{c.name}}</MenuItem>
+                                    <MenuItem v-for="c in con.content" :class="userInfo.currentRole == c.name?'button-class':''" :key="c.id" :name="c.id">{{c.name}}</MenuItem>
                                 </MenuGroup>
                             </Submenu>
                         </span>
@@ -84,10 +90,13 @@
                     <Menu theme="dark" width="auto" :class="menuItemClasses" @on-select="toOtherPage">
                         <Submenu v-for="menu in menuList" :key="menu.code" :name="menu.code">
                             <template slot="title">
-                                <Icon type="ios-navigate"></Icon>
+                                <Icon :type="menu.icon"></Icon>
                                 <span>{{menu.title}}</span>
                             </template>
-                            <MenuItem v-for='(ch,index) in menu.children' :key='ch.code' :name="ch.code"><span>{{ch.title}}</span>{{index}}</MenuItem>
+                            <MenuItem v-for='ch in menu.children' :key='ch.code' :name="ch.code">
+                                <Icon :type="ch.icon"></Icon>
+                                <span>{{ch.title}}</span>
+                            </MenuItem>
                         </Submenu>
                     </Menu>
                 </Sider>
@@ -96,6 +105,18 @@
                 </Content>
             </Layout>
         </Layout>
+        <Modal
+                v-model="viewUserInfoModel"
+                title="User Info">
+            <Form :model="userInfo" label-position="right" :label-width="100">
+                <FormItem label="User Name: ">
+                    {{userInfo.username}}
+                </FormItem>
+                <FormItem label="Current Role: ">
+                    {{userInfo.currentRole}}
+                </FormItem>
+            </Form>
+        </Modal>
     </div>
 </template>
 <script>
@@ -104,10 +125,16 @@
             return {
                 isCollapsed: false,
                 nowPage:{},
-                userInfo:{},
+                userInfo:{
+                    username:"",
+                    currentRole:""
+                },
+                roleCode:[],
                 menuList: [],
                 headMenuList:[],
                 currentUPage:{},
+                viewUserInfoModel:false,
+                buttonClass:"button-class"
             };
         },
         computed: {
@@ -120,9 +147,9 @@
         },
         mounted(){
             let vm = this;
-            vm.$nextTick(function(){
-
-            })
+            /*vm.$nextTick(function(){
+                
+            })*/
         },
         methods: {
             verificationToken(){
@@ -133,7 +160,7 @@
                     vm.$http.post(vm.server_auth+"/oauth/check_token?token="+token).then(function(data){
                         vm.getUserInfo();
                     }).catch(function (error) {
-                        vm.$Message.Error('Error!');
+                        vm.$Message.error('Error!');
                         vm.$router.push('/login')
                     });
                 }else{
@@ -143,7 +170,9 @@
             getUserInfo(){
                 let vm = this;
                 vm.$http.get(vm.server_auth+"/users/current").then(function(data){
-                    vm.userInfo = data.data.principal;
+                    vm.$cookies.set("iView-token",data.data.details.tokenValue,"1d",null,window.domainUrl);
+                    vm.userInfo.username = data.data.principal.username;
+                    vm.userInfo.currentRole = data.data.principal.currentRole.title;
                     window.currentUser = data.data.principal;
                     vm.getMenuList();
                     vm.getHeadMenuList();
@@ -185,16 +214,18 @@
             headMenuClick(data){
                 let vm = this;
                 switch (data) {
-                    case "h3144":
+                    case "logout":
                         vm.logout();
                         break;
                     case "admin":
                         vm.changeUserRole(data);
                         break;
+                    case "userInfo":
+                        vm.viewUserInfoModel = true;
+                        break;
                     default:
                         console.log("other");
                 }
-                console.log(data);
             },
             logout(){
                 let vm = this;
@@ -209,11 +240,10 @@
             },
             getMenuList(){
                 let vm = this;
-                vm.$http.get(vm.server_account+"/roleAndMenu/getMenuByRole").then(function(response){
+                vm.$http.get(vm.server_account+"/roleAndMenu/getTreeMenuByCurrentRole").then(function(response){
                     vm.menuList = response.data.data == null?[]:response.data.data.children;
-                    console.log(vm.menuList);
                     window.menuList = vm.menuList.length == 0 ?[]:response.data.data.children;
-                    if(vm.nowPage.name){
+                    if(vm.currentUPage.parent){
                         vm.nowPage.name = vm.currentUPage.title;
                     }else if(vm.menuList.length > 0){
                         vm.toOtherPage(vm.menuList[0].children[0].code);
@@ -223,8 +253,17 @@
             getHeadMenuList(){
                 let vm = this;
                 vm.headMenuList = window.headMenuList;
+                window.headMenuList[2].child[0].content = [];
                 vm.headMenuList[2].name = vm.userInfo.username;
-            }
+                let role = {};
+                _.each(window.currentUser.roleCode,function(roleData){
+                    role = {
+                        id:roleData.roleCode,
+                        name:roleData.title,
+                    };
+                    window.headMenuList[2].child[0].content.push(role);
+                });
+            },
         },
         beforeRouteEnter(to, from, next) {
             next(function (vm) {

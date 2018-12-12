@@ -1,5 +1,8 @@
 package com.hy.spring.cloud.account.domain.Entity;
 
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 /**
  * FileName: RoleAndMenu
  * Author:   hy103
@@ -7,8 +10,10 @@ package com.hy.spring.cloud.account.domain.Entity;
  * Description: role and menu
  */
 
+@Table(name = "role_menu")
 public class RoleAndMenu {
 
+    @Id
     private String id;
 
     private String roleCode;

@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
 /**
  * FileName: RoleController
  * Author:   hy103
@@ -19,8 +21,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/role")
 public class RoleController {
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
-
     @Autowired
     private SysRoleService sysRoleService;
 
@@ -29,8 +29,17 @@ public class RoleController {
      * @return Message
      */
     @RequestMapping(value = "getUserRoleList", method = RequestMethod.GET)
-    public Message getUserRole() {
-        return Message.info(sysRoleService.getUserRoleList());
+    public Message getUserRole(Principal principal) {
+        return Message.info(sysRoleService.getUserRoleList(principal));
+    }
+
+    /**
+     * get user role list
+     * @return Message
+     */
+    @RequestMapping(value = "getUserAuthRole", method = RequestMethod.GET)
+    public Message getUserAuthRole(Principal principal) {
+        return sysRoleService.getUserAuthRole(principal);
     }
 
     /**

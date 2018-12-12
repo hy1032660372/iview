@@ -4,7 +4,6 @@ import java.util.List;
 
 /**
  * @ClassName TreeData
- * @Description TODO
  * @Author P1316771
  * @Date 8/3/2018
  **/
@@ -14,7 +13,7 @@ public class TreeData<T> {
 
     private String parentCode;
 
-    private List<TreeData<T>> children;
+    private List<T> children;
 
     public String getCode() {
         return code;
@@ -32,11 +31,11 @@ public class TreeData<T> {
         this.parentCode = parentCode;
     }
 
-    public List<TreeData<T>> getChildren() {
+    public List<T> getChildren() {
         return children;
     }
 
-    public void setChildren(List<TreeData<T>> children) {
+    public void setChildren(List<T> children) {
         this.children = children;
     }
 }
