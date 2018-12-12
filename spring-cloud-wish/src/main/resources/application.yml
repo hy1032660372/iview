@@ -14,12 +14,6 @@ spring:
   resources:
     static-locations: file:D://test/
 
-  #URL访问图片路径
-  mvc:
-    static-path-pattern: /images/**
-  resources:
-    static-locations: file:E://test/
-
 info:
   app:
     name: wish-service

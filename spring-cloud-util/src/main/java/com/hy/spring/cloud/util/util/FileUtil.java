@@ -1,6 +1,12 @@
 package com.hy.spring.cloud.util.util;
 
+import com.hy.spring.cloud.message.util.UUIDUtil;
+import com.hy.spring.cloud.util.domain.Entity.Attachment;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.util.List;
 
 /**
  * @ClassName fileUtil
@@ -9,6 +15,10 @@ import java.io.*;
  * @Date 12/11/2018
  **/
 public class FileUtil {
+
+    // 文件上传后的路径
+    public static String filePath = "D:/test";
+    public static String pathUrl = "/temp";
 
     /**
      * 删除文件夹里面的所有文件
@@ -95,7 +105,121 @@ public class FileUtil {
             output.close();
 
         }catch (IOException e){
-            e.getMessage();
+            e.printStackTrace();
+        }
+    }
+
+    //transferTo
+    public static void transferTo(MultipartFile file, Attachment attachment) {
+        try {
+            // 获取文件名
+            String fileName = file.getOriginalFilename();
+            // 获取文件的后缀名
+            String suffixName = fileName.substring(fileName.lastIndexOf("."));
+
+            // 解决中文问题，liunx下中文路径，图片显示问题
+            // fileName = UUIDUtil.createUUID() + suffixName;
+            File dest = new File(filePath + pathUrl + "/" + fileName);
+            // 检测是否存在目录
+            if (!dest.getParentFile().exists()) {
+                dest.getParentFile().mkdirs();
+            }
+            file.transferTo(dest);
+
+            attachment.setId(UUIDUtil.createUUID());
+            attachment.setFileType("temp");
+            attachment.setFileName(fileName);
+            attachment.setPathUrl(pathUrl);
+            attachment.setStatus(0);
+
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //singleSave
+    public static void singleSave(MultipartFile file, Attachment attachment){
+
+        String fileName = null;
+        try {
+            fileName = file.getOriginalFilename();
+            byte[] bytes = file.getBytes();
+            BufferedOutputStream buffStream =
+                    new BufferedOutputStream(new FileOutputStream(new File(filePath + pathUrl + File.separator + fileName)));
+            buffStream.write(bytes);
+            buffStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        attachment.setId(UUIDUtil.createUUID());
+        attachment.setFileType("temp");
+        attachment.setFileName(fileName);
+        attachment.setPathUrl(pathUrl);
+    }
+
+    //multipleSave
+    public void multipleSave(MultipartFile[] fileList, List<Attachment> attachmentList){
+        String fileName = null;
+        Attachment attachment;
+        if (fileList != null && fileList.length >0) {
+            for(int i =0 ;i< fileList.length; i++){
+                attachment = new Attachment();
+                try {
+                    fileName = fileList[i].getOriginalFilename();
+                    byte[] bytes = fileList[i].getBytes();
+                    BufferedOutputStream buffStream =
+                            new BufferedOutputStream(new FileOutputStream(new File(filePath + pathUrl + "/" + fileName)));
+                    buffStream.write(bytes);
+                    buffStream.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                attachment.setId(UUIDUtil.createUUID());
+                attachment.setFileType("temp");
+                attachment.setFileName(fileName);
+                attachment.setPathUrl(pathUrl);
+                attachmentList.add(attachment);
+            }
+        }
+    }
+
+    /**
+     * downLoad file
+     * @param response
+     * @param file
+     * @param fileName
+     */
+    public static void downloadFile(HttpServletResponse response, File file, String fileName){
+        BufferedInputStream bis = null;
+        BufferedOutputStream bos = null;
+        try{
+            //获取文件的长度
+            long fileLength = file.length();
+
+            //设置文件输出类型
+            response.setContentType("application/octet-stream");
+            response.setHeader("Content-disposition", "attachment; filename="
+                    + new String(fileName.getBytes("utf-8"), "ISO8859-1"));
+            //设置输出长度
+            response.setHeader("Content-Length", String.valueOf(fileLength));
+            //获取输入流
+            bis = new BufferedInputStream(new FileInputStream(file));
+            //输出流
+            bos = new BufferedOutputStream(response.getOutputStream());
+            byte[] buff = new byte[2048];
+            int bytesRead;
+            while (-1 != (bytesRead = bis.read(buff, 0, buff.length))) {
+                bos.write(buff, 0, bytesRead);
+            }
+            //关闭流
+            bis.close();
+            bos.close();
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 }

@@ -46,3 +46,5 @@ security:
       accessTokenUri: http://localhost:8083/auth/oauth/token
       grant-type: client_credentials
       scope: server
+
+  ignored: /file/**,/images/**

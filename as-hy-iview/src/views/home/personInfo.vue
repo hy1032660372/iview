@@ -1,6 +1,8 @@
 <style scoped>
     .img{
-        width: 300px;
+        width: 400px;
+        height: 300px;
+        margin-top: 20px;
     }
 </style>
 <template>
@@ -16,9 +18,12 @@
                 <dialog-upload @onNotify="notify"></dialog-upload>
                 <!--<img class="img" :src="imgUrl"/>-->
                 <!--<img src="http://localhost:8086/util/showImage"/>-->
-                <div v-for="image in images" :key="image.id" >
-                    <img class="img" :src="image.pathUrl"/>
-                </div>
+                <Row>
+                    <Col :span="8" v-for="image in images" :key="image.id" >
+                        <img class="img" :src="image.pathUrl"/>
+                        <Button @click="downLoadPic(image.id)">downLoadPic</Button>
+                    </Col>
+                </Row>
             </Card>
         </Content>
     </div>
@@ -43,7 +48,6 @@
         mounted(){
             let vm = this;
             vm.getImages();
-            vm.getImagesList();
         },
         methods:{
             getCurrentUser(){
@@ -72,24 +76,18 @@
                 });
                 //vm.imgUrl = "http://localhost:8086/util/images/hyd.png";
             },
-            getImagesList(){
-                let vm = this;
-                let data={
-                    status:1
-                }
-                vm.$http.post(vm.server_util+"/file/queryAttachmentList",data).then(function(response){
-                    console.log(response);
-                }).catch(function (error) {
-                    console.log(error);
-                });
-                //vm.imgUrl = "http://localhost:8086/util/images/hyd.png";
-            },
             notify(message){
                 let vm = this;
                 console.log(message);
                 if("ok" == message){
                     vm.getImages();
                 }
+            },
+            downLoadPic(attachmentId){
+                let vm = this;
+                let token = vm.$cookies.get("iView-token");
+                vm.urlPre = "http://localhost:8086/util";
+                window.open(vm.urlPre+"/file/fileDownLoad?token="+token+"&fileId="+attachmentId,'_blank');
             }
         },
         beforeRouteEnter(to, from, next) {
