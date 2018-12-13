@@ -143,12 +143,16 @@ public class FileUtil {
     //singleSave
     public static void singleSave(MultipartFile file, Attachment attachment){
 
-        String fileName = null;
+        String fileName = file.getOriginalFilename();
+        File dest = new File(filePath + pathUrl + File.separator + fileName);
+        if (!dest.getParentFile().exists()) {
+            dest.getParentFile().mkdirs();
+        }
         try {
-            fileName = file.getOriginalFilename();
+
             byte[] bytes = file.getBytes();
             BufferedOutputStream buffStream =
-                    new BufferedOutputStream(new FileOutputStream(new File(filePath + pathUrl + File.separator + fileName)));
+                    new BufferedOutputStream(new FileOutputStream(dest));
             buffStream.write(bytes);
             buffStream.close();
         } catch (Exception e) {

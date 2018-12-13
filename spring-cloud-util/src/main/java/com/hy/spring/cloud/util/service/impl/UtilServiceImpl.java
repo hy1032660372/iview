@@ -14,7 +14,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * FileName: UtilServiceImpl
@@ -42,14 +44,17 @@ public class UtilServiceImpl implements UtilService {
         if (suffixName.matches("png|jpg|jpeg|gif")){
             //images
             FileUtil.transferTo(file, attachment);
+            return Message.info(attachment);
         }
         if(suffixName.matches("xls|xlsx")){
             //FileUtil.singleSave(file, attachment);
-
+            //FileUtil.singleSave(file, attachment);
             //analyse excel
-            ExcelUtil.importExcel(file);
+            List<Map> mapList = new ArrayList<>();
+            ExcelUtil.importExcel(file,mapList);
+            return Message.info(mapList);
         }
-        return Message.info(attachment);
+        return Message.info("");
     }
 
     @Override

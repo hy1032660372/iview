@@ -62,8 +62,9 @@
         },
         mounted(){
             let vm = this;
-            if(vm.$cookies.get("iView-token")){
-                vm.$http.post(vm.server_auth+"/oauth/check_token?token="+vm.$cookies.get("iView-token")).then(function(data){
+            let token = vm.$cookies.get("iView-token")
+            if(token){
+                vm.$http.get(vm.server_auth+"/oauth/check_token?token="+token).then(function(data){
                     vm.$router.push("/home");
                 });
             }
@@ -89,7 +90,7 @@
                         vm.$cookies.remove("refresh-iView-token");
                         vm.$http.post(vm.server_auth+"/oauth/token",paramsStr).then(function(response) {
                             //save token
-                            vm.$cookies.set("iView-token",response.data.access_token,"1d",null,window.domainUrl);
+                            vm.$cookies.set("iView-token",response.data.access_token,"1d","/",window.domainUrl);
                             vm.$cookies.set("refresh-iView-token",response.data.refresh_token,null,window.domainUrl);
                             sessionStorage.setItem("token_key", response.data.access_token);
                             vm.$Message.success('Success!');
