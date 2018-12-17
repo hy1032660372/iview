@@ -23,39 +23,52 @@ import java.util.Map;
  **/
 public class ExcelUtil {
 
-    public static void importExcel(MultipartFile file,List<Map> mapList) {
+    public static void importExcel(MultipartFile file,List<Map> sheetMapList) {
 
         Row row;
         Workbook workbook;
         Sheet sheet;
+        int sheetCount;
         int lastRowNum;
-        int maxColNum = 1;
+        int maxColNum;
         int currentColNum = 0;
 
+        String sheetName = "";
+        List<Map> mapList = new ArrayList<>();
         List<String> labelList = new ArrayList();
         Map map;
+        Map sheetMap;
         try{
-
             InputStream inputStream = file.getInputStream();
             workbook = WorkbookFactory.create(inputStream);
-            sheet = workbook.getSheetAt(0);
-            lastRowNum = sheet.getLastRowNum();
+            sheetCount = workbook.getNumberOfSheets();
 
-            //first row
-            row = sheet.getRow(0);
-            while(row.getCell(currentColNum) != null && !"".equals(row.getCell(currentColNum).getStringCellValue())){
-                labelList.add(row.getCell(currentColNum).getStringCellValue());
-                currentColNum++;
-            }
+            for(int s = 0; s < sheetCount; s++){
+                sheet = workbook.getSheetAt(0);
+                sheetName = sheet.getSheetName();
+                lastRowNum = sheet.getLastRowNum();
+                sheetMap = new HashMap();
 
-            maxColNum = labelList.size();
-            for (int i = 1; i <= lastRowNum; i++) {
-                row = sheet.getRow(i);
-                map = new HashMap();
-                for(int j = 0; j < maxColNum; j++){
-                    map.put(labelList.get(j),row.getCell(j).getStringCellValue());
+                //first row
+                row = sheet.getRow(0);
+                maxColNum = row.getPhysicalNumberOfCells();
+                while(row.getCell(currentColNum) != null && !"".equals(row.getCell(currentColNum).getStringCellValue())){
+                    labelList.add(row.getCell(currentColNum).getStringCellValue());
+                    currentColNum++;
                 }
-                mapList.add(map);
+
+                //maxColNum = labelList.size();
+                for (int i = 1; i <= lastRowNum; i++) {
+                    row = sheet.getRow(i);
+                    map = new HashMap();
+                    for(int j = 0; j < maxColNum; j++){
+                        map.put(labelList.get(j),row.getCell(j).getStringCellValue());
+                    }
+                    mapList.add(map);
+                }
+                sheetMap.put("sheetName",sheetName);
+                sheetMap.put("sheetList",mapList);
+                sheetMapList.add(sheetMap);
             }
         }catch (Exception e){
             e.getStackTrace();
