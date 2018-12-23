@@ -20,7 +20,7 @@
     <groupId>com.hy.spring.cloud</groupId>
     <artifactId>hy-iview-springboot</artifactId>
     <version>1.0.0-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
 
     <name>hy-iview-springboot</name>
 
