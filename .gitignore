@@ -140,6 +140,7 @@ npm-debug.log
 /.idea
 /logs
 as-hy-iview/node_modules/
+as-hy-iview/dist
 spring-cloud-account/target/
 spring-cloud-auth/target/
 spring-cloud-eureka-server-ha/target/

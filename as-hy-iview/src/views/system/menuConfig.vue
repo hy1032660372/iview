@@ -49,6 +49,7 @@
                                 </Col>
                             </Row>
                         </Card>
+                        <Spin size="large" fix v-if="spinShow"></Spin>
                     </div>
                 </Col>
             </Row>
@@ -107,6 +108,7 @@
     export default {
         data () {
             return {
+                spinShow:false,
                 menuData: [],
                 permissionList:[],
                 configMenuModel:false,
@@ -172,9 +174,11 @@
                 let vm = this;
                 vm.queryObject.menuCode = vm.currentMenu.code;
                 vm.pageQuery.filter = decodeURIComponent(vm.jquery.param(vm.queryObject),true);
+                vm.spinShow = true;
                 vm.$http.get(vm.server_account+"/permissions/getPermissionList",{params:vm.pageQuery}).then(function(response){
                     vm.permissionList = response.data.aaData;
                     vm.totalRecord = response.data.iTotalRecords;
+                    vm.spinShow = false;
                     vm.pageQuery.filter = ""
                 });
             },
@@ -193,8 +197,10 @@
             },
             getMenuByCurrentRole(){
                 let vm = this;
+                vm.spinShow = true;
                 vm.$http.get(vm.server_account+"/roleAndMenu/getTreeMenuByCurrentRole").then(function(response){
                     vm.menuData = [];
+                    vm.spinShow = false;
                     vm.menuData.push(response.data.data);
                     vm.currentMenu = vm.menuData[0];
                 });

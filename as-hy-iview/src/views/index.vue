@@ -157,7 +157,7 @@
                 let token = vm.$cookies.get("iView-token");
                 let userRole = vm.$cookies.get("user-role");
                 if(token){
-                    vm.$http.post(vm.server_auth+"/oauth/check_token?token="+token).then(function(data){
+                    vm.$http.get(vm.server_auth+"/oauth/check_token?token="+token).then(function(data){
                         vm.getUserInfo();
                     }).catch(function (error) {
                         vm.$Message.error('Error!');
@@ -170,7 +170,7 @@
             getUserInfo(){
                 let vm = this;
                 vm.$http.get(vm.server_auth+"/users/current").then(function(data){
-                    vm.$cookies.set("iView-token",data.data.details.tokenValue,"1d",null,window.domainUrl);
+                    vm.$cookies.set("iView-token",data.data.details.tokenValue,"1d","/",vm.domainUrl);
                     vm.userInfo.username = data.data.principal.username;
                     vm.userInfo.currentRole = data.data.principal.currentRole.title;
                     window.currentUser = data.data.principal;

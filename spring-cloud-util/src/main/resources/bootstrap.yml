@@ -47,4 +47,4 @@ security:
       grant-type: client_credentials
       scope: server
 
-  ignored: /file/**,/images/**
+  ignored: /common/**,/images/**

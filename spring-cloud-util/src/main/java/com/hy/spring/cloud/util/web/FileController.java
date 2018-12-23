@@ -26,15 +26,8 @@ public class FileController {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final ResourceLoader resourceLoader;
-
     @Autowired
     private UtilService utilService;
-
-    @Autowired
-    public FileController(ResourceLoader resourceLoader) {
-        this.resourceLoader = resourceLoader;
-    }
 
     /**
      * add new message
@@ -46,18 +39,6 @@ public class FileController {
     @ResponseBody
     public Message upload(@RequestParam("file") MultipartFile fileList) {
         return utilService.uploadAttachment(fileList);
-    }
-
-    /**
-     * add new message
-     * @param response
-     * @return Message
-     */
-    //@PreAuthorize("hasAuthority('FILE_ADD')")
-    @RequestMapping(value = "fileDownLoad", method = RequestMethod.GET)
-    @ResponseBody
-    public void fileDownLoad(HttpServletResponse response,String fileId) {
-        utilService.fileDownLoad(response,fileId);
     }
 
     /**
