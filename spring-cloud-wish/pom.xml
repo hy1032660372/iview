@@ -16,6 +16,9 @@
 
     <name>spring-cloud-wish</name>
 
+    <properties>
+        <commons-lang3.version>3.8</commons-lang3.version>
+    </properties>
 
     <dependencies>
         <!-- endregion -->
