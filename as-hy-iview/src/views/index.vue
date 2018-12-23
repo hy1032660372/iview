@@ -156,7 +156,6 @@
                 let vm = this;
                 let token = vm.$cookies.get("iView-token");
                 let userRole = vm.$cookies.get("user-role");
-                console.log(token);
                 if(token){
                     vm.$http.get(vm.server_auth+"/oauth/check_token?token="+token).then(function(data){
                         vm.getUserInfo();

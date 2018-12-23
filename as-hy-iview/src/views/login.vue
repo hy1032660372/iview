@@ -37,6 +37,7 @@
                 </Col>
                 <Col span="8" >&nbsp;</Col>
             </Row>
+            <Spin size="large" fix v-if="spinShow"></Spin>
         </Content>
         <Footer class="foot-content">&nbsp;</Footer>
     </div>
@@ -45,6 +46,7 @@
     export default {
         data () {
             return {
+                spinShow:false,
                 formInline: {
                     user: '',
                     password: ''
@@ -88,18 +90,22 @@
                                     +"&password="+data.password;
                         vm.$cookies.remove("iView-token");
                         vm.$cookies.remove("refresh-iView-token");
+                        vm.spinShow = true;
                         vm.$http.post(vm.server_auth+"/oauth/token",paramsStr).then(function(response) {
                             //save token
                             vm.$cookies.set("iView-token",response.data.access_token,"1d","/",window.domainUrl);
                             vm.$cookies.set("refresh-iView-token",response.data.refresh_token,null,window.domainUrl);
                             sessionStorage.setItem("token_key", response.data.access_token);
+                            vm.spinShow = false;
                             vm.$Message.success('Success!');
                             vm.$router.push("/home");
                         }).catch(function (error) {
                             console.log(error);
+                            vm.spinShow = false;
                             vm.$Message.error('Fail!');
                         });
                     } else {
+                        vm.spinShow = false;
                         vm.$Message.error('Fail!');
                     }
                 })
