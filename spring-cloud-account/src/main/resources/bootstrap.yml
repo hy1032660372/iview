@@ -5,8 +5,8 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/spring_boot_test?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
     username: root
-    #password: ashy1992
-    password: 123456
+    password: ashy1992
+    #password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
 #   driver-class-name: com.mysql.jdbc.Driver
 info:
