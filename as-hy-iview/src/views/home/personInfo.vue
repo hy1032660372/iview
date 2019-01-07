@@ -64,7 +64,7 @@
             },
             getImages(){
                 let vm = this;
-                vm.urlPre = "http://localhost:8086/util";
+                vm.urlPre = "http://"+window.domainUrl + ":8086/util";
                 vm.$http.get(vm.server_util+"/image/getAllImage").then(function(response){
                     vm.images = [];
                     _.each(response.data,function(param){
