@@ -1,15 +1,15 @@
 package com.hy.spring.cloud.account.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hy.spring.cloud.account.domain.Entity.SysRole;
 import com.hy.spring.cloud.account.util.ObjectUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author as_hy
@@ -31,23 +31,32 @@ public class User implements Serializable {
     private String lastLogin;
 
     public User(Map userMap){
+
+        Collection<LinkedHashMap> roleCode;
+
         try{
             this.currentRole = (SysRole)ObjectUtil.mapToObjectIntrospector((Map)userMap.get("currentRole"),SysRole.class);
-            List<Map> roleMapList = (List<Map>)userMap.get("roleCode");
-            for(Map map:roleMapList){
-                this.sysCodeList.add((SysRole)ObjectUtil.mapToObjectIntrospector(map,SysRole.class));
-            }
+            LinkedHashMap linkedMap = (LinkedHashMap)userMap.get("roleCode");
+            roleCode = (Collection<LinkedHashMap>)linkedMap.values();
+            roleCode.stream().forEach(m->{
+                try {
+                    this.sysCodeList.add((SysRole)ObjectUtil.mapToObjectIntrospector(m,SysRole.class));
+                }catch (Exception r){
+                    r.getMessage();
+                }
+            });
 
-            List<Map> authList = (List<Map>)userMap.get("authorities");
-            for(Map map:authList){
-                this.authorities.add(map.get("authority").toString());
-            }
+            LinkedHashMap authList = (LinkedHashMap)userMap.get("authorities");
+            authList.values().stream().forEach(m->{
+                Map<String,String> n = (Map)m;
+                this.authorities.add(n.get("authority"));
+            });
         }catch (Exception e){
             logger.error(e.getMessage());
         }
         this.userId = userMap.get("userId").toString();
         this.userName = userMap.get("username").toString();
-        this.enabled = (Boolean)userMap.get("enabled");
+        this.enabled = userMap.get("enabled").equals("true")?true:false;
     }
 
     public String getLastLogin() {
