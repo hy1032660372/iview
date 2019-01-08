@@ -13,7 +13,8 @@ spring:
   mvc:
     static-path-pattern: /images/**
   resources:
-    static-locations: file:D://test/
+    static-locations: file:${uploadFile}
+    #static-locations: file:D:/test/data/wwwroot/uploadFiles/
 
 info:
   app:
@@ -33,19 +34,21 @@ eureka:
     status-page-url-path: ${server.context-path}/info
   client:
     serviceUrl:
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: http://118.126.116.211:8761/eureka
 mybatis:
   mapper-locations: classpath*:mapper/*Mapper.xml
 
 security:
   oauth2:
     resource:
-      user-info-uri: http://localhost:8083/auth/users/current
+      user-info-uri: http://118.126.116.211:8083/auth/users/current
     client:
       clientId: spring-cloud-util
       clientSecret: util123
-      accessTokenUri: http://localhost:8083/auth/oauth/token
+      accessTokenUri: http://118.126.116.211:8083/auth/oauth/token
       grant-type: client_credentials
       scope: server
 
-  ignored: /common/**,/images/**
+  ignored: /common/**, /images/**
+
+uploadFile: /data/wwwroot/uploadFiles/

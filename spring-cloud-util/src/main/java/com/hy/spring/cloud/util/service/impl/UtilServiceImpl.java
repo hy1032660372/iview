@@ -9,6 +9,7 @@ import com.hy.spring.cloud.util.util.FileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,6 +34,9 @@ public class UtilServiceImpl implements UtilService {
     @Autowired
     private UtilMapper utilMapper;
 
+    @Value("${uploadFile}")
+    private String uploadPath;
+
     public Message uploadAttachment(MultipartFile file){
 
         Attachment attachment = new Attachment();
@@ -43,7 +47,7 @@ public class UtilServiceImpl implements UtilService {
         String suffixName = fileName.substring(fileName.lastIndexOf(".")+1);
         if (suffixName.matches("png|jpg|jpeg|gif")){
             //images
-            FileUtil.transferTo(file, attachment);
+            FileUtil.transferTo(file, attachment,uploadPath);
             return Message.info(attachment);
         }
         if(suffixName.matches("xls|xlsx")){
@@ -58,10 +62,13 @@ public class UtilServiceImpl implements UtilService {
 
     @Override
     public Message saveFileList(List<Attachment> attachmentList){
-
+        String path = uploadPath;
+        if(System.getProperty("os.name").toLowerCase().startsWith("win")){
+            path = "D:/test" + path;
+        }
         for(Attachment attachment:attachmentList){
-            FileUtil.copyFile(FileUtil.filePath+FileUtil.pathUrl+"/"+attachment.getFileName(),
-                    FileUtil.filePath+attachment.getPathUrl()+"/"+attachment.getFileName());
+            FileUtil.copyFile(path + FileUtil.pathUrl+"/"+attachment.getFileName(),
+                    path+attachment.getPathUrl()+"/"+attachment.getFileName());
         }
 
         utilMapper.saveFileList(attachmentList);
@@ -71,11 +78,15 @@ public class UtilServiceImpl implements UtilService {
     @Override
     public void fileDownLoad(HttpServletResponse response, String fileId) {
 
+        String fullPath = uploadPath;
+        if(System.getProperty("os.name").toLowerCase().startsWith("win")){
+            fullPath = "D:/test" + fullPath ;
+        }
+
         //获取文件名
         Attachment attachment = utilMapper.getAttachment(fileId);
-        File file = new File(FileUtil.filePath + attachment.getPathUrl()+"/"+attachment.getFileName());
+        File file = new File(fullPath + attachment.getPathUrl()+"/"+attachment.getFileName());
         FileUtil.downloadFile(response,file,attachment.getFileName());
-
     }
 
     @Override

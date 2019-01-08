@@ -6,6 +6,7 @@ import com.hy.spring.cloud.util.util.FileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -26,22 +27,26 @@ public class ScheduledService {
     @Autowired
     private UtilService utilService;
 
+    @Value("${uploadFile}")
+    private String filePath;
+
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Async
     @Scheduled(cron = "0 0/10 * * * *")
     public void removeNoUseFile(){
-
-        String filePath = "D:/test";
-        String fileUrl = "/temp";
         File f;
+        String fullPath = filePath;
+        if(System.getProperty("os.name").toLowerCase().startsWith("win")){
+            fullPath = "D:/test" + fullPath;
+        }
 
         //query no use file list
         Attachment Attachment = new Attachment();
         Attachment.setFileStatus(0);
         List<Attachment> attachmentList = utilService.queryAttachmentList(Attachment);
         for(Attachment attachment:attachmentList){
-            f = new File(filePath + attachment.getPathUrl() + attachment.getFileName());
+            f = new File(fullPath + attachment.getPathUrl() + attachment.getFileName());
             if(f.exists()){
                 f.delete();
             }
@@ -49,8 +54,8 @@ public class ScheduledService {
         utilService.deleteFileList(attachmentList);
 
         //delete temp file
-        FileUtil.delBlankFolder(filePath);
-        FileUtil.delAllFile(filePath + fileUrl);
+        FileUtil.delAllFile(fullPath + "/temp");
+        FileUtil.delBlankFolder(fullPath);
         logger.info("Remove file");
     }
 

@@ -64,7 +64,7 @@
             },
             getImages(){
                 let vm = this;
-                vm.urlPre = "http://"+window.domainUrl + ":8086/util";
+                vm.urlPre = "http://"+vm.domainUrl + ":8086/util";
                 vm.$http.get(vm.server_util+"/image/getAllImage").then(function(response){
                     vm.images = [];
                     _.each(response.data,function(param){
@@ -87,7 +87,7 @@
                 let vm = this;
                 let token = vm.$cookies.get("iView-token");
                 vm.urlPre = "http://localhost:8086/util";
-                window.open(vm.urlPre+"/file/fileDownLoad?token="+token+"&fileId="+attachmentId,'_blank');
+                window.open(vm.urlPre+"/common/fileDownLoad?token="+token+"&fileId="+attachmentId,'_blank');
             }
         },
         beforeRouteEnter(to, from, next) {

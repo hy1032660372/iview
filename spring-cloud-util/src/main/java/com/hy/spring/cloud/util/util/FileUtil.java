@@ -17,7 +17,6 @@ import java.util.List;
 public class FileUtil {
 
     // 文件上传后的路径
-    public static String filePath = "D:/test";
     public static String pathUrl = "/temp";
 
     /**
@@ -110,16 +109,21 @@ public class FileUtil {
     }
 
     //transferTo
-    public static void transferTo(MultipartFile file, Attachment attachment) {
+    public static void transferTo(MultipartFile file, Attachment attachment,String path) {
         try {
             // 获取文件名
             String fileName = file.getOriginalFilename();
             // 获取文件的后缀名
             String suffixName = fileName.substring(fileName.lastIndexOf("."));
 
+            String fullPath = path + pathUrl;
             // 解决中文问题，liunx下中文路径，图片显示问题
             // fileName = UUIDUtil.createUUID() + suffixName;
-            File dest = new File(filePath + pathUrl + "/" + fileName);
+            if(System.getProperty("os.name").toLowerCase().startsWith("win")){
+                fullPath = "D:/test" + fullPath ;
+            }
+
+            File dest = new File(fullPath + "/" + fileName);
             // 检测是否存在目录
             if (!dest.getParentFile().exists()) {
                 dest.getParentFile().mkdirs();
@@ -141,10 +145,15 @@ public class FileUtil {
     }
 
     //singleSave
-    public static void singleSave(MultipartFile file, Attachment attachment){
+    public static void singleSave(MultipartFile file, Attachment attachment,String path){
+
+        String fullPath = path + pathUrl;
+        if(System.getProperty("os.name").toLowerCase().startsWith("win")){
+            fullPath = "D:/test" + fullPath ;
+        }
 
         String fileName = file.getOriginalFilename();
-        File dest = new File(filePath + pathUrl + File.separator + fileName);
+        File dest = new File(fullPath + File.separator + fileName);
         if (!dest.getParentFile().exists()) {
             dest.getParentFile().mkdirs();
         }
@@ -166,9 +175,15 @@ public class FileUtil {
     }
 
     //multipleSave
-    public void multipleSave(MultipartFile[] fileList, List<Attachment> attachmentList){
+    public void multipleSave(MultipartFile[] fileList, List<Attachment> attachmentList,String path){
         String fileName = null;
         Attachment attachment;
+
+        String fullPath = path + pathUrl;
+        if(System.getProperty("os.name").toLowerCase().startsWith("win")){
+            fullPath = "D:/test" + fullPath ;
+        }
+
         if (fileList != null && fileList.length >0) {
             for(int i =0 ;i< fileList.length; i++){
                 attachment = new Attachment();
@@ -176,7 +191,7 @@ public class FileUtil {
                     fileName = fileList[i].getOriginalFilename();
                     byte[] bytes = fileList[i].getBytes();
                     BufferedOutputStream buffStream =
-                            new BufferedOutputStream(new FileOutputStream(new File(filePath + pathUrl + "/" + fileName)));
+                            new BufferedOutputStream(new FileOutputStream(new File(fullPath + "/" + fileName)));
                     buffStream.write(bytes);
                     buffStream.close();
                 } catch (Exception e) {
