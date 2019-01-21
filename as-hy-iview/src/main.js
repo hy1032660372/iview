@@ -42,6 +42,7 @@ Vue.prototype.server_auth = "/auth"
 Vue.prototype.server_account = "/account"
 Vue.prototype.server_util = "/util"
 Vue.prototype.domainUrl = document.location.hostname
+Vue.prototype.urlPre = document.location.protocol +"//"+ document.location.hostname+":8086/util"
 
 // 添加请求拦截器
 axios.interceptors.request.use(function (config) {

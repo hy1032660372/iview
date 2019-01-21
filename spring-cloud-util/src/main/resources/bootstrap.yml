@@ -51,4 +51,4 @@ security:
 
   ignored: /common/**, /images/**
 
-uploadFile: /data/wwwroot/uploadFiles/
+uploadFile: /data/wwwroot/uploadFiles

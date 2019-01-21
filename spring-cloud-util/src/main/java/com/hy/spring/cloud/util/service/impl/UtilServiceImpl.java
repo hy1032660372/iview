@@ -63,9 +63,6 @@ public class UtilServiceImpl implements UtilService {
     @Override
     public Message saveFileList(List<Attachment> attachmentList){
         String path = uploadPath;
-        if(System.getProperty("os.name").toLowerCase().startsWith("win")){
-            path = "D:/test" + path;
-        }
         for(Attachment attachment:attachmentList){
             FileUtil.copyFile(path + FileUtil.pathUrl+"/"+attachment.getFileName(),
                     path+attachment.getPathUrl()+"/"+attachment.getFileName());
@@ -79,9 +76,6 @@ public class UtilServiceImpl implements UtilService {
     public void fileDownLoad(HttpServletResponse response, String fileId) {
 
         String fullPath = uploadPath;
-        if(System.getProperty("os.name").toLowerCase().startsWith("win")){
-            fullPath = "D:/test" + fullPath ;
-        }
 
         //获取文件名
         Attachment attachment = utilMapper.getAttachment(fileId);
@@ -102,4 +96,12 @@ public class UtilServiceImpl implements UtilService {
         return utilMapper.queryAttachmentList(attachment);
     }
 
+    @Override
+    public Message deleteFile(String fileId) {
+        Attachment attachment = utilMapper.getAttachment(fileId);
+
+        FileUtil.delAllFile(uploadPath+attachment.getPathUrl()+File.separator+attachment.getFileName());
+        utilMapper.deleteFile(fileId);
+        return Message.info("Success");
+    }
 }

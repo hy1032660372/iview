@@ -19,4 +19,5 @@ public interface UtilService {
 
     List<Attachment> queryAttachmentList(Attachment attachment);
 
+    Message deleteFile(String fileId);
 }
