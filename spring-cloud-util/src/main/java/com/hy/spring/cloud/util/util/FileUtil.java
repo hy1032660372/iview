@@ -30,6 +30,7 @@ public class FileUtil {
             return;
         }
         if (!file.isDirectory()) {
+            file.delete();
             return;
         }
         String[] tempList = file.list();
@@ -119,9 +120,6 @@ public class FileUtil {
             String fullPath = path + pathUrl;
             // 解决中文问题，liunx下中文路径，图片显示问题
             // fileName = UUIDUtil.createUUID() + suffixName;
-            if(System.getProperty("os.name").toLowerCase().startsWith("win")){
-                fullPath = "D:/test" + fullPath ;
-            }
 
             File dest = new File(fullPath + "/" + fileName);
             // 检测是否存在目录

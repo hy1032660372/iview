@@ -66,6 +66,17 @@ public class FileController {
 
     /**
      * remove file
+     * @param fileId
+     * @return
+     */
+    @RequestMapping(value = "deleteFile/{fileId}", method = RequestMethod.GET)
+    @ResponseBody
+    public Message deleteFile(@PathVariable String fileId){
+        return utilService.deleteFile(fileId);
+    }
+
+    /**
+     * remove file
      * @param attachment
      * @return
      */

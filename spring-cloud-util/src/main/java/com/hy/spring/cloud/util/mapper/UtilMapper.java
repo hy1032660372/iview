@@ -24,4 +24,6 @@ public interface UtilMapper extends MyMapper<Attachment> {
     Attachment getAttachment(String fileId);
 
     List<Attachment> queryAttachmentList(Attachment attachment);
+
+    void deleteFile(@Param("attachmentId") String attachmentId);
 }

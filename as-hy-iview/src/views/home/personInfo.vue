@@ -22,6 +22,7 @@
                     <Col :span="5" v-for="image in images" :key="image.id" >
                         <img class="img" :src="image.pathUrl"/>
                         <Button @click="downLoadPic(image.id)">downLoadPic</Button>
+                        <Button @click="deletePic(image.id)">deletePic</Button>
                     </Col>
                 </Row>
             </Card>
@@ -64,7 +65,6 @@
             },
             getImages(){
                 let vm = this;
-                vm.urlPre = "http://"+vm.domainUrl + ":8086/util";
                 vm.$http.get(vm.server_util+"/image/getAllImage").then(function(response){
                     vm.images = [];
                     _.each(response.data,function(param){
@@ -78,15 +78,25 @@
             },
             notify(message){
                 let vm = this;
-                console.log(message);
                 if("ok" == message){
                     vm.getImages();
                 }
             },
+            deletePic(attachmentId){
+                let vm = this;
+                vm.$http.get(vm.server_util+"/file/deleteFile/"+attachmentId).then(function(response){
+                    for(let i = 0; i < vm.images.length; i++){
+                        if(vm.images[i].id == attachmentId){
+                            vm.images.splice(i,1)
+                        }
+                    }
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            },
             downLoadPic(attachmentId){
                 let vm = this;
                 let token = vm.$cookies.get("iView-token");
-                vm.urlPre = "http://localhost:8086/util";
                 window.open(vm.urlPre+"/common/fileDownLoad?token="+token+"&fileId="+attachmentId,'_blank');
             }
         },

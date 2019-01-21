@@ -70,4 +70,9 @@
         </where>
     </select>
 
+    <delete id="deleteFile" parameterType="java.lang.String">
+        delete from file_attachment
+        where id = #{attachmentId}
+    </delete>
+
 </mapper>
